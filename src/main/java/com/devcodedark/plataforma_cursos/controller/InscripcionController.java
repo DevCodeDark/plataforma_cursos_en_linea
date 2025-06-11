@@ -10,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.devcodedark.plataforma_cursos.model.Inscripcion;
-import com.devcodedark.plataforma_cursos.model.Inscripcion.EstadoInscripcion;
 import com.devcodedark.plataforma_cursos.service.IInscripcionService;
 
 import jakarta.validation.Valid;
