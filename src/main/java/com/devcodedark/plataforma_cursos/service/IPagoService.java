@@ -4,43 +4,43 @@ import java.util.List;
 import java.util.Optional;
 import java.math.BigDecimal;
 
-import com.devcodedark.plataforma_cursos.model.Pago;
+import com.devcodedark.plataforma_cursos.dto.PagoDTO;
 import com.devcodedark.plataforma_cursos.model.Pago.EstadoPago;
 import com.devcodedark.plataforma_cursos.model.Pago.MetodoPago;
 
 public interface IPagoService {
     // Listar todos los pagos
-    List<Pago> buscarTodos();
+    List<PagoDTO> buscarTodos();
     
     // Guardar pago
-    void guardar(Pago pago);
+    void guardar(PagoDTO pagoDTO);
     
     // Modificar pago
-    void modificar(Pago pago);
+    void modificar(PagoDTO pagoDTO);
     
     // Buscar pago por ID
-    Optional<Pago> buscarId(Integer id);
+    Optional<PagoDTO> buscarId(Integer id);
     
     // Eliminar pago
     void eliminar(Integer id);
     
     // Buscar pagos por inscripción
-    List<Pago> buscarPorInscripcion(Integer inscripcionId);
+    List<PagoDTO> buscarPorInscripcion(Integer inscripcionId);
     
     // Buscar pagos por estudiante
-    List<Pago> buscarPorEstudiante(Integer estudianteId);
+    List<PagoDTO> buscarPorEstudiante(Integer estudianteId);
     
     // Buscar pagos por estado
-    List<Pago> buscarPorEstado(EstadoPago estado);
+    List<PagoDTO> buscarPorEstado(EstadoPago estado);
     
     // Buscar pagos por método de pago
-    List<Pago> buscarPorMetodoPago(MetodoPago metodoPago);
+    List<PagoDTO> buscarPorMetodoPago(MetodoPago metodoPago);
     
     // Buscar pago por transacción externa
-    Optional<Pago> buscarPorTransaccionExterna(String transaccionExternaId);
+    Optional<PagoDTO> buscarPorTransaccionExterna(String transaccionExternaId);
     
     // Buscar pagos completados por estudiante
-    List<Pago> buscarPagosCompletadosPorEstudiante(Integer estudianteId);
+    List<PagoDTO> buscarPagosCompletadosPorEstudiante(Integer estudianteId);
     
     // Calcular total de ingresos por curso
     BigDecimal calcularIngresosPorCurso(Integer cursoId);
@@ -52,13 +52,13 @@ public interface IPagoService {
     Long contarPorEstadoYCurso(Integer cursoId, EstadoPago estado);
     
     // Buscar pagos pendientes
-    List<Pago> buscarPagosPendientes();
+    List<PagoDTO> buscarPagosPendientes();
     
     // Verificar si existe transacción externa
     boolean existeTransaccionExterna(String transaccionExternaId);
     
     // Procesar pago
-    Pago procesarPago(Integer inscripcionId, BigDecimal monto, MetodoPago metodoPago, String transaccionExternaId);
+    PagoDTO procesarPago(Integer inscripcionId, BigDecimal monto, MetodoPago metodoPago, String transaccionExternaId);
     
     // Confirmar pago
     void confirmarPago(Integer pagoId, String transaccionExternaId);
