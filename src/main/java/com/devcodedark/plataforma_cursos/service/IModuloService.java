@@ -3,32 +3,32 @@ package com.devcodedark.plataforma_cursos.service;
 import java.util.List;
 import java.util.Optional;
 
-import com.devcodedark.plataforma_cursos.model.Modulo;
+import com.devcodedark.plataforma_cursos.dto.ModuloDTO;
 
 public interface IModuloService {
     // Listar todos los módulos
-    List<Modulo> buscarTodos();
+    List<ModuloDTO> buscarTodos();
     
     // Guardar módulo
-    void guardar(Modulo modulo);
+    void guardar(ModuloDTO moduloDTO);
     
     // Modificar módulo
-    void modificar(Modulo modulo);
+    void modificar(ModuloDTO moduloDTO);
     
     // Buscar módulo por ID
-    Optional<Modulo> buscarId(Integer id);
+    Optional<ModuloDTO> buscarId(Integer id);
     
     // Eliminar módulo
     void eliminar(Integer id);
     
     // Buscar módulos por curso ordenados por orden
-    List<Modulo> buscarPorCursoOrdenado(Integer cursoId);
+    List<ModuloDTO> buscarPorCursoOrdenado(Integer cursoId);
     
     // Buscar módulos activos por curso
-    List<Modulo> buscarModulosActivosPorCurso(Integer cursoId);
+    List<ModuloDTO> buscarModulosActivosPorCurso(Integer cursoId);
     
     // Buscar módulos obligatorios por curso
-    List<Modulo> buscarModulosObligatoriosPorCurso(Integer cursoId);
+    List<ModuloDTO> buscarModulosObligatoriosPorCurso(Integer cursoId);
     
     // Contar módulos por curso
     Long contarModulosPorCurso(Integer cursoId);

@@ -8,7 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.devcodedark.plataforma_cursos.model.Modulo;
+import com.devcodedark.plataforma_cursos.dto.ModuloDTO;
 import com.devcodedark.plataforma_cursos.service.IModuloService;
 
 import jakarta.validation.Valid;
@@ -23,9 +23,9 @@ public class ModuloController {
 
     // Listar todos los módulos
     @GetMapping
-    public ResponseEntity<List<Modulo>> listarTodos() {
+    public ResponseEntity<List<ModuloDTO>> listarTodos() {
         try {
-            List<Modulo> modulos = moduloService.buscarTodos();
+            List<ModuloDTO> modulos = moduloService.buscarTodos();
             return ResponseEntity.ok(modulos);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
@@ -34,9 +34,9 @@ public class ModuloController {
 
     // Buscar módulo por ID
     @GetMapping("/{id}")
-    public ResponseEntity<Modulo> buscarPorId(@PathVariable Integer id) {
+    public ResponseEntity<ModuloDTO> buscarPorId(@PathVariable Integer id) {
         try {
-            Optional<Modulo> modulo = moduloService.buscarId(id);
+            Optional<ModuloDTO> modulo = moduloService.buscarId(id);
             if (modulo.isPresent()) {
                 return ResponseEntity.ok(modulo.get());
             } else {
@@ -49,10 +49,13 @@ public class ModuloController {
 
     // Crear nuevo módulo
     @PostMapping
-    public ResponseEntity<String> crear(@Valid @RequestBody Modulo modulo) {
+    public ResponseEntity<String> crear(@Valid @RequestBody ModuloDTO moduloDTO) {
         try {
-            moduloService.guardar(modulo);
+            moduloService.guardar(moduloDTO);
             return ResponseEntity.status(HttpStatus.CREATED).body("Módulo creado exitosamente");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("Error de validación: " + e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body("Error al crear el módulo: " + e.getMessage());
@@ -61,16 +64,19 @@ public class ModuloController {
 
     // Actualizar módulo
     @PutMapping("/{id}")
-    public ResponseEntity<String> actualizar(@PathVariable Integer id, @Valid @RequestBody Modulo modulo) {
+    public ResponseEntity<String> actualizar(@PathVariable Integer id, @Valid @RequestBody ModuloDTO moduloDTO) {
         try {
-            Optional<Modulo> moduloExistente = moduloService.buscarId(id);
+            Optional<ModuloDTO> moduloExistente = moduloService.buscarId(id);
             if (!moduloExistente.isPresent()) {
                 return ResponseEntity.notFound().build();
             }
             
-            modulo.setId(id);
-            moduloService.modificar(modulo);
+            moduloDTO.setId(id);
+            moduloService.modificar(moduloDTO);
             return ResponseEntity.ok("Módulo actualizado exitosamente");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body("Error de validación: " + e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body("Error al actualizar el módulo: " + e.getMessage());
@@ -81,7 +87,7 @@ public class ModuloController {
     @DeleteMapping("/{id}")
     public ResponseEntity<String> eliminar(@PathVariable Integer id) {
         try {
-            Optional<Modulo> modulo = moduloService.buscarId(id);
+            Optional<ModuloDTO> modulo = moduloService.buscarId(id);
             if (!modulo.isPresent()) {
                 return ResponseEntity.notFound().build();
             }
@@ -96,9 +102,9 @@ public class ModuloController {
 
     // Buscar módulos por curso ordenados
     @GetMapping("/curso/{cursoId}")
-    public ResponseEntity<List<Modulo>> buscarPorCursoOrdenado(@PathVariable Integer cursoId) {
+    public ResponseEntity<List<ModuloDTO>> buscarPorCursoOrdenado(@PathVariable Integer cursoId) {
         try {
-            List<Modulo> modulos = moduloService.buscarPorCursoOrdenado(cursoId);
+            List<ModuloDTO> modulos = moduloService.buscarPorCursoOrdenado(cursoId);
             return ResponseEntity.ok(modulos);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
@@ -107,9 +113,9 @@ public class ModuloController {
 
     // Buscar módulos activos por curso
     @GetMapping("/curso/{cursoId}/activos")
-    public ResponseEntity<List<Modulo>> buscarActivosPorCurso(@PathVariable Integer cursoId) {
+    public ResponseEntity<List<ModuloDTO>> buscarActivosPorCurso(@PathVariable Integer cursoId) {
         try {
-            List<Modulo> modulos = moduloService.buscarModulosActivosPorCurso(cursoId);
+            List<ModuloDTO> modulos = moduloService.buscarModulosActivosPorCurso(cursoId);
             return ResponseEntity.ok(modulos);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
@@ -118,9 +124,9 @@ public class ModuloController {
 
     // Buscar módulos obligatorios por curso
     @GetMapping("/curso/{cursoId}/obligatorios")
-    public ResponseEntity<List<Modulo>> buscarObligatoriosPorCurso(@PathVariable Integer cursoId) {
+    public ResponseEntity<List<ModuloDTO>> buscarObligatoriosPorCurso(@PathVariable Integer cursoId) {
         try {
-            List<Modulo> modulos = moduloService.buscarModulosObligatoriosPorCurso(cursoId);
+            List<ModuloDTO> modulos = moduloService.buscarModulosObligatoriosPorCurso(cursoId);
             return ResponseEntity.ok(modulos);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
@@ -159,13 +165,13 @@ public class ModuloController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body("Error al reordenar los módulos: " + e.getMessage());
         }
-    }
-
+    }    
+    
     // Cambiar si es obligatorio
     @PutMapping("/{id}/obligatorio")
     public ResponseEntity<String> cambiarObligatorio(@PathVariable Integer id, @RequestBody Boolean esObligatorio) {
         try {
-            Optional<Modulo> modulo = moduloService.buscarId(id);
+            Optional<ModuloDTO> modulo = moduloService.buscarId(id);
             if (!modulo.isPresent()) {
                 return ResponseEntity.notFound().build();
             }
