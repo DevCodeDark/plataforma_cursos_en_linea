@@ -4,64 +4,37 @@ import java.util.List;
 import java.util.Optional;
 import java.math.BigDecimal;
 
-import com.devcodedark.plataforma_cursos.model.Inscripcion;
-import com.devcodedark.plataforma_cursos.model.Inscripcion.EstadoInscripcion;
+import com.devcodedark.plataforma_cursos.dto.InscripcionDTO;
 
 public interface IInscripcionService {
-    // Listar todas las inscripciones
-    List<Inscripcion> buscarTodos();
-    
-    // Guardar inscripción
-    void guardar(Inscripcion inscripcion);
-    
-    // Modificar inscripción
-    void modificar(Inscripcion inscripcion);
-    
-    // Buscar inscripción por ID
-    Optional<Inscripcion> buscarId(Integer id);
-    
-    // Eliminar inscripción
+    // Métodos CRUD básicos con DTO
+    List<InscripcionDTO> buscarTodos();
+    void guardar(InscripcionDTO inscripcionDTO);
+    void modificar(InscripcionDTO inscripcionDTO);
+    Optional<InscripcionDTO> buscarId(Integer id);
     void eliminar(Integer id);
     
-    // Buscar inscripciones por estudiante
-    List<Inscripcion> buscarPorEstudiante(Integer estudianteId);
+    // Búsquedas específicas
+    List<InscripcionDTO> buscarPorEstudiante(Integer estudianteId);
+    List<InscripcionDTO> buscarPorCurso(Integer cursoId);
+    Optional<InscripcionDTO> buscarPorEstudianteYCurso(Integer estudianteId, Integer cursoId);
+    List<InscripcionDTO> buscarPorEstado(String estado);
+    List<InscripcionDTO> buscarInscripcionesActivasPorEstudiante(Integer estudianteId);
+    List<InscripcionDTO> buscarInscripcionesCompletadasPorEstudiante(Integer estudianteId);
+    List<InscripcionDTO> buscarInscripcionesConCertificado();
     
-    // Buscar inscripciones por curso
-    List<Inscripcion> buscarPorCurso(Integer cursoId);
-    
-    // Buscar inscripción específica
-    Optional<Inscripcion> buscarPorEstudianteYCurso(Integer estudianteId, Integer cursoId);
-    
-    // Buscar inscripciones por estado
-    List<Inscripcion> buscarPorEstado(EstadoInscripcion estado);
-    
-    // Buscar inscripciones activas por estudiante
-    List<Inscripcion> buscarInscripcionesActivasPorEstudiante(Integer estudianteId);
-    
-    // Buscar inscripciones completadas por estudiante
-    List<Inscripcion> buscarInscripcionesCompletadasPorEstudiante(Integer estudianteId);
-    
-    // Contar inscripciones por curso
+    // Operaciones de negocio
     Long contarInscripcionesPorCurso(Integer cursoId);
-    
-    // Verificar si estudiante está inscrito
     boolean estaInscrito(Integer estudianteId, Integer cursoId);
-    
-    // Buscar inscripciones con certificado
-    List<Inscripcion> buscarInscripcionesConCertificado();
-    
-    // Inscribir estudiante
-    Inscripcion inscribirEstudiante(Integer estudianteId, Integer cursoId);
-    
-    // Finalizar inscripción
+    InscripcionDTO inscribirEstudiante(Integer estudianteId, Integer cursoId);
     void finalizarInscripcion(Integer inscripcionId);
-    
-    // Cancelar inscripción
     void cancelarInscripcion(Integer inscripcionId);
-    
-    // Actualizar progreso
     void actualizarProgreso(Integer inscripcionId, BigDecimal progreso);
-    
-    // Generar certificado
     void generarCertificado(Integer inscripcionId);
+    
+    // Métodos adicionales para estadísticas
+    Integer calcularDiasTranscurridos(Integer inscripcionId);
+    Long calcularTiempoTotalInvertido(Integer inscripcionId);
+    Integer contarModulosCompletados(Integer inscripcionId);
+    Boolean puedeGenerarCertificado(Integer inscripcionId);
 }

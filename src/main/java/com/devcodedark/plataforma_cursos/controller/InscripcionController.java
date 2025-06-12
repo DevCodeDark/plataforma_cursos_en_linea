@@ -9,7 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.devcodedark.plataforma_cursos.model.Inscripcion;
+import com.devcodedark.plataforma_cursos.dto.InscripcionDTO;
 import com.devcodedark.plataforma_cursos.service.IInscripcionService;
 
 import jakarta.validation.Valid;
@@ -24,9 +24,9 @@ public class InscripcionController {
 
     // Listar todas las inscripciones
     @GetMapping
-    public ResponseEntity<List<Inscripcion>> listarTodos() {
+    public ResponseEntity<List<InscripcionDTO>> listarTodos() {
         try {
-            List<Inscripcion> inscripciones = inscripcionService.buscarTodos();
+            List<InscripcionDTO> inscripciones = inscripcionService.buscarTodos();
             return ResponseEntity.ok(inscripciones);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
@@ -35,9 +35,9 @@ public class InscripcionController {
 
     // Buscar inscripción por ID
     @GetMapping("/{id}")
-    public ResponseEntity<Inscripcion> buscarPorId(@PathVariable Integer id) {
+    public ResponseEntity<InscripcionDTO> buscarPorId(@PathVariable Integer id) {
         try {
-            Optional<Inscripcion> inscripcion = inscripcionService.buscarId(id);
+            Optional<InscripcionDTO> inscripcion = inscripcionService.buscarId(id);
             if (inscripcion.isPresent()) {
                 return ResponseEntity.ok(inscripcion.get());
             } else {
@@ -50,9 +50,9 @@ public class InscripcionController {
 
     // Crear nueva inscripción
     @PostMapping
-    public ResponseEntity<String> crear(@Valid @RequestBody Inscripcion inscripcion) {
+    public ResponseEntity<String> crear(@Valid @RequestBody InscripcionDTO inscripcionDTO) {
         try {
-            inscripcionService.guardar(inscripcion);
+            inscripcionService.guardar(inscripcionDTO);
             return ResponseEntity.status(HttpStatus.CREATED).body("Inscripción creada exitosamente");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -62,27 +62,26 @@ public class InscripcionController {
 
     // Inscribir estudiante a curso
     @PostMapping("/inscribir")
-    public ResponseEntity<String> inscribirEstudiante(@RequestParam Integer estudianteId, @RequestParam Integer cursoId) {
+    public ResponseEntity<InscripcionDTO> inscribirEstudiante(@RequestParam Integer estudianteId, @RequestParam Integer cursoId) {
         try {
-            inscripcionService.inscribirEstudiante(estudianteId, cursoId);
-            return ResponseEntity.status(HttpStatus.CREATED).body("Estudiante inscrito exitosamente");
+            InscripcionDTO inscripcion = inscripcionService.inscribirEstudiante(estudianteId, cursoId);
+            return ResponseEntity.status(HttpStatus.CREATED).body(inscripcion);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("Error al inscribir estudiante: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
         }
     }
 
     // Actualizar inscripción
     @PutMapping("/{id}")
-    public ResponseEntity<String> actualizar(@PathVariable Integer id, @Valid @RequestBody Inscripcion inscripcion) {
+    public ResponseEntity<String> actualizar(@PathVariable Integer id, @Valid @RequestBody InscripcionDTO inscripcionDTO) {
         try {
-            Optional<Inscripcion> inscripcionExistente = inscripcionService.buscarId(id);
+            Optional<InscripcionDTO> inscripcionExistente = inscripcionService.buscarId(id);
             if (!inscripcionExistente.isPresent()) {
                 return ResponseEntity.notFound().build();
             }
             
-            inscripcion.setId(id);
-            inscripcionService.modificar(inscripcion);
+            inscripcionDTO.setId(id);
+            inscripcionService.modificar(inscripcionDTO);
             return ResponseEntity.ok("Inscripción actualizada exitosamente");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -94,7 +93,7 @@ public class InscripcionController {
     @DeleteMapping("/{id}")
     public ResponseEntity<String> eliminar(@PathVariable Integer id) {
         try {
-            Optional<Inscripcion> inscripcion = inscripcionService.buscarId(id);
+            Optional<InscripcionDTO> inscripcion = inscripcionService.buscarId(id);
             if (!inscripcion.isPresent()) {
                 return ResponseEntity.notFound().build();
             }
@@ -105,13 +104,13 @@ public class InscripcionController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body("Error al eliminar la inscripción: " + e.getMessage());
         }
-    }
-
+    }    
+    
     // Buscar inscripciones por estudiante
     @GetMapping("/estudiante/{estudianteId}")
-    public ResponseEntity<List<Inscripcion>> buscarPorEstudiante(@PathVariable Integer estudianteId) {
+    public ResponseEntity<List<InscripcionDTO>> buscarPorEstudiante(@PathVariable Integer estudianteId) {
         try {
-            List<Inscripcion> inscripciones = inscripcionService.buscarPorEstudiante(estudianteId);
+            List<InscripcionDTO> inscripciones = inscripcionService.buscarPorEstudiante(estudianteId);
             return ResponseEntity.ok(inscripciones);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
@@ -120,9 +119,9 @@ public class InscripcionController {
 
     // Buscar inscripciones por curso
     @GetMapping("/curso/{cursoId}")
-    public ResponseEntity<List<Inscripcion>> buscarPorCurso(@PathVariable Integer cursoId) {
+    public ResponseEntity<List<InscripcionDTO>> buscarPorCurso(@PathVariable Integer cursoId) {
         try {
-            List<Inscripcion> inscripciones = inscripcionService.buscarPorCurso(cursoId);
+            List<InscripcionDTO> inscripciones = inscripcionService.buscarPorCurso(cursoId);
             return ResponseEntity.ok(inscripciones);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
@@ -131,9 +130,9 @@ public class InscripcionController {
 
     // Buscar inscripciones activas por estudiante
     @GetMapping("/estudiante/{estudianteId}/activas")
-    public ResponseEntity<List<Inscripcion>> buscarActivasPorEstudiante(@PathVariable Integer estudianteId) {
+    public ResponseEntity<List<InscripcionDTO>> buscarActivasPorEstudiante(@PathVariable Integer estudianteId) {
         try {
-            List<Inscripcion> inscripciones = inscripcionService.buscarInscripcionesActivasPorEstudiante(estudianteId);
+            List<InscripcionDTO> inscripciones = inscripcionService.buscarInscripcionesActivasPorEstudiante(estudianteId);
             return ResponseEntity.ok(inscripciones);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
@@ -142,9 +141,9 @@ public class InscripcionController {
 
     // Buscar inscripciones completadas por estudiante
     @GetMapping("/estudiante/{estudianteId}/completadas")
-    public ResponseEntity<List<Inscripcion>> buscarCompletadasPorEstudiante(@PathVariable Integer estudianteId) {
+    public ResponseEntity<List<InscripcionDTO>> buscarCompletadasPorEstudiante(@PathVariable Integer estudianteId) {
         try {
-            List<Inscripcion> inscripciones = inscripcionService.buscarInscripcionesCompletadasPorEstudiante(estudianteId);
+            List<InscripcionDTO> inscripciones = inscripcionService.buscarInscripcionesCompletadasPorEstudiante(estudianteId);
             return ResponseEntity.ok(inscripciones);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
@@ -160,13 +159,13 @@ public class InscripcionController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
-    }
-
+    }    
+    
     // Finalizar inscripción
     @PutMapping("/{id}/finalizar")
     public ResponseEntity<String> finalizarInscripcion(@PathVariable Integer id) {
         try {
-            Optional<Inscripcion> inscripcion = inscripcionService.buscarId(id);
+            Optional<InscripcionDTO> inscripcion = inscripcionService.buscarId(id);
             if (!inscripcion.isPresent()) {
                 return ResponseEntity.notFound().build();
             }
@@ -183,7 +182,7 @@ public class InscripcionController {
     @PutMapping("/{id}/cancelar")
     public ResponseEntity<String> cancelarInscripcion(@PathVariable Integer id) {
         try {
-            Optional<Inscripcion> inscripcion = inscripcionService.buscarId(id);
+            Optional<InscripcionDTO> inscripcion = inscripcionService.buscarId(id);
             if (!inscripcion.isPresent()) {
                 return ResponseEntity.notFound().build();
             }
@@ -200,7 +199,7 @@ public class InscripcionController {
     @PutMapping("/{id}/progreso")
     public ResponseEntity<String> actualizarProgreso(@PathVariable Integer id, @RequestBody BigDecimal progreso) {
         try {
-            Optional<Inscripcion> inscripcion = inscripcionService.buscarId(id);
+            Optional<InscripcionDTO> inscripcion = inscripcionService.buscarId(id);
             if (!inscripcion.isPresent()) {
                 return ResponseEntity.notFound().build();
             }
@@ -217,7 +216,7 @@ public class InscripcionController {
     @PostMapping("/{id}/certificado")
     public ResponseEntity<String> generarCertificado(@PathVariable Integer id) {
         try {
-            Optional<Inscripcion> inscripcion = inscripcionService.buscarId(id);
+            Optional<InscripcionDTO> inscripcion = inscripcionService.buscarId(id);
             if (!inscripcion.isPresent()) {
                 return ResponseEntity.notFound().build();
             }

@@ -9,9 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.devcodedark.plataforma_cursos.model.Curso;
-import com.devcodedark.plataforma_cursos.model.Curso.EstadoCurso;
-import com.devcodedark.plataforma_cursos.model.Curso.NivelCurso;
+import com.devcodedark.plataforma_cursos.dto.CursoDTO;
 import com.devcodedark.plataforma_cursos.service.ICursoService;
 
 import jakarta.validation.Valid;
@@ -26,9 +24,9 @@ public class CursoController {
 
     // Listar todos los cursos
     @GetMapping
-    public ResponseEntity<List<Curso>> listarTodos() {
+    public ResponseEntity<List<CursoDTO>> listarTodos() {
         try {
-            List<Curso> cursos = cursoService.buscarTodos();
+            List<CursoDTO> cursos = cursoService.buscarTodos();
             return ResponseEntity.ok(cursos);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
@@ -37,9 +35,9 @@ public class CursoController {
 
     // Buscar curso por ID
     @GetMapping("/{id}")
-    public ResponseEntity<Curso> buscarPorId(@PathVariable Integer id) {
+    public ResponseEntity<CursoDTO> buscarPorId(@PathVariable Integer id) {
         try {
-            Optional<Curso> curso = cursoService.buscarId(id);
+            Optional<CursoDTO> curso = cursoService.buscarId(id);
             if (curso.isPresent()) {
                 return ResponseEntity.ok(curso.get());
             } else {
@@ -52,9 +50,9 @@ public class CursoController {
 
     // Crear nuevo curso
     @PostMapping
-    public ResponseEntity<String> crear(@Valid @RequestBody Curso curso) {
+    public ResponseEntity<String> crear(@Valid @RequestBody CursoDTO cursoDTO) {
         try {
-            cursoService.guardar(curso);
+            cursoService.guardar(cursoDTO);
             return ResponseEntity.status(HttpStatus.CREATED).body("Curso creado exitosamente");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -64,15 +62,15 @@ public class CursoController {
 
     // Actualizar curso
     @PutMapping("/{id}")
-    public ResponseEntity<String> actualizar(@PathVariable Integer id, @Valid @RequestBody Curso curso) {
+    public ResponseEntity<String> actualizar(@PathVariable Integer id, @Valid @RequestBody CursoDTO cursoDTO) {
         try {
-            Optional<Curso> cursoExistente = cursoService.buscarId(id);
+            Optional<CursoDTO> cursoExistente = cursoService.buscarId(id);
             if (!cursoExistente.isPresent()) {
                 return ResponseEntity.notFound().build();
             }
             
-            curso.setId(id);
-            cursoService.modificar(curso);
+            cursoDTO.setId(id);
+            cursoService.modificar(cursoDTO);
             return ResponseEntity.ok("Curso actualizado exitosamente");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -84,7 +82,7 @@ public class CursoController {
     @DeleteMapping("/{id}")
     public ResponseEntity<String> eliminar(@PathVariable Integer id) {
         try {
-            Optional<Curso> curso = cursoService.buscarId(id);
+            Optional<CursoDTO> curso = cursoService.buscarId(id);
             if (!curso.isPresent()) {
                 return ResponseEntity.notFound().build();
             }
@@ -95,13 +93,13 @@ public class CursoController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body("Error al eliminar el curso: " + e.getMessage());
         }
-    }
-
+    }    
+    
     // Buscar cursos por categoría
     @GetMapping("/categoria/{categoriaId}")
-    public ResponseEntity<List<Curso>> buscarPorCategoria(@PathVariable Integer categoriaId) {
+    public ResponseEntity<List<CursoDTO>> buscarPorCategoria(@PathVariable Integer categoriaId) {
         try {
-            List<Curso> cursos = cursoService.buscarPorCategoria(categoriaId);
+            List<CursoDTO> cursos = cursoService.buscarPorCategoria(categoriaId);
             return ResponseEntity.ok(cursos);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
@@ -110,9 +108,9 @@ public class CursoController {
 
     // Buscar cursos por docente
     @GetMapping("/docente/{docenteId}")
-    public ResponseEntity<List<Curso>> buscarPorDocente(@PathVariable Integer docenteId) {
+    public ResponseEntity<List<CursoDTO>> buscarPorDocente(@PathVariable Integer docenteId) {
         try {
-            List<Curso> cursos = cursoService.buscarPorDocente(docenteId);
+            List<CursoDTO> cursos = cursoService.buscarPorDocente(docenteId);
             return ResponseEntity.ok(cursos);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
@@ -121,9 +119,9 @@ public class CursoController {
 
     // Buscar cursos publicados
     @GetMapping("/publicados")
-    public ResponseEntity<List<Curso>> listarPublicados() {
+    public ResponseEntity<List<CursoDTO>> listarPublicados() {
         try {
-            List<Curso> cursos = cursoService.buscarCursosPublicados();
+            List<CursoDTO> cursos = cursoService.buscarCursosPublicados();
             return ResponseEntity.ok(cursos);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
@@ -132,9 +130,9 @@ public class CursoController {
 
     // Buscar cursos por nivel
     @GetMapping("/nivel/{nivel}")
-    public ResponseEntity<List<Curso>> buscarPorNivel(@PathVariable NivelCurso nivel) {
+    public ResponseEntity<List<CursoDTO>> buscarPorNivel(@PathVariable String nivel) {
         try {
-            List<Curso> cursos = cursoService.buscarPorNivel(nivel);
+            List<CursoDTO> cursos = cursoService.buscarPorNivel(nivel);
             return ResponseEntity.ok(cursos);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
@@ -143,9 +141,9 @@ public class CursoController {
 
     // Buscar cursos gratuitos
     @GetMapping("/gratuitos")
-    public ResponseEntity<List<Curso>> listarGratuitos() {
+    public ResponseEntity<List<CursoDTO>> listarGratuitos() {
         try {
-            List<Curso> cursos = cursoService.buscarCursosGratuitos();
+            List<CursoDTO> cursos = cursoService.buscarCursosGratuitos();
             return ResponseEntity.ok(cursos);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
@@ -154,10 +152,10 @@ public class CursoController {
 
     // Buscar cursos por rango de precio
     @GetMapping("/precio")
-    public ResponseEntity<List<Curso>> buscarPorRangoPrecio(
+    public ResponseEntity<List<CursoDTO>> buscarPorRangoPrecio(
             @RequestParam BigDecimal min, @RequestParam BigDecimal max) {
         try {
-            List<Curso> cursos = cursoService.buscarPorRangoPrecio(min, max);
+            List<CursoDTO> cursos = cursoService.buscarPorRangoPrecio(min, max);
             return ResponseEntity.ok(cursos);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
@@ -166,9 +164,9 @@ public class CursoController {
 
     // Buscar cursos por título
     @GetMapping("/buscar")
-    public ResponseEntity<List<Curso>> buscarPorTitulo(@RequestParam String titulo) {
+    public ResponseEntity<List<CursoDTO>> buscarPorTitulo(@RequestParam String titulo) {
         try {
-            List<Curso> cursos = cursoService.buscarPorTitulo(titulo);
+            List<CursoDTO> cursos = cursoService.buscarPorTitulo(titulo);
             return ResponseEntity.ok(cursos);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
@@ -177,9 +175,9 @@ public class CursoController {
 
     // Buscar cursos más populares
     @GetMapping("/populares")
-    public ResponseEntity<List<Curso>> listarMasPopulares() {
+    public ResponseEntity<List<CursoDTO>> listarMasPopulares() {
         try {
-            List<Curso> cursos = cursoService.buscarCursosMasPopulares();
+            List<CursoDTO> cursos = cursoService.buscarCursosMasPopulares();
             return ResponseEntity.ok(cursos);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
@@ -190,7 +188,7 @@ public class CursoController {
     @GetMapping("/{id}/inscripciones/count")
     public ResponseEntity<Long> contarInscripciones(@PathVariable Integer id) {
         try {
-            Optional<Curso> curso = cursoService.buscarId(id);
+            Optional<CursoDTO> curso = cursoService.buscarId(id);
             if (!curso.isPresent()) {
                 return ResponseEntity.notFound().build();
             }
@@ -206,7 +204,7 @@ public class CursoController {
     @PutMapping("/{id}/publicar")
     public ResponseEntity<String> publicarCurso(@PathVariable Integer id) {
         try {
-            Optional<Curso> curso = cursoService.buscarId(id);
+            Optional<CursoDTO> curso = cursoService.buscarId(id);
             if (!curso.isPresent()) {
                 return ResponseEntity.notFound().build();
             }
@@ -223,7 +221,7 @@ public class CursoController {
     @PutMapping("/{id}/pausar")
     public ResponseEntity<String> pausarCurso(@PathVariable Integer id) {
         try {
-            Optional<Curso> curso = cursoService.buscarId(id);
+            Optional<CursoDTO> curso = cursoService.buscarId(id);
             if (!curso.isPresent()) {
                 return ResponseEntity.notFound().build();
             }
@@ -238,9 +236,9 @@ public class CursoController {
 
     // Cambiar estado del curso
     @PutMapping("/{id}/estado")
-    public ResponseEntity<String> cambiarEstado(@PathVariable Integer id, @RequestBody EstadoCurso estado) {
+    public ResponseEntity<String> cambiarEstado(@PathVariable Integer id, @RequestParam String estado) {
         try {
-            Optional<Curso> curso = cursoService.buscarId(id);
+            Optional<CursoDTO> curso = cursoService.buscarId(id);
             if (!curso.isPresent()) {
                 return ResponseEntity.notFound().build();
             }
@@ -250,6 +248,32 @@ public class CursoController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body("Error al cambiar el estado: " + e.getMessage());
+        }
+    }
+
+    // Buscar cursos por estado
+    @GetMapping("/estado/{estado}")
+    public ResponseEntity<List<CursoDTO>> buscarPorEstado(@PathVariable String estado) {
+        try {
+            List<CursoDTO> cursos = cursoService.buscarPorEstado(estado);
+            return ResponseEntity.ok(cursos);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
+    // Obtener estadísticas del curso
+    @GetMapping("/{id}/estadisticas")
+    public ResponseEntity<CursoDTO> obtenerEstadisticas(@PathVariable Integer id) {
+        try {
+            Optional<CursoDTO> curso = cursoService.buscarId(id);
+            if (curso.isPresent()) {
+                return ResponseEntity.ok(curso.get());
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 }

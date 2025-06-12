@@ -8,8 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.devcodedark.plataforma_cursos.model.Usuario;
-import com.devcodedark.plataforma_cursos.model.Usuario.EstadoUsuario;
+import com.devcodedark.plataforma_cursos.dto.UsuarioDTO;
 import com.devcodedark.plataforma_cursos.service.IUsuarioService;
 
 import jakarta.validation.Valid;
@@ -24,9 +23,9 @@ public class UsuarioController {
 
     // Listar todos los usuarios
     @GetMapping
-    public ResponseEntity<List<Usuario>> listarTodos() {
+    public ResponseEntity<List<UsuarioDTO>> listarTodos() {
         try {
-            List<Usuario> usuarios = usuarioService.buscarTodos();
+            List<UsuarioDTO> usuarios = usuarioService.buscarTodos();
             return ResponseEntity.ok(usuarios);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
@@ -35,9 +34,9 @@ public class UsuarioController {
 
     // Buscar usuario por ID
     @GetMapping("/{id}")
-    public ResponseEntity<Usuario> buscarPorId(@PathVariable Integer id) {
+    public ResponseEntity<UsuarioDTO> buscarPorId(@PathVariable Integer id) {
         try {
-            Optional<Usuario> usuario = usuarioService.buscarId(id);
+            Optional<UsuarioDTO> usuario = usuarioService.buscarId(id);
             if (usuario.isPresent()) {
                 return ResponseEntity.ok(usuario.get());
             } else {
@@ -46,23 +45,23 @@ public class UsuarioController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
-    }
-
+    }    
+    
     // Crear nuevo usuario
     @PostMapping
-    public ResponseEntity<String> crear(@Valid @RequestBody Usuario usuario) {
+    public ResponseEntity<String> crear(@Valid @RequestBody UsuarioDTO usuarioDTO) {
         try {
             // Verificar que no exista un usuario con el mismo email
-            if (usuarioService.existePorEmail(usuario.getEmail())) {
+            if (usuarioService.existePorEmail(usuarioDTO.getEmail())) {
                 return ResponseEntity.badRequest().body("Ya existe un usuario con este email");
             }
             
             // Verificar que no exista un usuario con el mismo nombre de usuario
-            if (usuarioService.existePorUsuario(usuario.getUsuario())) {
+            if (usuarioService.existePorUsuario(usuarioDTO.getUsuario())) {
                 return ResponseEntity.badRequest().body("Ya existe un usuario con este nombre de usuario");
             }
             
-            usuarioService.guardar(usuario);
+            usuarioService.guardar(usuarioDTO);
             return ResponseEntity.status(HttpStatus.CREATED).body("Usuario creado exitosamente");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -72,27 +71,27 @@ public class UsuarioController {
 
     // Actualizar usuario
     @PutMapping("/{id}")
-    public ResponseEntity<String> actualizar(@PathVariable Integer id, @Valid @RequestBody Usuario usuario) {
+    public ResponseEntity<String> actualizar(@PathVariable Integer id, @Valid @RequestBody UsuarioDTO usuarioDTO) {
         try {
-            Optional<Usuario> usuarioExistente = usuarioService.buscarId(id);
+            Optional<UsuarioDTO> usuarioExistente = usuarioService.buscarId(id);
             if (!usuarioExistente.isPresent()) {
                 return ResponseEntity.notFound().build();
             }
             
             // Verificar email único
-            Optional<Usuario> usuarioConMismoEmail = usuarioService.buscarPorEmail(usuario.getEmail());
+            Optional<UsuarioDTO> usuarioConMismoEmail = usuarioService.buscarPorEmail(usuarioDTO.getEmail());
             if (usuarioConMismoEmail.isPresent() && !usuarioConMismoEmail.get().getId().equals(id)) {
                 return ResponseEntity.badRequest().body("Ya existe otro usuario con este email");
             }
             
             // Verificar nombre de usuario único
-            Optional<Usuario> usuarioConMismoNombre = usuarioService.buscarPorUsuario(usuario.getUsuario());
+            Optional<UsuarioDTO> usuarioConMismoNombre = usuarioService.buscarPorUsuario(usuarioDTO.getUsuario());
             if (usuarioConMismoNombre.isPresent() && !usuarioConMismoNombre.get().getId().equals(id)) {
                 return ResponseEntity.badRequest().body("Ya existe otro usuario con este nombre de usuario");
             }
             
-            usuario.setId(id);
-            usuarioService.modificar(usuario);
+            usuarioDTO.setId(id);
+            usuarioService.modificar(usuarioDTO);
             return ResponseEntity.ok("Usuario actualizado exitosamente");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -104,7 +103,7 @@ public class UsuarioController {
     @DeleteMapping("/{id}")
     public ResponseEntity<String> eliminar(@PathVariable Integer id) {
         try {
-            Optional<Usuario> usuario = usuarioService.buscarId(id);
+            Optional<UsuarioDTO> usuario = usuarioService.buscarId(id);
             if (!usuario.isPresent()) {
                 return ResponseEntity.notFound().build();
             }
@@ -119,9 +118,9 @@ public class UsuarioController {
 
     // Buscar usuario por email
     @GetMapping("/email/{email}")
-    public ResponseEntity<Usuario> buscarPorEmail(@PathVariable String email) {
+    public ResponseEntity<UsuarioDTO> buscarPorEmail(@PathVariable String email) {
         try {
-            Optional<Usuario> usuario = usuarioService.buscarPorEmail(email);
+            Optional<UsuarioDTO> usuario = usuarioService.buscarPorEmail(email);
             if (usuario.isPresent()) {
                 return ResponseEntity.ok(usuario.get());
             } else {
@@ -134,9 +133,9 @@ public class UsuarioController {
 
     // Buscar usuarios por rol
     @GetMapping("/rol/{rolId}")
-    public ResponseEntity<List<Usuario>> buscarPorRol(@PathVariable Integer rolId) {
+    public ResponseEntity<List<UsuarioDTO>> buscarPorRol(@PathVariable Integer rolId) {
         try {
-            List<Usuario> usuarios = usuarioService.buscarPorRol(rolId);
+            List<UsuarioDTO> usuarios = usuarioService.buscarPorRol(rolId);
             return ResponseEntity.ok(usuarios);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
@@ -145,9 +144,9 @@ public class UsuarioController {
 
     // Buscar docentes activos
     @GetMapping("/docentes/activos")
-    public ResponseEntity<List<Usuario>> listarDocentesActivos() {
+    public ResponseEntity<List<UsuarioDTO>> listarDocentesActivos() {
         try {
-            List<Usuario> docentes = usuarioService.buscarDocentesActivos();
+            List<UsuarioDTO> docentes = usuarioService.buscarDocentesActivos();
             return ResponseEntity.ok(docentes);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
@@ -156,9 +155,9 @@ public class UsuarioController {
 
     // Buscar estudiantes activos
     @GetMapping("/estudiantes/activos")
-    public ResponseEntity<List<Usuario>> listarEstudiantesActivos() {
+    public ResponseEntity<List<UsuarioDTO>> listarEstudiantesActivos() {
         try {
-            List<Usuario> estudiantes = usuarioService.buscarEstudiantesActivos();
+            List<UsuarioDTO> estudiantes = usuarioService.buscarEstudiantesActivos();
             return ResponseEntity.ok(estudiantes);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
@@ -169,7 +168,7 @@ public class UsuarioController {
     @PutMapping("/{id}/cambiar-contrasena")
     public ResponseEntity<String> cambiarContrasena(@PathVariable Integer id, @RequestBody String nuevaContrasena) {
         try {
-            Optional<Usuario> usuario = usuarioService.buscarId(id);
+            Optional<UsuarioDTO> usuario = usuarioService.buscarId(id);
             if (!usuario.isPresent()) {
                 return ResponseEntity.notFound().build();
             }
@@ -184,9 +183,9 @@ public class UsuarioController {
 
     // Cambiar estado del usuario
     @PutMapping("/{id}/estado")
-    public ResponseEntity<String> cambiarEstado(@PathVariable Integer id, @RequestBody EstadoUsuario estado) {
+    public ResponseEntity<String> cambiarEstado(@PathVariable Integer id, @RequestBody String estado) {
         try {
-            Optional<Usuario> usuario = usuarioService.buscarId(id);
+            Optional<UsuarioDTO> usuario = usuarioService.buscarId(id);
             if (!usuario.isPresent()) {
                 return ResponseEntity.notFound().build();
             }
@@ -196,6 +195,42 @@ public class UsuarioController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body("Error al cambiar el estado: " + e.getMessage());
+        }
+    }
+
+    // Buscar usuarios por estado
+    @GetMapping("/estado/{estado}")
+    public ResponseEntity<List<UsuarioDTO>> buscarPorEstado(@PathVariable String estado) {
+        try {
+            List<UsuarioDTO> usuarios = usuarioService.buscarPorEstado(estado);
+            return ResponseEntity.ok(usuarios);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
+    }
+
+    // Obtener estadísticas del usuario
+    @GetMapping("/{id}/estadisticas")
+    public ResponseEntity<Object> obtenerEstadisticas(@PathVariable Integer id) {
+        try {
+            Optional<UsuarioDTO> usuario = usuarioService.buscarId(id);
+            if (!usuario.isPresent()) {
+                return ResponseEntity.notFound().build();
+            }
+            
+            // Crear objeto con estadísticas adicionales
+            var estadisticas = new Object() {
+                public final UsuarioDTO usuario = usuarioService.buscarId(id).get();
+                public final Integer cursosCreados = usuarioService.contarCursosCreados(id);
+                public final Integer inscripciones = usuarioService.contarInscripciones(id);
+                public final Double promedioCalificaciones = usuarioService.calcularPromedioCalificaciones(id);
+                public final Integer diasSinAcceso = usuarioService.calcularDiasSinAcceso(id);
+                public final Boolean puedeCrearCursos = usuarioService.puedeCrearCursos(id);
+            };
+            
+            return ResponseEntity.ok(estadisticas);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 }
