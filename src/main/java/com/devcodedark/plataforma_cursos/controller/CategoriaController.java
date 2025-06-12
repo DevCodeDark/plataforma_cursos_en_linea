@@ -8,7 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.devcodedark.plataforma_cursos.model.Categoria;
+import com.devcodedark.plataforma_cursos.dto.CategoriaDTO;
 import com.devcodedark.plataforma_cursos.model.Categoria.EstadoCategoria;
 import com.devcodedark.plataforma_cursos.service.ICategoriaService;
 
@@ -20,13 +20,13 @@ import jakarta.validation.Valid;
 public class CategoriaController {
 
     @Autowired
-    private ICategoriaService categoriaService;
-
+    private ICategoriaService categoriaService;    
+    
     // Listar todas las categorías
     @GetMapping
-    public ResponseEntity<List<Categoria>> listarTodos() {
+    public ResponseEntity<List<CategoriaDTO>> listarTodos() {
         try {
-            List<Categoria> categorias = categoriaService.buscarTodos();
+            List<CategoriaDTO> categorias = categoriaService.buscarTodos();
             return ResponseEntity.ok(categorias);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
@@ -35,9 +35,9 @@ public class CategoriaController {
 
     // Buscar categoría por ID
     @GetMapping("/{id}")
-    public ResponseEntity<Categoria> buscarPorId(@PathVariable Integer id) {
+    public ResponseEntity<CategoriaDTO> buscarPorId(@PathVariable Integer id) {
         try {
-            Optional<Categoria> categoria = categoriaService.buscarId(id);
+            Optional<CategoriaDTO> categoria = categoriaService.buscarId(id);
             if (categoria.isPresent()) {
                 return ResponseEntity.ok(categoria.get());
             } else {
@@ -50,38 +50,38 @@ public class CategoriaController {
 
     // Crear nueva categoría
     @PostMapping
-    public ResponseEntity<String> crear(@Valid @RequestBody Categoria categoria) {
+    public ResponseEntity<String> crear(@Valid @RequestBody CategoriaDTO categoriaDTO) {
         try {
             // Verificar que no exista una categoría con el mismo nombre
-            if (categoriaService.existePorNombre(categoria.getNombre())) {
+            if (categoriaService.existePorNombre(categoriaDTO.getNombre())) {
                 return ResponseEntity.badRequest().body("Ya existe una categoría con este nombre");
             }
             
-            categoriaService.guardar(categoria);
+            categoriaService.guardar(categoriaDTO);
             return ResponseEntity.status(HttpStatus.CREATED).body("Categoría creada exitosamente");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body("Error al crear la categoría: " + e.getMessage());
         }
-    }
-
+    }    
+    
     // Actualizar categoría
     @PutMapping("/{id}")
-    public ResponseEntity<String> actualizar(@PathVariable Integer id, @Valid @RequestBody Categoria categoria) {
+    public ResponseEntity<String> actualizar(@PathVariable Integer id, @Valid @RequestBody CategoriaDTO categoriaDTO) {
         try {
-            Optional<Categoria> categoriaExistente = categoriaService.buscarId(id);
+            Optional<CategoriaDTO> categoriaExistente = categoriaService.buscarId(id);
             if (!categoriaExistente.isPresent()) {
                 return ResponseEntity.notFound().build();
             }
             
             // Verificar que no exista otra categoría con el mismo nombre
-            Optional<Categoria> categoriaConMismoNombre = categoriaService.buscarPorNombre(categoria.getNombre());
+            Optional<CategoriaDTO> categoriaConMismoNombre = categoriaService.buscarPorNombre(categoriaDTO.getNombre());
             if (categoriaConMismoNombre.isPresent() && !categoriaConMismoNombre.get().getId().equals(id)) {
                 return ResponseEntity.badRequest().body("Ya existe otra categoría con este nombre");
             }
             
-            categoria.setId(id);
-            categoriaService.modificar(categoria);
+            categoriaDTO.setId(id);
+            categoriaService.modificar(categoriaDTO);
             return ResponseEntity.ok("Categoría actualizada exitosamente");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -93,7 +93,7 @@ public class CategoriaController {
     @DeleteMapping("/{id}")
     public ResponseEntity<String> eliminar(@PathVariable Integer id) {
         try {
-            Optional<Categoria> categoria = categoriaService.buscarId(id);
+            Optional<CategoriaDTO> categoria = categoriaService.buscarId(id);
             if (!categoria.isPresent()) {
                 return ResponseEntity.notFound().build();
             }
@@ -111,13 +111,13 @@ public class CategoriaController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body("Error al eliminar la categoría: " + e.getMessage());
         }
-    }
-
+    }    
+    
     // Buscar categorías activas
     @GetMapping("/activas")
-    public ResponseEntity<List<Categoria>> listarActivas() {
+    public ResponseEntity<List<CategoriaDTO>> listarActivas() {
         try {
-            List<Categoria> categorias = categoriaService.buscarCategoriasActivas();
+            List<CategoriaDTO> categorias = categoriaService.buscarCategoriasActivas();
             return ResponseEntity.ok(categorias);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
@@ -126,9 +126,9 @@ public class CategoriaController {
 
     // Buscar categoría por nombre
     @GetMapping("/buscar/{nombre}")
-    public ResponseEntity<Categoria> buscarPorNombre(@PathVariable String nombre) {
+    public ResponseEntity<CategoriaDTO> buscarPorNombre(@PathVariable String nombre) {
         try {
-            Optional<Categoria> categoria = categoriaService.buscarPorNombre(nombre);
+            Optional<CategoriaDTO> categoria = categoriaService.buscarPorNombre(nombre);
             if (categoria.isPresent()) {
                 return ResponseEntity.ok(categoria.get());
             } else {
@@ -141,20 +141,20 @@ public class CategoriaController {
 
     // Buscar categorías con cursos
     @GetMapping("/con-cursos")
-    public ResponseEntity<List<Categoria>> listarConCursos() {
+    public ResponseEntity<List<CategoriaDTO>> listarConCursos() {
         try {
-            List<Categoria> categorias = categoriaService.buscarCategoriasConCursos();
+            List<CategoriaDTO> categorias = categoriaService.buscarCategoriasConCursos();
             return ResponseEntity.ok(categorias);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
-    }
-
+    }    
+    
     // Contar cursos por categoría
     @GetMapping("/{id}/cursos/count")
     public ResponseEntity<Long> contarCursos(@PathVariable Integer id) {
         try {
-            Optional<Categoria> categoria = categoriaService.buscarId(id);
+            Optional<CategoriaDTO> categoria = categoriaService.buscarId(id);
             if (!categoria.isPresent()) {
                 return ResponseEntity.notFound().build();
             }
@@ -170,7 +170,7 @@ public class CategoriaController {
     @PutMapping("/{id}/estado")
     public ResponseEntity<String> cambiarEstado(@PathVariable Integer id, @RequestBody EstadoCategoria estado) {
         try {
-            Optional<Categoria> categoria = categoriaService.buscarId(id);
+            Optional<CategoriaDTO> categoria = categoriaService.buscarId(id);
             if (!categoria.isPresent()) {
                 return ResponseEntity.notFound().build();
             }
