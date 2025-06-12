@@ -8,7 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.devcodedark.plataforma_cursos.model.Certificado;
+import com.devcodedark.plataforma_cursos.dto.CertificadoDTO;
 import com.devcodedark.plataforma_cursos.service.ICertificadoService;
 
 import jakarta.validation.Valid;
@@ -19,13 +19,13 @@ import jakarta.validation.Valid;
 public class CertificadoController {
 
     @Autowired
-    private ICertificadoService certificadoService;
-
+    private ICertificadoService certificadoService;    
+    
     // Listar todos los certificados
     @GetMapping
-    public ResponseEntity<List<Certificado>> listarTodos() {
+    public ResponseEntity<List<CertificadoDTO>> listarTodos() {
         try {
-            List<Certificado> certificados = certificadoService.buscarTodos();
+            List<CertificadoDTO> certificados = certificadoService.buscarTodos();
             return ResponseEntity.ok(certificados);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
@@ -34,9 +34,9 @@ public class CertificadoController {
 
     // Buscar certificado por ID
     @GetMapping("/{id}")
-    public ResponseEntity<Certificado> buscarPorId(@PathVariable Integer id) {
+    public ResponseEntity<CertificadoDTO> buscarPorId(@PathVariable Integer id) {
         try {
-            Optional<Certificado> certificado = certificadoService.buscarId(id);
+            Optional<CertificadoDTO> certificado = certificadoService.buscarId(id);
             if (certificado.isPresent()) {
                 return ResponseEntity.ok(certificado.get());
             } else {
@@ -49,9 +49,9 @@ public class CertificadoController {
 
     // Crear nuevo certificado
     @PostMapping
-    public ResponseEntity<String> crear(@Valid @RequestBody Certificado certificado) {
+    public ResponseEntity<String> crear(@Valid @RequestBody CertificadoDTO certificadoDTO) {
         try {
-            certificadoService.guardar(certificado);
+            certificadoService.guardar(certificadoDTO);
             return ResponseEntity.status(HttpStatus.CREATED).body("Certificado creado exitosamente");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -69,19 +69,19 @@ public class CertificadoController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body("Error al generar el certificado: " + e.getMessage());
         }
-    }
-
+    }    
+    
     // Actualizar certificado
     @PutMapping("/{id}")
-    public ResponseEntity<String> actualizar(@PathVariable Integer id, @Valid @RequestBody Certificado certificado) {
+    public ResponseEntity<String> actualizar(@PathVariable Integer id, @Valid @RequestBody CertificadoDTO certificadoDTO) {
         try {
-            Optional<Certificado> certificadoExistente = certificadoService.buscarId(id);
+            Optional<CertificadoDTO> certificadoExistente = certificadoService.buscarId(id);
             if (!certificadoExistente.isPresent()) {
                 return ResponseEntity.notFound().build();
             }
             
-            certificado.setId(id);
-            certificadoService.modificar(certificado);
+            certificadoDTO.setId(id);
+            certificadoService.modificar(certificadoDTO);
             return ResponseEntity.ok("Certificado actualizado exitosamente");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -93,7 +93,7 @@ public class CertificadoController {
     @DeleteMapping("/{id}")
     public ResponseEntity<String> eliminar(@PathVariable Integer id) {
         try {
-            Optional<Certificado> certificado = certificadoService.buscarId(id);
+            Optional<CertificadoDTO> certificado = certificadoService.buscarId(id);
             if (!certificado.isPresent()) {
                 return ResponseEntity.notFound().build();
             }
@@ -104,13 +104,13 @@ public class CertificadoController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body("Error al eliminar el certificado: " + e.getMessage());
         }
-    }
-
+    }    
+    
     // Buscar certificado por código de verificación
     @GetMapping("/codigo/{codigoVerificacion}")
-    public ResponseEntity<Certificado> buscarPorCodigo(@PathVariable String codigoVerificacion) {
+    public ResponseEntity<CertificadoDTO> buscarPorCodigo(@PathVariable String codigoVerificacion) {
         try {
-            Optional<Certificado> certificado = certificadoService.buscarPorCodigoVerificacion(codigoVerificacion);
+            Optional<CertificadoDTO> certificado = certificadoService.buscarPorCodigoVerificacion(codigoVerificacion);
             if (certificado.isPresent()) {
                 return ResponseEntity.ok(certificado.get());
             } else {
@@ -123,9 +123,9 @@ public class CertificadoController {
 
     // Buscar certificados por estudiante
     @GetMapping("/estudiante/{estudianteId}")
-    public ResponseEntity<List<Certificado>> buscarPorEstudiante(@PathVariable Integer estudianteId) {
+    public ResponseEntity<List<CertificadoDTO>> buscarPorEstudiante(@PathVariable Integer estudianteId) {
         try {
-            List<Certificado> certificados = certificadoService.buscarPorEstudiante(estudianteId);
+            List<CertificadoDTO> certificados = certificadoService.buscarPorEstudiante(estudianteId);
             return ResponseEntity.ok(certificados);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
@@ -134,9 +134,9 @@ public class CertificadoController {
 
     // Buscar certificados por curso
     @GetMapping("/curso/{cursoId}")
-    public ResponseEntity<List<Certificado>> buscarPorCurso(@PathVariable Integer cursoId) {
+    public ResponseEntity<List<CertificadoDTO>> buscarPorCurso(@PathVariable Integer cursoId) {
         try {
-            List<Certificado> certificados = certificadoService.buscarPorCurso(cursoId);
+            List<CertificadoDTO> certificados = certificadoService.buscarPorCurso(cursoId);
             return ResponseEntity.ok(certificados);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
@@ -145,9 +145,9 @@ public class CertificadoController {
 
     // Buscar certificados válidos
     @GetMapping("/validos")
-    public ResponseEntity<List<Certificado>> listarValidos() {
+    public ResponseEntity<List<CertificadoDTO>> listarValidos() {
         try {
-            List<Certificado> certificados = certificadoService.buscarCertificadosValidos();
+            List<CertificadoDTO> certificados = certificadoService.buscarCertificadosValidos();
             return ResponseEntity.ok(certificados);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
@@ -163,13 +163,13 @@ public class CertificadoController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
-    }
-
+    }    
+    
     // Invalidar certificado
     @PutMapping("/{id}/invalidar")
     public ResponseEntity<String> invalidarCertificado(@PathVariable Integer id) {
         try {
-            Optional<Certificado> certificado = certificadoService.buscarId(id);
+            Optional<CertificadoDTO> certificado = certificadoService.buscarId(id);
             if (!certificado.isPresent()) {
                 return ResponseEntity.notFound().build();
             }
@@ -191,13 +191,13 @@ public class CertificadoController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
-    }
-
+    }    
+    
     // Generar PDF del certificado
     @GetMapping("/{id}/pdf")
     public ResponseEntity<String> generarPdf(@PathVariable Integer id) {
         try {
-            Optional<Certificado> certificado = certificadoService.buscarId(id);
+            Optional<CertificadoDTO> certificado = certificadoService.buscarId(id);
             if (!certificado.isPresent()) {
                 return ResponseEntity.notFound().build();
             }
@@ -212,9 +212,9 @@ public class CertificadoController {
 
     // Buscar certificado por inscripción
     @GetMapping("/inscripcion/{inscripcionId}")
-    public ResponseEntity<Certificado> buscarPorInscripcion(@PathVariable Integer inscripcionId) {
+    public ResponseEntity<CertificadoDTO> buscarPorInscripcion(@PathVariable Integer inscripcionId) {
         try {
-            Optional<Certificado> certificado = certificadoService.buscarPorInscripcion(inscripcionId);
+            Optional<CertificadoDTO> certificado = certificadoService.buscarPorInscripcion(inscripcionId);
             if (certificado.isPresent()) {
                 return ResponseEntity.ok(certificado.get());
             } else {

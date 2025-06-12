@@ -3,38 +3,38 @@ package com.devcodedark.plataforma_cursos.service;
 import java.util.List;
 import java.util.Optional;
 
-import com.devcodedark.plataforma_cursos.model.Certificado;
+import com.devcodedark.plataforma_cursos.dto.CertificadoDTO;
 
 public interface ICertificadoService {
     // Listar todos los certificados
-    List<Certificado> buscarTodos();
+    List<CertificadoDTO> buscarTodos();
     
     // Guardar certificado
-    void guardar(Certificado certificado);
+    void guardar(CertificadoDTO certificadoDTO);
     
     // Modificar certificado
-    void modificar(Certificado certificado);
+    void modificar(CertificadoDTO certificadoDTO);
     
     // Buscar certificado por ID
-    Optional<Certificado> buscarId(Integer id);
+    Optional<CertificadoDTO> buscarId(Integer id);
     
     // Eliminar certificado
     void eliminar(Integer id);
     
     // Buscar certificado por código de verificación
-    Optional<Certificado> buscarPorCodigoVerificacion(String codigoVerificacion);
+    Optional<CertificadoDTO> buscarPorCodigoVerificacion(String codigoVerificacion);
     
     // Buscar certificado por inscripción
-    Optional<Certificado> buscarPorInscripcion(Integer inscripcionId);
+    Optional<CertificadoDTO> buscarPorInscripcion(Integer inscripcionId);
     
     // Buscar certificados por estudiante
-    List<Certificado> buscarPorEstudiante(Integer estudianteId);
+    List<CertificadoDTO> buscarPorEstudiante(Integer estudianteId);
     
     // Buscar certificados por curso
-    List<Certificado> buscarPorCurso(Integer cursoId);
+    List<CertificadoDTO> buscarPorCurso(Integer cursoId);
     
     // Buscar certificados válidos
-    List<Certificado> buscarCertificadosValidos();
+    List<CertificadoDTO> buscarCertificadosValidos();
     
     // Contar certificados por curso
     Long contarCertificadosPorCurso(Integer cursoId);
@@ -46,10 +46,10 @@ public interface ICertificadoService {
     boolean existeCodigoVerificacion(String codigoVerificacion);
     
     // Buscar certificado por estudiante y curso
-    Optional<Certificado> buscarPorEstudianteYCurso(Integer estudianteId, Integer cursoId);
+    Optional<CertificadoDTO> buscarPorEstudianteYCurso(Integer estudianteId, Integer cursoId);
     
     // Generar certificado
-    Certificado generarCertificado(Integer inscripcionId);
+    CertificadoDTO generarCertificado(Integer inscripcionId);
     
     // Invalidar certificado
     void invalidarCertificado(Integer certificadoId);
