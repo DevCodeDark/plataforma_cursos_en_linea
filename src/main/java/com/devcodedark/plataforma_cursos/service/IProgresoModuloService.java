@@ -1,35 +1,34 @@
 package com.devcodedark.plataforma_cursos.service;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
-import com.devcodedark.plataforma_cursos.model.ProgresoModulo;
+import com.devcodedark.plataforma_cursos.dto.ProgresoModuloDTO;
 
 public interface IProgresoModuloService {
     // Listar todos los progresos
-    List<ProgresoModulo> buscarTodos();
+    List<ProgresoModuloDTO> buscarTodos();
     
     // Guardar progreso
-    void guardar(ProgresoModulo progresoModulo);
+    void guardar(ProgresoModuloDTO progresoModuloDTO);
     
     // Modificar progreso
-    void modificar(ProgresoModulo progresoModulo);
+    void modificar(ProgresoModuloDTO progresoModuloDTO);
     
     // Buscar progreso por ID
-    Optional<ProgresoModulo> buscarId(Integer id);
+    Optional<ProgresoModuloDTO> buscarId(Integer id);
     
     // Eliminar progreso
     void eliminar(Integer id);
     
     // Buscar progreso por inscripción
-    List<ProgresoModulo> buscarPorInscripcion(Integer inscripcionId);
+    List<ProgresoModuloDTO> buscarPorInscripcion(Integer inscripcionId);
     
     // Buscar progreso específico
-    Optional<ProgresoModulo> buscarPorInscripcionYModulo(Integer inscripcionId, Integer moduloId);
+    Optional<ProgresoModuloDTO> buscarPorInscripcionYModulo(Integer inscripcionId, Integer moduloId);
     
     // Buscar módulos completados por inscripción
-    List<ProgresoModulo> buscarModulosCompletadosPorInscripcion(Integer inscripcionId);
+    List<ProgresoModuloDTO> buscarModulosCompletadosPorInscripcion(Integer inscripcionId);
     
     // Contar módulos completados por inscripción
     Long contarModulosCompletadosPorInscripcion(Integer inscripcionId);
@@ -38,23 +37,26 @@ public interface IProgresoModuloService {
     Long calcularTiempoTotalInvertidoPorInscripcion(Integer inscripcionId);
     
     // Buscar progreso por estudiante y curso
-    List<ProgresoModulo> buscarPorEstudianteYCurso(Integer estudianteId, Integer cursoId);
+    List<ProgresoModuloDTO> buscarPorEstudianteYCurso(Integer estudianteId, Integer cursoId);
     
     // Verificar si existe progreso
     boolean existeProgreso(Integer inscripcionId, Integer moduloId);
     
     // Buscar último módulo accedido
-    Optional<ProgresoModulo> buscarUltimoModuloAccedido(Integer inscripcionId);
+    Optional<ProgresoModuloDTO> buscarUltimoModuloAccedido(Integer inscripcionId);
     
     // Iniciar módulo
-    ProgresoModulo iniciarModulo(Integer inscripcionId, Integer moduloId);
+    ProgresoModuloDTO iniciarModulo(Integer inscripcionId, Integer moduloId);
     
     // Completar módulo
-    void completarModulo(Integer progresoModuloId);
+    void completarModulo(Integer inscripcionId, Integer moduloId);
     
     // Actualizar tiempo invertido
-    void actualizarTiempoInvertido(Integer progresoModuloId, Integer tiempoAdicional);
+    void actualizarTiempoInvertido(Integer inscripcionId, Integer moduloId, Integer tiempoAdicional);
     
     // Calcular porcentaje de progreso del curso
-    BigDecimal calcularPorcentajeProgresoCurso(Integer inscripcionId);
+    Double calcularPorcentajeProgresoCurso(Integer inscripcionId);
+    
+    // Crear progreso si no existe
+    ProgresoModuloDTO crearProgresoSiNoExiste(Integer inscripcionId, Integer moduloId);
 }

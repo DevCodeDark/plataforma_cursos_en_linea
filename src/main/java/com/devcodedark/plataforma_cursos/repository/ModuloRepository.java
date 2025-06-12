@@ -28,8 +28,12 @@ public interface ModuloRepository extends JpaRepository<Modulo, Integer> {
     // Buscar siguiente orden disponible para un curso
     @Query("SELECT COALESCE(MAX(m.orden), 0) + 1 FROM Modulo m WHERE m.curso.id = :cursoId")
     Integer findNextOrdenByCurso(@Param("cursoId") Integer cursoId);
-    
+      
     // Duración total de módulos por curso
     @Query("SELECT COALESCE(SUM(m.duracion), 0) FROM Modulo m WHERE m.curso.id = :cursoId AND m.estado = 1")
     Integer sumDuracionByCurso(@Param("cursoId") Integer cursoId);
+    
+    // Contar módulos por curso (alias para compatibilidad)
+    @Query("SELECT COUNT(m) FROM Modulo m WHERE m.curso.id = :cursoId AND m.estado = 1")
+    Long countByCursoId(@Param("cursoId") Integer cursoId);
 }
