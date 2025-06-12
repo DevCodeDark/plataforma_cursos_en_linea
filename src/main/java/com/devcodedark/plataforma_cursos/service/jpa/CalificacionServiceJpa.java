@@ -4,11 +4,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.devcodedark.plataforma_cursos.dto.CalificacionDTO;
 import com.devcodedark.plataforma_cursos.model.Calificacion;
 import com.devcodedark.plataforma_cursos.model.Usuario;
 import com.devcodedark.plataforma_cursos.model.Curso;
@@ -30,26 +32,84 @@ public class CalificacionServiceJpa implements ICalificacionService {
     @Autowired
     private CursoRepository cursoRepository;
 
-    @Override
-    @Transactional(readOnly = true)
-    public List<Calificacion> buscarTodos() {
-        return calificacionRepository.findAll();
+    // Métodos de conversión entre Entity y DTO
+    private CalificacionDTO convertToDTO(Calificacion calificacion) {
+        if (calificacion == null) {
+            return null;
+        }
+        
+        CalificacionDTO dto = new CalificacionDTO();
+        dto.setId(calificacion.getId());
+        dto.setEstudianteId(calificacion.getEstudiante().getId());
+        dto.setEstudianteNombre(calificacion.getEstudiante().getNombre());
+        dto.setCursoId(calificacion.getCurso().getId());
+        dto.setCursoTitulo(calificacion.getCurso().getTitulo());
+        dto.setPuntuacion(calificacion.getPuntuacion());
+        dto.setComentario(calificacion.getComentario());
+        dto.setFechaCalificacion(calificacion.getFechaCalificacion());
+        
+        return dto;
+    }
+    
+    private Calificacion convertToEntity(CalificacionDTO dto) {
+        if (dto == null) {
+            return null;
+        }
+        
+        Calificacion calificacion = new Calificacion();
+        calificacion.setId(dto.getId());
+        calificacion.setPuntuacion(dto.getPuntuacion());
+        calificacion.setComentario(dto.getComentario());
+        calificacion.setFechaCalificacion(dto.getFechaCalificacion());
+        
+        // Cargar entidades relacionadas
+        if (dto.getEstudianteId() != null) {
+            Optional<Usuario> estudiante = usuarioRepository.findById(dto.getEstudianteId());
+            if (estudiante.isPresent()) {
+                calificacion.setEstudiante(estudiante.get());
+            } else {
+                throw new RuntimeException("Estudiante con ID " + dto.getEstudianteId() + " no encontrado");
+            }
+        }
+        
+        if (dto.getCursoId() != null) {
+            Optional<Curso> curso = cursoRepository.findById(dto.getCursoId());
+            if (curso.isPresent()) {
+                calificacion.setCurso(curso.get());
+            } else {
+                throw new RuntimeException("Curso con ID " + dto.getCursoId() + " no encontrado");
+            }
+        }
+        
+        return calificacion;
     }
 
     @Override
-    public void guardar(Calificacion calificacion) {
+    @Transactional(readOnly = true)
+    public List<CalificacionDTO> buscarTodos() {
+        return calificacionRepository.findAll()
+                .stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public void guardar(CalificacionDTO calificacionDTO) {
+        Calificacion calificacion = convertToEntity(calificacionDTO);
         calificacionRepository.save(calificacion);
     }
 
     @Override
-    public void modificar(Calificacion calificacion) {
+    public void modificar(CalificacionDTO calificacionDTO) {
+        Calificacion calificacion = convertToEntity(calificacionDTO);
         calificacionRepository.save(calificacion);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Optional<Calificacion> buscarId(Integer id) {
-        return calificacionRepository.findById(id);
+    public Optional<CalificacionDTO> buscarId(Integer id) {
+        return calificacionRepository.findById(id)
+                .map(this::convertToDTO);
     }
 
     @Override
@@ -59,20 +119,27 @@ public class CalificacionServiceJpa implements ICalificacionService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<Calificacion> buscarPorCurso(Integer cursoId) {
-        return calificacionRepository.findByCursoId(cursoId);
+    public List<CalificacionDTO> buscarPorCurso(Integer cursoId) {
+        return calificacionRepository.findByCursoId(cursoId)
+                .stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<Calificacion> buscarPorEstudiante(Integer estudianteId) {
-        return calificacionRepository.findByEstudianteId(estudianteId);
+    public List<CalificacionDTO> buscarPorEstudiante(Integer estudianteId) {
+        return calificacionRepository.findByEstudianteId(estudianteId)
+                .stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Optional<Calificacion> buscarPorEstudianteYCurso(Integer estudianteId, Integer cursoId) {
-        return calificacionRepository.findByEstudianteIdAndCursoId(estudianteId, cursoId);
+    public Optional<CalificacionDTO> buscarPorEstudianteYCurso(Integer estudianteId, Integer cursoId) {
+        return calificacionRepository.findByEstudianteIdAndCursoId(estudianteId, cursoId)
+                .map(this::convertToDTO);
     }
 
     @Override
@@ -89,8 +156,11 @@ public class CalificacionServiceJpa implements ICalificacionService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<Calificacion> buscarPorRangoPuntuacion(Integer min, Integer max) {
-        return calificacionRepository.findByPuntuacionBetween(min, max);
+    public List<CalificacionDTO> buscarPorRangoPuntuacion(Integer min, Integer max) {
+        return calificacionRepository.findByPuntuacionBetween(min, max)
+                .stream()
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
     }
 
     @Override

@@ -3,32 +3,32 @@ package com.devcodedark.plataforma_cursos.service;
 import java.util.List;
 import java.util.Optional;
 
-import com.devcodedark.plataforma_cursos.model.Calificacion;
+import com.devcodedark.plataforma_cursos.dto.CalificacionDTO;
 
 public interface ICalificacionService {
     // Listar todas las calificaciones
-    List<Calificacion> buscarTodos();
+    List<CalificacionDTO> buscarTodos();
     
     // Guardar calificación
-    void guardar(Calificacion calificacion);
+    void guardar(CalificacionDTO calificacionDTO);
     
     // Modificar calificación
-    void modificar(Calificacion calificacion);
+    void modificar(CalificacionDTO calificacionDTO);
     
     // Buscar calificación por ID
-    Optional<Calificacion> buscarId(Integer id);
+    Optional<CalificacionDTO> buscarId(Integer id);
     
     // Eliminar calificación
     void eliminar(Integer id);
     
     // Buscar calificaciones por curso
-    List<Calificacion> buscarPorCurso(Integer cursoId);
+    List<CalificacionDTO> buscarPorCurso(Integer cursoId);
     
     // Buscar calificaciones por estudiante
-    List<Calificacion> buscarPorEstudiante(Integer estudianteId);
+    List<CalificacionDTO> buscarPorEstudiante(Integer estudianteId);
     
     // Buscar calificación específica
-    Optional<Calificacion> buscarPorEstudianteYCurso(Integer estudianteId, Integer cursoId);
+    Optional<CalificacionDTO> buscarPorEstudianteYCurso(Integer estudianteId, Integer cursoId);
     
     // Calcular promedio de calificaciones por curso
     Double calcularPromedioCalificacionesPorCurso(Integer cursoId);
@@ -37,7 +37,7 @@ public interface ICalificacionService {
     Long contarPorPuntuacionYCurso(Integer cursoId, Integer puntuacion);
     
     // Buscar calificaciones por rango de puntuación
-    List<Calificacion> buscarPorRangoPuntuacion(Integer min, Integer max);
+    List<CalificacionDTO> buscarPorRangoPuntuacion(Integer min, Integer max);
     
     // Verificar si estudiante ya calificó el curso
     boolean yaCalificoElCurso(Integer estudianteId, Integer cursoId);

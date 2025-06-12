@@ -8,7 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.devcodedark.plataforma_cursos.model.Calificacion;
+import com.devcodedark.plataforma_cursos.dto.CalificacionDTO;
 import com.devcodedark.plataforma_cursos.service.ICalificacionService;
 
 import jakarta.validation.Valid;
@@ -19,13 +19,13 @@ import jakarta.validation.Valid;
 public class CalificacionController {
 
     @Autowired
-    private ICalificacionService calificacionService;
-
+    private ICalificacionService calificacionService;    
+    
     // Listar todas las calificaciones
     @GetMapping
-    public ResponseEntity<List<Calificacion>> listarTodos() {
+    public ResponseEntity<List<CalificacionDTO>> listarTodos() {
         try {
-            List<Calificacion> calificaciones = calificacionService.buscarTodos();
+            List<CalificacionDTO> calificaciones = calificacionService.buscarTodos();
             return ResponseEntity.ok(calificaciones);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
@@ -34,9 +34,9 @@ public class CalificacionController {
 
     // Buscar calificación por ID
     @GetMapping("/{id}")
-    public ResponseEntity<Calificacion> buscarPorId(@PathVariable Integer id) {
+    public ResponseEntity<CalificacionDTO> buscarPorId(@PathVariable Integer id) {
         try {
-            Optional<Calificacion> calificacion = calificacionService.buscarId(id);
+            Optional<CalificacionDTO> calificacion = calificacionService.buscarId(id);
             if (calificacion.isPresent()) {
                 return ResponseEntity.ok(calificacion.get());
             } else {
@@ -49,9 +49,9 @@ public class CalificacionController {
 
     // Crear nueva calificación
     @PostMapping
-    public ResponseEntity<String> crear(@Valid @RequestBody Calificacion calificacion) {
+    public ResponseEntity<String> crear(@Valid @RequestBody CalificacionDTO calificacionDTO) {
         try {
-            calificacionService.guardar(calificacion);
+            calificacionService.guardar(calificacionDTO);
             return ResponseEntity.status(HttpStatus.CREATED).body("Calificación creada exitosamente");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -73,31 +73,29 @@ public class CalificacionController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body("Error al calificar el curso: " + e.getMessage());
         }
-    }
-
+    }    
+    
     // Actualizar calificación
     @PutMapping("/{id}")
-    public ResponseEntity<String> actualizar(@PathVariable Integer id, @Valid @RequestBody Calificacion calificacion) {
+    public ResponseEntity<String> actualizar(@PathVariable Integer id, @Valid @RequestBody CalificacionDTO calificacionDTO) {
         try {
-            Optional<Calificacion> calificacionExistente = calificacionService.buscarId(id);
+            Optional<CalificacionDTO> calificacionExistente = calificacionService.buscarId(id);
             if (!calificacionExistente.isPresent()) {
                 return ResponseEntity.notFound().build();
             }
             
-            calificacion.setId(id);
-            calificacionService.modificar(calificacion);
+            calificacionDTO.setId(id);
+            calificacionService.modificar(calificacionDTO);
             return ResponseEntity.ok("Calificación actualizada exitosamente");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body("Error al actualizar la calificación: " + e.getMessage());
         }
-    }
-
-    // Eliminar calificación
+    }    // Eliminar calificación
     @DeleteMapping("/{id}")
     public ResponseEntity<String> eliminar(@PathVariable Integer id) {
         try {
-            Optional<Calificacion> calificacion = calificacionService.buscarId(id);
+            Optional<CalificacionDTO> calificacion = calificacionService.buscarId(id);
             if (!calificacion.isPresent()) {
                 return ResponseEntity.notFound().build();
             }
@@ -112,9 +110,9 @@ public class CalificacionController {
 
     // Buscar calificaciones por curso
     @GetMapping("/curso/{cursoId}")
-    public ResponseEntity<List<Calificacion>> buscarPorCurso(@PathVariable Integer cursoId) {
+    public ResponseEntity<List<CalificacionDTO>> buscarPorCurso(@PathVariable Integer cursoId) {
         try {
-            List<Calificacion> calificaciones = calificacionService.buscarPorCurso(cursoId);
+            List<CalificacionDTO> calificaciones = calificacionService.buscarPorCurso(cursoId);
             return ResponseEntity.ok(calificaciones);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
@@ -123,9 +121,9 @@ public class CalificacionController {
 
     // Buscar calificaciones por estudiante
     @GetMapping("/estudiante/{estudianteId}")
-    public ResponseEntity<List<Calificacion>> buscarPorEstudiante(@PathVariable Integer estudianteId) {
+    public ResponseEntity<List<CalificacionDTO>> buscarPorEstudiante(@PathVariable Integer estudianteId) {
         try {
-            List<Calificacion> calificaciones = calificacionService.buscarPorEstudiante(estudianteId);
+            List<CalificacionDTO> calificaciones = calificacionService.buscarPorEstudiante(estudianteId);
             return ResponseEntity.ok(calificaciones);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
@@ -152,13 +150,13 @@ public class CalificacionController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
-    }
-
+    }    
+    
     // Buscar calificaciones por rango de puntuación
     @GetMapping("/rango")
-    public ResponseEntity<List<Calificacion>> buscarPorRango(@RequestParam Integer min, @RequestParam Integer max) {
+    public ResponseEntity<List<CalificacionDTO>> buscarPorRango(@RequestParam Integer min, @RequestParam Integer max) {
         try {
-            List<Calificacion> calificaciones = calificacionService.buscarPorRangoPuntuacion(min, max);
+            List<CalificacionDTO> calificaciones = calificacionService.buscarPorRangoPuntuacion(min, max);
             return ResponseEntity.ok(calificaciones);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
