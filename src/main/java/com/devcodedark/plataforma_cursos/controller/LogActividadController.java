@@ -10,7 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import com.devcodedark.plataforma_cursos.model.LogActividad;
+import com.devcodedark.plataforma_cursos.dto.LogActividadDTO;
 import com.devcodedark.plataforma_cursos.service.ILogActividadService;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -23,12 +23,12 @@ public class LogActividadController {
 
     @Autowired
     private ILogActividadService logActividadService;
-
+    
     // Listar todos los logs
     @GetMapping
-    public ResponseEntity<List<LogActividad>> listarTodos() {
+    public ResponseEntity<List<LogActividadDTO>> listarTodos() {
         try {
-            List<LogActividad> logs = logActividadService.buscarTodos();
+            List<LogActividadDTO> logs = logActividadService.buscarTodos();
             return ResponseEntity.ok(logs);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
@@ -37,9 +37,9 @@ public class LogActividadController {
 
     // Buscar log por ID
     @GetMapping("/{id}")
-    public ResponseEntity<LogActividad> buscarPorId(@PathVariable Integer id) {
+    public ResponseEntity<LogActividadDTO> buscarPorId(@PathVariable Integer id) {
         try {
-            Optional<LogActividad> log = logActividadService.buscarId(id);
+            Optional<LogActividadDTO> log = logActividadService.buscarId(id);
             if (log.isPresent()) {
                 return ResponseEntity.ok(log.get());
             } else {
@@ -48,13 +48,13 @@ public class LogActividadController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
-    }
-
+    }    
+    
     // Crear nuevo log
     @PostMapping
-    public ResponseEntity<String> crear(@Valid @RequestBody LogActividad logActividad) {
+    public ResponseEntity<String> crear(@Valid @RequestBody LogActividadDTO logActividadDTO) {
         try {
-            logActividadService.guardar(logActividad);
+            logActividadService.guardar(logActividadDTO);
             return ResponseEntity.status(HttpStatus.CREATED).body("Log creado exitosamente");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -81,31 +81,31 @@ public class LogActividadController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body("Error al registrar la actividad: " + e.getMessage());
         }
-    }
-
+    }    
+    
     // Actualizar log
     @PutMapping("/{id}")
-    public ResponseEntity<String> actualizar(@PathVariable Integer id, @Valid @RequestBody LogActividad logActividad) {
+    public ResponseEntity<String> actualizar(@PathVariable Integer id, @Valid @RequestBody LogActividadDTO logActividadDTO) {
         try {
-            Optional<LogActividad> logExistente = logActividadService.buscarId(id);
+            Optional<LogActividadDTO> logExistente = logActividadService.buscarId(id);
             if (!logExistente.isPresent()) {
                 return ResponseEntity.notFound().build();
             }
             
-            logActividad.setId(id);
-            logActividadService.modificar(logActividad);
+            logActividadDTO.setId(id);
+            logActividadService.modificar(logActividadDTO);
             return ResponseEntity.ok("Log actualizado exitosamente");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body("Error al actualizar el log: " + e.getMessage());
         }
-    }
-
+    }    
+    
     // Eliminar log
     @DeleteMapping("/{id}")
     public ResponseEntity<String> eliminar(@PathVariable Integer id) {
         try {
-            Optional<LogActividad> log = logActividadService.buscarId(id);
+            Optional<LogActividadDTO> log = logActividadService.buscarId(id);
             if (!log.isPresent()) {
                 return ResponseEntity.notFound().build();
             }
@@ -120,9 +120,9 @@ public class LogActividadController {
 
     // Buscar logs por usuario
     @GetMapping("/usuario/{usuarioId}")
-    public ResponseEntity<List<LogActividad>> buscarPorUsuario(@PathVariable Integer usuarioId) {
+    public ResponseEntity<List<LogActividadDTO>> buscarPorUsuario(@PathVariable Integer usuarioId) {
         try {
-            List<LogActividad> logs = logActividadService.buscarPorUsuario(usuarioId);
+            List<LogActividadDTO> logs = logActividadService.buscarPorUsuario(usuarioId);
             return ResponseEntity.ok(logs);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
@@ -131,9 +131,9 @@ public class LogActividadController {
 
     // Buscar logs por acción
     @GetMapping("/accion/{accion}")
-    public ResponseEntity<List<LogActividad>> buscarPorAccion(@PathVariable String accion) {
+    public ResponseEntity<List<LogActividadDTO>> buscarPorAccion(@PathVariable String accion) {
         try {
-            List<LogActividad> logs = logActividadService.buscarPorAccion(accion);
+            List<LogActividadDTO> logs = logActividadService.buscarPorAccion(accion);
             return ResponseEntity.ok(logs);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
@@ -142,18 +142,18 @@ public class LogActividadController {
 
     // Buscar logs recientes
     @GetMapping("/recientes")
-    public ResponseEntity<List<LogActividad>> buscarRecientes() {
+    public ResponseEntity<List<LogActividadDTO>> buscarRecientes() {
         try {
-            List<LogActividad> logs = logActividadService.buscarLogsRecientes();
+            List<LogActividadDTO> logs = logActividadService.buscarLogsRecientes();
             return ResponseEntity.ok(logs);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
-    }
-
+    }    
+    
     // Buscar logs por rango de fechas
     @GetMapping("/rango-fechas")
-    public ResponseEntity<List<LogActividad>> buscarPorRangoFechas(
+    public ResponseEntity<List<LogActividadDTO>> buscarPorRangoFechas(
             @RequestParam String fechaInicio,
             @RequestParam String fechaFin) {
         try {
@@ -161,7 +161,7 @@ public class LogActividadController {
             LocalDateTime inicio = LocalDateTime.parse(fechaInicio + " 00:00:00", formatter);
             LocalDateTime fin = LocalDateTime.parse(fechaFin + " 23:59:59", formatter);
             
-            List<LogActividad> logs = logActividadService.buscarPorRangoFechas(inicio, fin);
+            List<LogActividadDTO> logs = logActividadService.buscarPorRangoFechas(inicio, fin);
             return ResponseEntity.ok(logs);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
@@ -177,13 +177,13 @@ public class LogActividadController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
-    }
-
+    }    
+    
     // Obtener actividad reciente por usuario
     @GetMapping("/usuario/{usuarioId}/reciente")
-    public ResponseEntity<List<LogActividad>> obtenerActividadReciente(@PathVariable Integer usuarioId, @RequestParam(defaultValue = "10") int limite) {
+    public ResponseEntity<List<LogActividadDTO>> obtenerActividadReciente(@PathVariable Integer usuarioId, @RequestParam(defaultValue = "10") int limite) {
         try {
-            List<LogActividad> logs = logActividadService.obtenerActividadRecientePorUsuario(usuarioId, limite);
+            List<LogActividadDTO> logs = logActividadService.obtenerActividadRecientePorUsuario(usuarioId, limite);
             return ResponseEntity.ok(logs);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
@@ -192,9 +192,9 @@ public class LogActividadController {
 
     // Obtener logs de acceso
     @GetMapping("/acceso")
-    public ResponseEntity<List<LogActividad>> obtenerLogsAcceso() {
+    public ResponseEntity<List<LogActividadDTO>> obtenerLogsAcceso() {
         try {
-            List<LogActividad> logs = logActividadService.obtenerLogsAcceso();
+            List<LogActividadDTO> logs = logActividadService.obtenerLogsAcceso();
             return ResponseEntity.ok(logs);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
@@ -203,9 +203,9 @@ public class LogActividadController {
 
     // Obtener logs de errores
     @GetMapping("/errores")
-    public ResponseEntity<List<LogActividad>> obtenerLogsErrores() {
+    public ResponseEntity<List<LogActividadDTO>> obtenerLogsErrores() {
         try {
-            List<LogActividad> logs = logActividadService.obtenerLogsErrores();
+            List<LogActividadDTO> logs = logActividadService.obtenerLogsErrores();
             return ResponseEntity.ok(logs);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);

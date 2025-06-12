@@ -3,39 +3,38 @@ package com.devcodedark.plataforma_cursos.service;
 import java.util.List;
 import java.util.Optional;
 
-import com.devcodedark.plataforma_cursos.model.Material;
-import com.devcodedark.plataforma_cursos.model.Material.TipoMaterial;
+import com.devcodedark.plataforma_cursos.dto.MaterialDTO;
 
 public interface IMaterialService {
     // Listar todos los materiales
-    List<Material> buscarTodos();
+    List<MaterialDTO> buscarTodos();
     
     // Guardar material
-    void guardar(Material material);
+    void guardar(MaterialDTO materialDTO);
     
     // Modificar material
-    void modificar(Material material);
+    void modificar(MaterialDTO materialDTO);
     
     // Buscar material por ID
-    Optional<Material> buscarId(Integer id);
+    Optional<MaterialDTO> buscarId(Integer id);
     
     // Eliminar material
     void eliminar(Integer id);
     
     // Buscar materiales por módulo ordenados
-    List<Material> buscarPorModuloOrdenado(Integer moduloId);
+    List<MaterialDTO> buscarPorModuloOrdenado(Integer moduloId);
     
     // Buscar materiales activos por módulo
-    List<Material> buscarMaterialesActivosPorModulo(Integer moduloId);
+    List<MaterialDTO> buscarMaterialesActivosPorModulo(Integer moduloId);
     
     // Buscar materiales por tipo
-    List<Material> buscarPorTipo(TipoMaterial tipo);
+    List<MaterialDTO> buscarPorTipo(String tipo);
     
     // Buscar materiales gratuitos por módulo
-    List<Material> buscarMaterialesGratuitosPorModulo(Integer moduloId);
+    List<MaterialDTO> buscarMaterialesGratuitosPorModulo(Integer moduloId);
     
     // Buscar materiales por curso
-    List<Material> buscarMaterialesPorCurso(Integer cursoId);
+    List<MaterialDTO> buscarMaterialesPorCurso(Integer cursoId);
     
     // Contar materiales por módulo
     Long contarMaterialesPorModulo(Integer moduloId);
@@ -51,4 +50,13 @@ public interface IMaterialService {
     
     // Cambiar disponibilidad gratuita
     void cambiarDisponibilidadGratuita(Integer materialId, Boolean esGratuito);
+    
+    // Obtener estadísticas de materiales por módulo
+    Object obtenerEstadisticasPorModulo(Integer moduloId);
+    
+    // Buscar materiales por título
+    List<MaterialDTO> buscarPorTitulo(String titulo);
+      
+    // Obtener materiales recientes
+    List<MaterialDTO> obtenerMaterialesRecientes(int limite);
 }

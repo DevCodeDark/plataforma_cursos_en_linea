@@ -4,73 +4,43 @@ import java.util.List;
 import java.util.Optional;
 import java.time.LocalDateTime;
 
-import com.devcodedark.plataforma_cursos.model.LogActividad;
+import com.devcodedark.plataforma_cursos.dto.LogActividadDTO;
 
 public interface ILogActividadService {
-    // Listar todos los logs
-    List<LogActividad> buscarTodos();
-    
-    // Guardar log
-    void guardar(LogActividad logActividad);
-    
-    // Modificar log
-    void modificar(LogActividad logActividad);
-    
-    // Buscar log por ID
-    Optional<LogActividad> buscarId(Integer id);
-    
-    // Eliminar log
+    // Métodos CRUD básicos con DTO
+    List<LogActividadDTO> buscarTodos();
+    void guardar(LogActividadDTO logActividadDTO);
+    void modificar(LogActividadDTO logActividadDTO);
+    Optional<LogActividadDTO> buscarId(Integer id);
     void eliminar(Integer id);
     
-    // Buscar logs por usuario
-    List<LogActividad> buscarPorUsuario(Integer usuarioId);
+    // Búsquedas específicas
+    List<LogActividadDTO> buscarPorUsuario(Integer usuarioId);
+    List<LogActividadDTO> buscarPorAccion(String accion);
+    List<LogActividadDTO> buscarPorEntidad(String entidad);
+    List<LogActividadDTO> buscarPorEntidadYEntidadId(String entidad, Integer entidadId);
+    List<LogActividadDTO> buscarPorIP(String ip);
+    List<LogActividadDTO> buscarPorRangoFechas(LocalDateTime fechaInicio, LocalDateTime fechaFin);
+    List<LogActividadDTO> buscarLogsRecientes();
+    List<LogActividadDTO> buscarPorUsuarioYAccion(Integer usuarioId, String accion);
+    List<LogActividadDTO> buscarPorCategoriaAccion(String categoria);
+    List<LogActividadDTO> buscarAccionesCriticas();
     
-    // Buscar logs por acción
-    List<LogActividad> buscarPorAccion(String accion);
-    
-    // Buscar logs por entidad
-    List<LogActividad> buscarPorEntidad(String entidad);
-    
-    // Buscar logs por entidad y entidadId
-    List<LogActividad> buscarPorEntidadYEntidadId(String entidad, Integer entidadId);
-    
-    // Buscar logs por IP
-    List<LogActividad> buscarPorIP(String ip);
-    
-    // Buscar logs por rango de fechas
-    List<LogActividad> buscarPorRangoFechas(LocalDateTime fechaInicio, LocalDateTime fechaFin);
-    
-    // Buscar logs recientes (últimas 24 horas)
-    List<LogActividad> buscarLogsRecientes();
-    
-    // Buscar logs por usuario y acción
-    List<LogActividad> buscarPorUsuarioYAccion(Integer usuarioId, String accion);
-    
-    // Contar logs por acción
+    // Operaciones estadísticas
     Long contarPorAccion(String accion);
-    
-    // Contar logs por usuario en un período
     Long contarPorUsuarioEnPeriodo(Integer usuarioId, LocalDateTime fechaInicio, LocalDateTime fechaFin);
+    Long contarAccionesCriticas();
+    Long contarPorCategoria(String categoria);
     
     // Registrar actividad
     void registrarActividad(Integer usuarioId, String accion, String entidad, Integer entidadId, String detalles);
-    
-    // Registrar actividad con IP y User Agent
     void registrarActividadCompleta(Integer usuarioId, String accion, String entidad, Integer entidadId, 
                                    String detalles, String ipAddress, String userAgent);
     
-    // Limpiar logs antiguos
+    // Operaciones de mantenimiento
     void limpiarLogsAntiguos(int diasAntiguedad);
-    
-    // Obtener estadísticas de actividad
     Object obtenerEstadisticasActividad();
-    
-    // Obtener actividad reciente por usuario
-    List<LogActividad> obtenerActividadRecientePorUsuario(Integer usuarioId, int limite);
-    
-    // Obtener logs de acceso
-    List<LogActividad> obtenerLogsAcceso();
-    
-    // Obtener logs de errores
-    List<LogActividad> obtenerLogsErrores();
+    List<LogActividadDTO> obtenerActividadRecientePorUsuario(Integer usuarioId, int limite);
+    List<LogActividadDTO> obtenerLogsAcceso();
+    List<LogActividadDTO> obtenerLogsErrores();
 }
