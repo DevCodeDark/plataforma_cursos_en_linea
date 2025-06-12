@@ -48,12 +48,15 @@ public interface MaterialRepository extends JpaRepository<Material, Integer> {
     // Contar materiales gratuitos por módulo
     @Query("SELECT COUNT(m) FROM Material m WHERE m.modulo.id = :moduloId AND m.esGratuito = true AND m.estado = 1")
     Long countByModuloIdAndEsGratuitoTrue(@Param("moduloId") Integer moduloId);
-    
-    // Buscar materiales por título (like)
+      // Buscar materiales por título (like)
     @Query("SELECT m FROM Material m WHERE LOWER(m.titulo) LIKE LOWER(CONCAT('%', :titulo, '%')) AND m.estado = 1")
     List<Material> findByTituloContainingIgnoreCase(@Param("titulo") String titulo);
     
     // Buscar materiales recientes
     @Query("SELECT m FROM Material m WHERE m.estado = 1 ORDER BY m.fechaCreacion DESC")
     List<Material> findTop10ByOrderByFechaCreacionDesc();
+    
+    // Contar materiales por curso
+    @Query("SELECT COUNT(m) FROM Material m WHERE m.modulo.curso.id = :cursoId AND m.estado = 1")
+    Long countByCursoId(@Param("cursoId") Integer cursoId);
 }
