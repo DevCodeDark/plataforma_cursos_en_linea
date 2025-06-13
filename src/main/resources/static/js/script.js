@@ -371,6 +371,275 @@ function setupThemeToggle() {
     }
 }
 
+// ===== FUNCIONES PARA PÁGINA DE CONTACTO =====
+
+/**
+ * Inicializa el mapa interactivo de Leaflet
+ */
+function initializeContactMap() {
+    // Verificar si estamos en la página de contacto y si existen las variables
+    if (typeof latitud === 'undefined' || typeof longitud === 'undefined' || !document.getElementById('map')) {
+        return;
+    }
+
+    try {
+        // Crear el mapa
+        const map = L.map('map', {
+            center: [parseFloat(latitud), parseFloat(longitud)],
+            zoom: 16,
+            zoomControl: true,
+            scrollWheelZoom: true
+        });
+
+        // Agregar capa de mapa (OpenStreetMap)
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors',
+            maxZoom: 19
+        }).addTo(map);
+
+        // Crear icono personalizado
+        const customIcon = L.divIcon({
+            className: 'custom-marker',
+            html: '<i class="fas fa-map-marker-alt text-primary" style="font-size: 2rem;"></i>',
+            iconSize: [30, 30],
+            iconAnchor: [15, 30],
+            popupAnchor: [0, -30]
+        });
+
+        // Agregar marcador
+        const marker = L.marker([parseFloat(latitud), parseFloat(longitud)], {
+            icon: customIcon
+        }).addTo(map);
+
+        // Popup del marcador
+        const popupContent = `
+            <div class="map-popup">
+                <h6><i class="fas fa-rocket me-2 text-primary"></i>AstroDev Academy</h6>
+                <p class="mb-2"><i class="fas fa-map-marker-alt me-2"></i>${direccion || 'Lima, Perú'}</p>
+                <div class="popup-buttons">
+                    <a href="https://www.google.com/maps/search/?api=1&query=${latitud},${longitud}" 
+                       target="_blank" class="btn btn-sm btn-primary me-2">
+                        <i class="fas fa-external-link-alt me-1"></i>Ver en Google Maps
+                    </a>
+                    <a href="https://www.google.com/maps/dir/?api=1&destination=${latitud},${longitud}" 
+                       target="_blank" class="btn btn-sm btn-outline-primary">
+                        <i class="fas fa-route me-1"></i>Cómo llegar
+                    </a>
+                </div>
+            </div>
+        `;
+
+        marker.bindPopup(popupContent, {
+            maxWidth: 300,
+            className: 'custom-popup'
+        });
+
+        // Abrir popup automáticamente
+        marker.openPopup();
+
+        // Animación del marcador
+        setTimeout(() => {
+            marker.setLatLng([parseFloat(latitud), parseFloat(longitud)]);
+        }, 500);
+
+        // Agregar controles adicionales
+        const locationControl = L.control({position: 'topright'});
+        locationControl.onAdd = function(map) {
+            const div = L.DomUtil.create('div', 'leaflet-bar leaflet-control leaflet-control-custom');
+            div.innerHTML = '<button type="button" class="location-btn" title="Centrar en AstroDev Academy"><i class="fas fa-crosshairs"></i></button>';
+            div.onclick = function() {
+                map.setView([parseFloat(latitud), parseFloat(longitud)], 16);
+                marker.openPopup();
+            };
+            return div;
+        };
+        locationControl.addTo(map);
+
+        console.log('Mapa inicializado correctamente');
+        
+    } catch (error) {
+        console.error('Error al inicializar el mapa:', error);
+        // Mostrar mensaje de error al usuario
+        const mapContainer = document.getElementById('map');
+        if (mapContainer) {
+            mapContainer.innerHTML = `
+                <div class="map-error">
+                    <i class="fas fa-exclamation-triangle text-warning mb-3" style="font-size: 3rem;"></i>
+                    <h6>Error al cargar el mapa</h6>
+                    <p class="text-muted">No se pudo cargar el mapa interactivo. Por favor, inténtalo más tarde.</p>
+                    <a href="https://www.google.com/maps/search/?api=1&query=${latitud},${longitud}" 
+                       target="_blank" class="btn btn-primary">
+                        <i class="fas fa-external-link-alt me-2"></i>Ver en Google Maps
+                    </a>
+                </div>
+            `;
+        }
+    }
+}
+
+/**
+ * Configura el formulario de contacto
+ */
+function setupContactForm() {
+    const form = document.getElementById('contact-form');
+    const responseDiv = document.getElementById('form-response');
+    
+    if (!form) return;
+
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Obtener datos del formulario
+        const formData = new FormData(form);
+        const data = {
+            nombre: formData.get('nombre'),
+            email: formData.get('email'),
+            telefono: formData.get('telefono'),
+            motivo: formData.get('motivo'),
+            mensaje: formData.get('mensaje')
+        };
+
+        // Validaciones adicionales del lado cliente
+        if (!validateContactForm(data)) {
+            return;
+        }
+
+        // Mostrar loading
+        showFormLoading(true);
+
+        // Enviar datos via AJAX
+        fetch('/astrodev/contacto/enviar', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(result => {
+            showFormLoading(false);
+            
+            if (result.success) {
+                showFormResponse('success', result.message);
+                form.reset();
+                
+                // Scroll suave hacia la respuesta
+                responseDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            } else {
+                showFormResponse('error', result.message || 'Error al enviar el mensaje');
+            }
+        })
+        .catch(error => {
+            console.error('Error al enviar formulario:', error);
+            showFormLoading(false);
+            showFormResponse('error', 'Error de conexión. Por favor, verifica tu conexión a internet e inténtalo nuevamente.');
+        });
+    });
+}
+
+/**
+ * Valida el formulario de contacto
+ */
+function validateContactForm(data) {
+    const errors = [];
+
+    // Validar nombre
+    if (!data.nombre || data.nombre.trim().length < 2) {
+        errors.push('El nombre debe tener al menos 2 caracteres');
+    }
+
+    // Validar email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!data.email || !emailRegex.test(data.email)) {
+        errors.push('Por favor, ingresa un email válido');
+    }
+
+    // Validar teléfono
+    const phoneRegex = /^[+]?[\d\s\-\(\)]{8,15}$/;
+    if (data.telefono && !phoneRegex.test(data.telefono)) {
+        errors.push('Por favor, ingresa un teléfono válido');
+    }
+
+    // Validar mensaje
+    if (!data.mensaje || data.mensaje.trim().length < 10) {
+        errors.push('El mensaje debe tener al menos 10 caracteres');
+    }
+
+    // Mostrar errores si los hay
+    if (errors.length > 0) {
+        showFormResponse('error', errors.join('<br>'));
+        return false;
+    }
+
+    return true;
+}
+
+/**
+ * Muestra el estado de loading del formulario
+ */
+function showFormLoading(isLoading) {
+    const submitBtn = document.querySelector('#contact-form button[type="submit"]');
+    const btnText = submitBtn.querySelector('.btn-text') || submitBtn;
+    
+    if (isLoading) {
+        submitBtn.disabled = true;
+        btnText.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Enviando...';
+    } else {
+        submitBtn.disabled = false;
+        btnText.innerHTML = '<i class="fas fa-paper-plane me-2"></i>Enviar Mensaje';
+    }
+}
+
+/**
+ * Muestra respuesta del formulario
+ */
+function showFormResponse(type, message) {
+    const responseDiv = document.getElementById('form-response');
+    if (!responseDiv) return;
+
+    const alertClass = type === 'success' ? 'alert-success' : 'alert-danger';
+    const icon = type === 'success' ? 'fas fa-check-circle' : 'fas fa-exclamation-triangle';
+
+    responseDiv.innerHTML = `
+        <div class="alert ${alertClass} alert-dismissible fade show" role="alert">
+            <i class="${icon} me-2"></i>
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    `;
+    
+    responseDiv.style.display = 'block';
+    
+    // Scroll suave hacia la respuesta
+    responseDiv.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+    // Auto-ocultar después de 5 segundos si es éxito
+    if (type === 'success') {
+        setTimeout(() => {
+            responseDiv.style.display = 'none';
+        }, 5000);
+    }
+}
+
+/**
+ * Configura los enlaces de direcciones
+ */
+function setupDirectionsLink() {
+    const directionsLinks = document.querySelectorAll('[data-directions]');
+    
+    directionsLinks.forEach(link => {
+        link.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            if (typeof latitud !== 'undefined' && typeof longitud !== 'undefined') {
+                const url = `https://www.google.com/maps/dir/?api=1&destination=${latitud},${longitud}`;
+                window.open(url, '_blank');
+            }
+        });
+    });
+}
+
 // ===== INICIALIZACIÓN FINAL =====
 document.addEventListener('DOMContentLoaded', function() {
     setupLazyLoading();

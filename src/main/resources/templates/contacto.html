@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contacto - AstroDev Academy</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Google Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+
+    <!-- Leaflet CSS para el mapa -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+    <!-- CSS personalizado -->
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+
+<body>
+    <!-- Navegación -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="#" th:href="@{/astrodev/inicio}">
+                <i class="fas fa-rocket me-2"></i>
+                AstroDev Academy
+            </a>
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" th:href="@{/astrodev/inicio}">Inicio</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#cursos">Cursos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" th:href="@{/astrodev/nosotros}">Nosotros</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#" th:href="@{/astrodev/contacto}">Contacto</a>
+                    </li>
+                    <li class="nav-item ms-2">
+                        <a class="btn btn-outline-primary" href="#" th:href="@{/auth/login}">
+                            <i class="fas fa-sign-in-alt me-1"></i>Iniciar Sesión
+                        </a>
+                    </li>
+                    <li class="nav-item ms-2">
+                        <a class="btn btn-primary" href="#" th:href="@{/auth/register}">
+                            <i class="fas fa-user-plus me-1"></i>Registrarse
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section - Contacto -->
+    <section class="hero-section-small">
+        <div class="stars"></div>
+        <div class="container">
+            <div class="row justify-content-center text-center">
+                <div class="col-lg-8">
+                    <h1 class="display-4 fw-bold mb-4 text-glow">
+                        <span class="text-primary">Contáctanos</span>
+                    </h1>
+                    <p class="lead mb-0">
+                        Estamos aquí para ayudarte en tu viaje de aprendizaje. Conecta con nuestro equipo
+                        y descubre cómo podemos impulsar tu carrera en el desarrollo de software.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Información de Contacto -->
+    <section class="contact-info-section py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 mb-4">
+                    <div class="contact-card">
+                        <div class="contact-icon">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        <h4 class="contact-title">Ubicación</h4>
+                        <p class="contact-description" th:text="${direccion}">
+                            Jr. Circunvalación Cumbaza 298, Tarapoto, San Martín, Perú
+                        </p><a href="#" class="contact-link" data-directions="true">
+                            <i class="fas fa-directions me-2"></i>Cómo llegar
+                        </a>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 mb-4">
+                    <div class="contact-card">
+                        <div class="contact-icon">
+                            <i class="fas fa-phone"></i>
+                        </div>
+                        <h4 class="contact-title">Teléfono</h4>
+                        <p class="contact-description">
+                            +51 925 859 554
+                        </p>
+                        <a href="tel:+51925859554" class="contact-link">
+                            <i class="fas fa-phone me-2"></i>Llamar ahora
+                        </a>
+                    </div>
+                </div>
+
+                <div class="col-lg-4 mb-4">
+                    <div class="contact-card">
+                        <div class="contact-icon">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <h4 class="contact-title">Email</h4>
+                        <p class="contact-description">
+                            bd.reateguipa@unsm.edu.pe<br>
+                            guiro240303@gmail.com
+                        </p>
+                        <a href="mailto:bd.reateguipa@unsm.edu.pe" class="contact-link">
+                            <i class="fas fa-envelope me-2"></i>Enviar email
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Formulario de Contacto y Mapa -->
+    <section class="contact-form-section py-5">
+        <div class="container">
+            <div class="row">
+                <!-- Formulario de Contacto -->
+                <div class="col-lg-6 mb-4">
+                    <div class="contact-form-card">
+                        <h3 class="form-title">Envíanos un <span class="text-primary">Mensaje</span></h3>
+                        <p class="form-subtitle">
+                            ¿Tienes alguna pregunta o necesitas más información? Completa el formulario y te
+                            responderemos pronto.
+                        </p>
+
+                        <form id="contact-form" class="contact-form">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <div class="form-floating">
+                                        <input type="text" class="form-control" id="nombre" name="nombre"
+                                            placeholder="Tu nombre" required>
+                                        <label for="nombre"><i class="fas fa-user me-2"></i>Nombre completo</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="form-floating">
+                                        <input type="email" class="form-control" id="email" name="email"
+                                            placeholder="tu@email.com" required>
+                                        <label for="email"><i class="fas fa-envelope me-2"></i>Email</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <div class="form-floating">
+                                        <input type="tel" class="form-control" id="telefono" name="telefono"
+                                            placeholder="+51 987 654 321">
+                                        <label for="telefono"><i class="fas fa-phone me-2"></i>Teléfono
+                                            (opcional)</label>
+                                    </div>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <div class="form-floating">
+                                        <select class="form-select" id="motivo" name="motivo" required>
+                                            <option value="">Selecciona un motivo</option>
+                                            <option value="informacion-cursos">Información sobre cursos</option>
+                                            <option value="soporte-tecnico">Soporte técnico</option>
+                                            <option value="alianzas">Alianzas y partnerships</option>
+                                            <option value="trabajo">Oportunidades de trabajo</option>
+                                            <option value="otro">Otro</option>
+                                        </select>
+                                        <label for="motivo"><i class="fas fa-tag me-2"></i>Motivo de contacto</label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <div class="form-floating">
+                                    <textarea class="form-control" id="mensaje" name="mensaje"
+                                        placeholder="Escribe tu mensaje aquí..." style="height: 120px"
+                                        required></textarea>
+                                    <label for="mensaje"><i class="fas fa-comment me-2"></i>Mensaje</label>
+                                </div>
+                            </div>
+
+                            <div class="form-check mb-4">
+                                <input class="form-check-input" type="checkbox" id="acepto-terminos" required>
+                                <label class="form-check-label" for="acepto-terminos">
+                                    Acepto los <a href="#" class="text-primary">términos y condiciones</a> y la <a
+                                        href="#" class="text-primary">política de privacidad</a>
+                                </label>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary btn-lg w-100">
+                                <i class="fas fa-paper-plane me-2"></i>Enviar Mensaje
+                            </button>
+                        </form>
+
+                        <!-- Respuesta del formulario -->
+                        <div id="form-response" class="form-response mt-3" style="display: none;"></div>
+                    </div>
+                </div>
+
+                <!-- Mapa -->
+                <div class="col-lg-6 mb-4">
+                    <div class="map-card">
+                        <h3 class="map-title">Nuestra <span class="text-primary">Ubicación</span></h3>
+                        <p class="map-subtitle">
+                            Visítanos en nuestras instalaciones o programa una reunión virtual.
+                        </p>
+
+                        <!-- Contenedor del mapa -->
+                        <div id="map" class="contact-map"></div>
+
+                        <!-- Información adicional -->
+                        <div class="map-info">
+                            <div class="info-item">
+                                <strong>Horarios de atención:</strong><br>
+                                Lunes a Viernes: 9:00 AM - 6:00 PM<br>
+                                Sábados: 9:00 AM - 2:00 PM
+                            </div>
+                            <div class="info-item mt-3">
+                                <strong>Transporte público:</strong><br>
+                                Mototaxis disponibles en la zona<br>
+                                Combis y colectivos hacia el centro
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="faq-section py-5">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="section-title">Preguntas <span class="text-primary">Frecuentes</span></h2>
+                <p class="section-subtitle">Encuentra respuestas rápidas a las dudas más comunes</p>
+            </div>
+
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="accordion" id="faqAccordion">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#faq1">
+                                    ¿Cuánto tiempo duran los cursos?
+                                </button>
+                            </h2>
+                            <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    La duración varía según el curso. Nuestros cursos van desde 20 horas para cursos
+                                    introductorios hasta 80 horas para programas completos. Cada curso incluye proyectos
+                                    prácticos y acceso de por vida al contenido.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#faq2">
+                                    ¿Ofrecen certificados al completar los cursos?
+                                </button>
+                            </h2>
+                            <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    Sí, todos nuestros estudiantes que completen exitosamente un curso reciben un
+                                    certificado digital verificable. Además, ofrecemos certificaciones especializadas en
+                                    alianza con empresas tecnológicas líderes.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#faq3">
+                                    ¿Hay soporte técnico disponible?
+                                </button>
+                            </h2>
+                            <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    Absolutamente. Ofrecemos soporte técnico 24/7 através de nuestro sistema de tickets,
+                                    chat en vivo, y sesiones de mentoría programadas. También tenemos una comunidad
+                                    activa de estudiantes y instructores.
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                    data-bs-target="#faq4">
+                                    ¿Ofrecen modalidades de pago flexibles?
+                                </button>
+                            </h2>
+                            <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                                <div class="accordion-body">
+                                    Sí, aceptamos múltiples formas de pago incluyendo tarjetas de crédito, PayPal,
+                                    transferencias bancarias y planes de financiamiento sin intereses. También ofrecemos
+                                    descuentos por pago anticipado y para estudiantes.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 mb-4">
+                    <h5 class="text-primary mb-3">
+                        <i class="fas fa-rocket me-2"></i>AstroDev Academy
+                    </h5>
+                    <p>Tu destino para dominar las tecnologías del futuro. Aprende, practica y transforma tu carrera en
+                        el desarrollo de software.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                        <a href="#"><i class="fab fa-github"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-6 mb-4">
+                    <h6 class="text-light mb-3">Cursos</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="#">Frontend</a></li>
+                        <li><a href="#">Backend</a></li>
+                        <li><a href="#">Móvil</a></li>
+                        <li><a href="#">DevOps</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-2 col-md-6 mb-4">
+                    <h6 class="text-light mb-3">Empresa</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="#" th:href="@{/astrodev/nosotros}">Sobre Nosotros</a></li>
+                        <li><a href="#">Instructores</a></li>
+                        <li><a href="#">Carreras</a></li>
+                        <li><a href="#">Blog</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-2 col-md-6 mb-4">
+                    <h6 class="text-light mb-3">Soporte</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="#">Centro de Ayuda</a></li>
+                        <li><a href="#" th:href="@{/astrodev/contacto}">Contacto</a></li>
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">Términos</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-2 col-md-6 mb-4">
+                    <h6 class="text-light mb-3">Conecta</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="#">Newsletter</a></li>
+                        <li><a href="#">Comunidad</a></li>
+                        <li><a href="#">Eventos</a></li>
+                        <li><a href="#">Podcast</a></li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="my-4">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <p class="mb-0">&copy; 2025 AstroDev Academy. Todos los derechos reservados.</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <p class="mb-0">Hecho con <i class="fas fa-heart text-danger"></i> para desarrolladores</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Leaflet JS para el mapa -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+    <!-- JavaScript personalizado -->
+    <script th:src="@{/js/script.js}"></script>
+    <!-- Script específico para la página de contacto -->
+    <script th:inline="javascript">        /*<![CDATA[*/
+        // Variables de Thymeleaf para JavaScript
+        var latitud = /*[[${latitud}]]*/ '-6.4862176060688475';
+        var longitud = /*[[${longitud}]]*/ '-76.37636938002801';
+        var direccion = /*[[${direccion}]]*/ 'Jr. Circunvalación Cumbaza 298, Tarapoto, San Martín, Perú';
+
+        // Inicializar mapa cuando la página cargue
+        document.addEventListener('DOMContentLoaded', function () {
+            // Verificar que las funciones existen antes de llamarlas
+            if (typeof initializeContactMap === 'function') {
+                initializeContactMap();
+            }
+            if (typeof setupContactForm === 'function') {
+                setupContactForm();
+            }
+            if (typeof setupDirectionsLink === 'function') {
+                setupDirectionsLink();
+            }
+        });
+        /*]]>*/
+    </script>
+</body>
+
+</html>

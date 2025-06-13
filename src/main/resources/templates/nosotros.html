@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nosotros - AstroDev Academy</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- CSS personalizado -->
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <!-- Navegación -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="#" th:href="@{/astrodev/inicio}">
+                <i class="fas fa-rocket me-2"></i>
+                AstroDev Academy
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" th:href="@{/astrodev/inicio}">Inicio</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#cursos">Cursos</a>
+                    </li>                    <li class="nav-item">
+                        <a class="nav-link active" href="#" th:href="@{/astrodev/nosotros}">Nosotros</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" th:href="@{/astrodev/contacto}">Contacto</a>
+                    </li>
+                    <li class="nav-item ms-2">
+                        <a class="btn btn-outline-primary" href="#" th:href="@{/auth/login}">
+                            <i class="fas fa-sign-in-alt me-1"></i>Iniciar Sesión
+                        </a>
+                    </li>
+                    <li class="nav-item ms-2">
+                        <a class="btn btn-primary" href="#" th:href="@{/auth/register}">
+                            <i class="fas fa-user-plus me-1"></i>Registrarse
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section - Nosotros -->
+    <section class="hero-section-small">
+        <div class="stars"></div>
+        <div class="container">
+            <div class="row justify-content-center text-center">
+                <div class="col-lg-8">
+                    <h1 class="display-4 fw-bold mb-4 text-glow">
+                        Sobre <span class="text-primary">AstroDev</span> Academy
+                    </h1>
+                    <p class="lead mb-0">
+                        Somos pioneros en la formación de desarrolladores espaciales, combinando tecnología avanzada 
+                        con metodologías de enseñanza innovadoras para preparar a la próxima generación de creadores digitales.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Misión y Visión -->
+    <section class="mission-vision-section py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6 mb-4">
+                    <div class="mission-card">
+                        <div class="card-icon">
+                            <i class="fas fa-bullseye"></i>
+                        </div>
+                        <h3 class="card-title">Nuestra Misión</h3>
+                        <p class="card-description">
+                            Democratizar el acceso a la educación tecnológica de alta calidad, proporcionando herramientas 
+                            y conocimientos que permitan a cada estudiante alcanzar su máximo potencial en el universo del desarrollo de software.
+                        </p>
+                        <div class="mission-stats">
+                            <div class="stat-item">
+                                <span class="stat-number text-primary">500+</span>
+                                <span class="stat-label">Estudiantes Graduados</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number text-primary">95%</span>
+                                <span class="stat-label">Tasa de Empleabilidad</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6 mb-4">
+                    <div class="vision-card">
+                        <div class="card-icon">
+                            <i class="fas fa-eye"></i>
+                        </div>
+                        <h3 class="card-title">Nuestra Visión</h3>
+                        <p class="card-description">
+                            Ser la academia de desarrollo tecnológico más reconocida del cosmos digital, liderando la 
+                            transformación educativa mediante experiencias de aprendizaje inmersivas e interactivas.
+                        </p>
+                        <div class="vision-features">
+                            <div class="feature-item">
+                                <i class="fas fa-check-circle text-primary me-2"></i>
+                                <span>Metodología Práctica</span>
+                            </div>
+                            <div class="feature-item">
+                                <i class="fas fa-check-circle text-primary me-2"></i>
+                                <span>Proyectos Reales</span>
+                            </div>
+                            <div class="feature-item">
+                                <i class="fas fa-check-circle text-primary me-2"></i>
+                                <span>Mentorías Personalizadas</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Valores -->
+    <section class="values-section py-5">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="section-title">Nuestros <span class="text-primary">Valores</span></h2>
+                <p class="section-subtitle">Los principios que guían nuestra misión educativa</p>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6 col-lg-3 mb-4">
+                    <div class="value-card">
+                        <div class="value-icon">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                        <h4 class="value-title">Excelencia</h4>
+                        <p class="value-description">
+                            Buscamos la máxima calidad en cada aspecto de nuestro contenido educativo y metodologías de enseñanza.
+                        </p>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3 mb-4">
+                    <div class="value-card">
+                        <div class="value-icon">
+                            <i class="fas fa-rocket"></i>
+                        </div>
+                        <h4 class="value-title">Innovación</h4>
+                        <p class="value-description">
+                            Adoptamos las últimas tecnologías y tendencias para mantenernos a la vanguardia del desarrollo.
+                        </p>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3 mb-4">
+                    <div class="value-card">
+                        <div class="value-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <h4 class="value-title">Colaboración</h4>
+                        <p class="value-description">
+                            Fomentamos el trabajo en equipo y la construcción de una comunidad sólida de desarrolladores.
+                        </p>
+                    </div>
+                </div>
+                <div class="col-md-6 col-lg-3 mb-4">
+                    <div class="value-card">
+                        <div class="value-icon">
+                            <i class="fas fa-heart"></i>
+                        </div>
+                        <h4 class="value-title">Pasión</h4>
+                        <p class="value-description">
+                            Transmitimos nuestro amor por la tecnología y el desarrollo para inspirar a nuestros estudiantes.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Equipo -->
+    <section class="team-section py-5">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="section-title">Nuestro <span class="text-primary">Equipo</span></h2>
+                <p class="section-subtitle">Los expertos que hacen posible tu transformación digital</p>
+            </div>
+            
+            <div class="row">
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="team-card">
+                        <div class="team-image">
+                            <img src="https://via.placeholder.com/300x300/1a1a2e/00d4ff?text=Dr.+Alex" alt="Dr. Alex Cosmos">
+                            <div class="team-overlay">
+                                <div class="social-links">
+                                    <a href="#"><i class="fab fa-linkedin"></i></a>
+                                    <a href="#"><i class="fab fa-github"></i></a>
+                                    <a href="#"><i class="fab fa-twitter"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="team-content">
+                            <h4 class="team-name">Dr. Alex Cosmos</h4>
+                            <p class="team-role">Fundador & CEO</p>
+                            <p class="team-description">
+                                Pionero en desarrollo espacial con más de 15 años de experiencia en tecnologías emergentes.
+                            </p>
+                            <div class="team-skills">
+                                <span class="skill-tag">Full Stack</span>
+                                <span class="skill-tag">AI/ML</span>
+                                <span class="skill-tag">DevOps</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="team-card">
+                        <div class="team-image">
+                            <img src="https://via.placeholder.com/300x300/1a1a2e/ff6b9d?text=Luna+Dev" alt="Luna Developer">
+                            <div class="team-overlay">
+                                <div class="social-links">
+                                    <a href="#"><i class="fab fa-linkedin"></i></a>
+                                    <a href="#"><i class="fab fa-github"></i></a>
+                                    <a href="#"><i class="fab fa-twitter"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="team-content">
+                            <h4 class="team-name">Luna Developer</h4>
+                            <p class="team-role">CTO & Lead Instructor</p>
+                            <p class="team-description">
+                                Experta en arquitectura de software y metodologías ágiles, con pasión por la enseñanza.
+                            </p>
+                            <div class="team-skills">
+                                <span class="skill-tag">React</span>
+                                <span class="skill-tag">Node.js</span>
+                                <span class="skill-tag">Cloud</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 col-lg-4 mb-4">
+                    <div class="team-card">
+                        <div class="team-image">
+                            <img src="https://via.placeholder.com/300x300/1a1a2e/00d4ff?text=Neo+Code" alt="Neo Coder">
+                            <div class="team-overlay">
+                                <div class="social-links">
+                                    <a href="#"><i class="fab fa-linkedin"></i></a>
+                                    <a href="#"><i class="fab fa-github"></i></a>
+                                    <a href="#"><i class="fab fa-twitter"></i></a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="team-content">
+                            <h4 class="team-name">Neo Coder</h4>
+                            <p class="team-role">Senior Developer & Mentor</p>
+                            <p class="team-description">
+                                Especialista en backend y bases de datos, enfocado en crear experiencias de aprendizaje únicas.
+                            </p>
+                            <div class="team-skills">
+                                <span class="skill-tag">Python</span>
+                                <span class="skill-tag">Django</span>
+                                <span class="skill-tag">PostgreSQL</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Historia y Logros -->
+    <section class="history-section py-5">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6 mb-4">
+                    <h2 class="section-title">Nuestra <span class="text-primary">Historia</span></h2>
+                    <div class="timeline">
+                        <div class="timeline-item">
+                            <div class="timeline-year">2020</div>
+                            <div class="timeline-content">
+                                <h4>Fundación</h4>
+                                <p>Nace AstroDev Academy con la visión de revolucionar la educación tecnológica.</p>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-year">2021</div>
+                            <div class="timeline-content">
+                                <h4>Primer Curso</h4>
+                                <p>Lanzamos nuestro primer curso de JavaScript Avanzado con gran éxito.</p>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-year">2022</div>
+                            <div class="timeline-content">
+                                <h4>Expansión</h4>
+                                <p>Agregamos cursos de React, Python y desarrollo móvil a nuestro catálogo.</p>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-year">2023</div>
+                            <div class="timeline-content">
+                                <h4>Reconocimiento</h4>
+                                <p>Recibimos el premio "Mejor Academia Online" por nuestra innovación educativa.</p>
+                            </div>
+                        </div>
+                        <div class="timeline-item">
+                            <div class="timeline-year">2024</div>
+                            <div class="timeline-content">
+                                <h4>Actualidad</h4>
+                                <p>Más de 500 estudiantes graduados y partnerships con empresas tech líderes.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="achievements-grid">
+                        <div class="achievement-card">
+                            <div class="achievement-icon">
+                                <i class="fas fa-trophy"></i>
+                            </div>
+                            <h3 class="achievement-number">5</h3>
+                            <p class="achievement-label">Premios Internacionales</p>
+                        </div>
+                        <div class="achievement-card">
+                            <div class="achievement-icon">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <h3 class="achievement-number">500+</h3>
+                            <p class="achievement-label">Graduados Exitosos</p>
+                        </div>
+                        <div class="achievement-card">
+                            <div class="achievement-icon">
+                                <i class="fas fa-building"></i>
+                            </div>
+                            <h3 class="achievement-number">50+</h3>
+                            <p class="achievement-label">Empresas Aliadas</p>
+                        </div>
+                        <div class="achievement-card">
+                            <div class="achievement-icon">
+                                <i class="fas fa-globe"></i>
+                            </div>
+                            <h3 class="achievement-number">15</h3>
+                            <p class="achievement-label">Países Alcanzados</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section py-5">
+        <div class="container">
+            <div class="row justify-content-center text-center">
+                <div class="col-lg-8">
+                    <h2 class="cta-title">¿Listo para <span class="text-primary">Despegar</span>?</h2>
+                    <p class="cta-description">
+                        Únete a nuestra comunidad de desarrolladores espaciales y transforma tu futuro profesional.
+                    </p>
+                    <div class="cta-buttons">
+                        <a href="#" th:href="@{/astrodev/inicio}" class="btn btn-primary btn-lg me-3">
+                            <i class="fas fa-rocket me-2"></i>Explorar Cursos
+                        </a>
+                        <a href="#contacto" class="btn btn-outline-light btn-lg">
+                            <i class="fas fa-envelope me-2"></i>Contáctanos
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 mb-4">
+                    <h5 class="text-primary mb-3">
+                        <i class="fas fa-rocket me-2"></i>AstroDev Academy
+                    </h5>
+                    <p>Tu destino para dominar las tecnologías del futuro. Aprende, practica y transforma tu carrera en el desarrollo de software.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                        <a href="#"><i class="fab fa-github"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-2 col-md-6 mb-4">
+                    <h6 class="text-light mb-3">Cursos</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="#">Frontend</a></li>
+                        <li><a href="#">Backend</a></li>
+                        <li><a href="#">Móvil</a></li>
+                        <li><a href="#">DevOps</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-2 col-md-6 mb-4">
+                    <h6 class="text-light mb-3">Empresa</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="#" th:href="@{/astrodev/nosotros}">Sobre Nosotros</a></li>
+                        <li><a href="#">Instructores</a></li>
+                        <li><a href="#">Carreras</a></li>
+                        <li><a href="#">Blog</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-2 col-md-6 mb-4">
+                    <h6 class="text-light mb-3">Soporte</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="#">Centro de Ayuda</a></li>
+                        <li><a href="#">Contacto</a></li>
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">Términos</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-2 col-md-6 mb-4">
+                    <h6 class="text-light mb-3">Conecta</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="#">Newsletter</a></li>
+                        <li><a href="#">Comunidad</a></li>
+                        <li><a href="#">Eventos</a></li>
+                        <li><a href="#">Podcast</a></li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="my-4">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <p class="mb-0">&copy; 2025 AstroDev Academy. Todos los derechos reservados.</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <p class="mb-0">Hecho con <i class="fas fa-heart text-danger"></i> para desarrolladores</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- JavaScript personalizado -->
+    <script th:src="@{/js/script.js}"></script>
+</body>
+</html>
