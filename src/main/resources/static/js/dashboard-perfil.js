@@ -1,28 +1,40 @@
-// Perfil de Usuario - JavaScript
+/**
+ * Dashboard Perfil - JavaScript
+ * Funcionalidades específicas para la sección de perfil dentro del dashboard administrativo
+ */
 
 document.addEventListener('DOMContentLoaded', function() {
-    initializeProfileFunctions();
+    // Solo inicializar si estamos en la sección de perfil
+    const perfilSection = document.getElementById('perfil-section');
+    if (perfilSection) {
+        initializePerfilDashboard();
+    }
 });
 
-function initializeProfileFunctions() {
+function initializePerfilDashboard() {
+    console.log('Inicializando funcionalidades de perfil en dashboard...');
+    
     // Validación de formularios
-    setupFormValidation();
+    setupPerfilFormValidation();
     
     // Previsualización de imagen
-    setupImagePreview();
+    setupPerfilImagePreview();
     
     // Validación de contraseñas
-    setupPasswordValidation();
+    setupPerfilPasswordValidation();
     
     // Auto-dismiss de alertas
-    setupAlertAutoDismiss();
+    setupPerfilAlertAutoDismiss();
     
-    console.log('Perfil de usuario inicializado correctamente');
+    // Función para exportar perfil
+    setupPerfilExport();
+    
+    console.log('Perfil dashboard inicializado correctamente');
 }
 
 // Configurar validación de formularios
-function setupFormValidation() {
-    const forms = document.querySelectorAll('form');
+function setupPerfilFormValidation() {
+    const forms = document.querySelectorAll('#perfil-section form');
     forms.forEach(form => {
         form.addEventListener('submit', function(event) {
             if (!form.checkValidity()) {
@@ -35,9 +47,9 @@ function setupFormValidation() {
 }
 
 // Configurar previsualización de imagen
-function setupImagePreview() {
-    const fileInput = document.getElementById('fotoPerfil');
-    const profilePhoto = document.querySelector('.profile-photo');
+function setupPerfilImagePreview() {
+    const fileInput = document.querySelector('#perfil-section #fotoPerfil');
+    const profilePhoto = document.querySelector('#perfil-section .profile-photo');
     
     if (fileInput && profilePhoto) {
         fileInput.addEventListener('change', function(event) {
@@ -45,14 +57,14 @@ function setupImagePreview() {
             if (file) {
                 // Validar tipo de archivo
                 if (!file.type.startsWith('image/')) {
-                    showAlert('Por favor, selecciona un archivo de imagen válido.', 'danger');
+                    showPerfilAlert('Por favor, selecciona un archivo de imagen válido.', 'danger');
                     fileInput.value = '';
                     return;
                 }
                 
                 // Validar tamaño (5MB máximo)
                 if (file.size > 5 * 1024 * 1024) {
-                    showAlert('El archivo es demasiado grande. Máximo 5MB permitido.', 'danger');
+                    showPerfilAlert('El archivo es demasiado grande. Máximo 5MB permitido.', 'danger');
                     fileInput.value = '';
                     return;
                 }
@@ -69,9 +81,9 @@ function setupImagePreview() {
 }
 
 // Configurar validación de contraseñas
-function setupPasswordValidation() {
-    const passwordNueva = document.getElementById('passwordNueva');
-    const confirmarPassword = document.getElementById('confirmarPassword');
+function setupPerfilPasswordValidation() {
+    const passwordNueva = document.querySelector('#perfil-section #passwordNueva');
+    const confirmarPassword = document.querySelector('#perfil-section #confirmarPassword');
     
     if (passwordNueva && confirmarPassword) {
         const validatePasswords = function() {
@@ -79,8 +91,8 @@ function setupPasswordValidation() {
             const confirmPassword = confirmarPassword.value;
             
             // Validar fortaleza de contraseña
-            const isStrongPassword = validatePasswordStrength(password);
-            updatePasswordStrengthIndicator(password, isStrongPassword);
+            const isStrongPassword = validatePerfilPasswordStrength(password);
+            updatePerfilPasswordStrengthIndicator(password, isStrongPassword);
             
             // Validar coincidencia
             if (confirmPassword && password !== confirmPassword) {
@@ -103,7 +115,7 @@ function setupPasswordValidation() {
 }
 
 // Validar fortaleza de contraseña
-function validatePasswordStrength(password) {
+function validatePerfilPasswordStrength(password) {
     if (password.length < 6) return false;
     
     // Al menos una letra minúscula, una mayúscula, un número o carácter especial
@@ -116,8 +128,8 @@ function validatePasswordStrength(password) {
 }
 
 // Actualizar indicador de fortaleza de contraseña
-function updatePasswordStrengthIndicator(password, isStrong) {
-    const passwordInput = document.getElementById('passwordNueva');
+function updatePerfilPasswordStrengthIndicator(password, isStrong) {
+    const passwordInput = document.querySelector('#perfil-section #passwordNueva');
     
     if (password.length === 0) {
         passwordInput.classList.remove('is-valid', 'is-invalid');
@@ -134,8 +146,8 @@ function updatePasswordStrengthIndicator(password, isStrong) {
 }
 
 // Configurar auto-dismiss de alertas
-function setupAlertAutoDismiss() {
-    const alerts = document.querySelectorAll('.alert:not(.alert-permanent)');
+function setupPerfilAlertAutoDismiss() {
+    const alerts = document.querySelectorAll('#perfil-section .alert:not(.alert-permanent)');
     alerts.forEach(alert => {
         setTimeout(() => {
             if (alert.classList.contains('show')) {
@@ -146,14 +158,17 @@ function setupAlertAutoDismiss() {
     });
 }
 
-// Mostrar alerta dinámica
-function showAlert(message, type = 'info') {
-    const alertContainer = document.querySelector('.container .mt-4') || document.querySelector('.container');
+// Mostrar alerta dinámica en la sección de perfil
+function showPerfilAlert(message, type = 'info') {
+    const perfilSection = document.getElementById('perfil-section');
+    if (!perfilSection) return;
+    
+    const alertContainer = perfilSection.querySelector('.row') || perfilSection;
     
     const alertDiv = document.createElement('div');
     alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
     alertDiv.innerHTML = `
-        <i class="fas fa-${getIconForAlertType(type)} me-2"></i>
+        <i class="fas fa-${getPerfilIconForAlertType(type)} me-2"></i>
         ${message}
         <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     `;
@@ -170,7 +185,7 @@ function showAlert(message, type = 'info') {
 }
 
 // Obtener icono para tipo de alerta
-function getIconForAlertType(type) {
+function getPerfilIconForAlertType(type) {
     const icons = {
         'success': 'check-circle',
         'danger': 'exclamation-circle',
@@ -181,41 +196,79 @@ function getIconForAlertType(type) {
 }
 
 // Validación adicional para el formulario de perfil
-function validateProfileForm() {
-    const email = document.getElementById('email');
-    const nombre = document.getElementById('nombre');
-    const apellido = document.getElementById('apellido');
+function validatePerfilForm() {
+    const email = document.querySelector('#perfil-section #email');
+    const nombre = document.querySelector('#perfil-section #nombre');
+    const apellido = document.querySelector('#perfil-section #apellido');
     
     if (!email || !nombre || !apellido) return true;
     
     // Validar email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email.value)) {
-        showAlert('Por favor, ingresa un email válido.', 'danger');
+        showPerfilAlert('Por favor, ingresa un email válido.', 'danger');
         return false;
     }
     
     // Validar nombres
     if (nombre.value.trim().length < 2) {
-        showAlert('El nombre debe tener al menos 2 caracteres.', 'danger');
+        showPerfilAlert('El nombre debe tener al menos 2 caracteres.', 'danger');
         return false;
     }
     
     if (apellido.value.trim().length < 2) {
-        showAlert('El apellido debe tener al menos 2 caracteres.', 'danger');
+        showPerfilAlert('El apellido debe tener al menos 2 caracteres.', 'danger');
         return false;
     }
     
     return true;
 }
 
+// Configurar funcionalidad de exportar perfil
+function setupPerfilExport() {
+    // Esta función se llamará desde el botón exportar en el template
+    window.exportarPerfil = function() {
+        try {
+            const perfilData = {
+                nombre: document.querySelector('#perfil-section #nombre')?.value || '',
+                apellido: document.querySelector('#perfil-section #apellido')?.value || '',
+                email: document.querySelector('#perfil-section #email')?.value || '',
+                usuario: document.querySelector('#perfil-section #usuario')?.value || '',
+                telefono: document.querySelector('#perfil-section #telefono')?.value || '',
+                fechaNacimiento: document.querySelector('#perfil-section #fechaNacimiento')?.value || '',
+                genero: document.querySelector('#perfil-section #genero')?.value || '',
+                fechaExportacion: new Date().toISOString()
+            };
+            
+            const dataStr = JSON.stringify(perfilData, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `perfil_${perfilData.usuario || 'usuario'}_${new Date().toISOString().split('T')[0]}.json`;
+            
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            URL.revokeObjectURL(url);
+            
+            showPerfilAlert('Datos del perfil exportados exitosamente.', 'success');
+        } catch (error) {
+            console.error('Error al exportar perfil:', error);
+            showPerfilAlert('Error al exportar los datos del perfil.', 'danger');
+        }
+    };
+}
+
 // Event listeners adicionales
 document.addEventListener('DOMContentLoaded', function() {
-    // Agregar validación personalizada al formulario de perfil
-    const perfilForm = document.querySelector('form[action*="/perfil/actualizar"]');
+    // Agregar validación personalizada al formulario de perfil del dashboard
+    const perfilForm = document.querySelector('#perfil-section form[action*="/perfil/actualizar"]');
     if (perfilForm) {
         perfilForm.addEventListener('submit', function(event) {
-            if (!validateProfileForm()) {
+            if (!validatePerfilForm()) {
                 event.preventDefault();
                 event.stopPropagation();
             }
@@ -224,15 +277,15 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Mejorar UX con tooltips si Bootstrap está disponible
     if (typeof bootstrap !== 'undefined') {
-        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        const tooltipTriggerList = [].slice.call(document.querySelectorAll('#perfil-section [data-bs-toggle="tooltip"]'));
         tooltipTriggerList.map(function (tooltipTriggerEl) {
             return new bootstrap.Tooltip(tooltipTriggerEl);
         });
     }
     
-    // Animaciones de carga
-    const cards = document.querySelectorAll('.card');
-    cards.forEach((card, index) => {
+    // Animaciones de carga específicas para la sección de perfil
+    const perfilCards = document.querySelectorAll('#perfil-section .dashboard-card, #perfil-section .card');
+    perfilCards.forEach((card, index) => {
         setTimeout(() => {
             card.style.opacity = '1';
             card.style.transform = 'translateY(0)';

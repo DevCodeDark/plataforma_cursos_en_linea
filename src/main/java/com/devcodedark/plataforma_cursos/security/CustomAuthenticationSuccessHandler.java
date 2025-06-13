@@ -27,9 +27,7 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
         String redirectUrl = determineTargetUrl(authorities);
         
         response.sendRedirect(redirectUrl);
-    }
-
-    /**
+    }    /**
      * Determina la URL de redirección basada en los roles del usuario
      */
     private String determineTargetUrl(Collection<? extends GrantedAuthority> authorities) {
@@ -39,11 +37,11 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
             
             switch (role) {
                 case "ROLE_ADMINISTRADOR":
-                    return "/admin/dashboard";
+                    return "/astrodev/inicio";
                 case "ROLE_DOCENTE":
-                    return "/docente/dashboard";
+                    return "/astrodev/inicio";
                 case "ROLE_ESTUDIANTE":
-                    return "/estudiante/dashboard";
+                    return "/astrodev/inicio";
                 default:
                     // Continuar con el siguiente rol
                     break;

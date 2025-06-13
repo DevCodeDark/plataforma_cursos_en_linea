@@ -47,8 +47,15 @@ public class PerfilController {
             if (!usuarioOpt.isPresent()) {
                 return "redirect:/auth/login?error=usuario_no_encontrado";
             }
+              Usuario usuario = usuarioOpt.get();
             
-            Usuario usuario = usuarioOpt.get();            // Crear DTO para la actualización del perfil
+            // Si el usuario es admin, redirigir al dashboard
+            if (usuario.getRol() != null && 
+                ("ADMIN".equals(usuario.getRol().getNombre()) || "ADMINISTRADOR".equals(usuario.getRol().getNombre()))) {
+                return "redirect:/admin/dashboard?section=perfil";
+            }
+            
+            // Crear DTO para la actualización del perfil
             PerfilUpdateDTO perfilDTO = new PerfilUpdateDTO();
             perfilDTO.setNombre(usuario.getNombre());
             perfilDTO.setApellido(usuario.getApellido());
@@ -71,18 +78,19 @@ public class PerfilController {
             model.addAttribute("error", ERROR_INTERNO + e.getMessage());
             return "error/500";
         }
-    }    /**
+    }/**
      * Actualiza los datos del perfil del usuario
      */
     @PostMapping("/actualizar")
     public String actualizarPerfil(@ModelAttribute("perfilDTO") PerfilUpdateDTO perfilDTO,
                                    BindingResult result,
                                    Authentication authentication,
-                                   RedirectAttributes redirectAttributes) {
+                                   RedirectAttributes redirectAttributes,
+                                   @RequestParam(value = "from", required = false) String from) {
         try {
             if (result.hasErrors()) {
                 redirectAttributes.addFlashAttribute(ERROR_PERFIL, "Por favor, corrige los errores en el formulario");
-                return REDIRECT_PERFIL;
+                return getRedirectUrl(from);
             }
 
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
@@ -96,23 +104,23 @@ public class PerfilController {
                 redirectAttributes.addFlashAttribute(ERROR_PERFIL, "Error al actualizar el perfil");
             }
 
-            return REDIRECT_PERFIL;
+            return getRedirectUrl(from);
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute(ERROR_PERFIL, ERROR_INTERNO + e.getMessage());
-            return REDIRECT_PERFIL;
+            return getRedirectUrl(from);
         }
-    }    /**
+    }/**
      * Cambia la contraseña del usuario
-     */
-    @PostMapping("/cambiar-password")
+     */    @PostMapping("/cambiar-password")
     public String cambiarPassword(@ModelAttribute("passwordDTO") CambioPasswordDTO passwordDTO,
                                   BindingResult result,
                                   Authentication authentication,
-                                  RedirectAttributes redirectAttributes) {
+                                  RedirectAttributes redirectAttributes,
+                                  @RequestParam(value = "from", required = false) String from) {
         try {
             if (result.hasErrors()) {
                 redirectAttributes.addFlashAttribute(ERROR_PASSWORD, "Por favor, corrige los errores en el formulario");
-                return REDIRECT_PERFIL;
+                return getRedirectUrl(from);
             }
 
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
@@ -126,24 +134,23 @@ public class PerfilController {
                 redirectAttributes.addFlashAttribute(ERROR_PASSWORD, "La contraseña actual no es correcta");
             }
 
-            return REDIRECT_PERFIL;
+            return getRedirectUrl(from);
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute(ERROR_PASSWORD, ERROR_INTERNO + e.getMessage());
-            return REDIRECT_PERFIL;
+            return getRedirectUrl(from);
         }
-    }
-
-    /**
+    }    /**
      * Sube la foto de perfil del usuario
      */
     @PostMapping("/subir-foto")
     public String subirFotoPerfil(@RequestParam("fotoPerfil") MultipartFile archivo,
                                   Authentication authentication,
-                                  RedirectAttributes redirectAttributes) {
+                                  RedirectAttributes redirectAttributes,
+                                  @RequestParam(value = "from", required = false) String from) {
         try {
             if (archivo.isEmpty()) {
                 redirectAttributes.addFlashAttribute(ERROR_FOTO, "Por favor, selecciona una imagen");
-                return REDIRECT_PERFIL;
+                return getRedirectUrl(from);
             }
 
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
@@ -157,10 +164,10 @@ public class PerfilController {
                 redirectAttributes.addFlashAttribute(ERROR_FOTO, "Error al subir la foto de perfil");
             }
 
-            return REDIRECT_PERFIL;
+            return getRedirectUrl(from);
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute(ERROR_FOTO, ERROR_INTERNO + e.getMessage());
-            return REDIRECT_PERFIL;
+            return getRedirectUrl(from);
         }
     }
 
@@ -175,16 +182,25 @@ public class PerfilController {
             // Verificar si el usuario es administrador
             boolean esAdmin = userDetails.getAuthorities().stream()
                 .anyMatch(authority -> authority.getAuthority().equals("ROLE_ADMINISTRADOR"));
-            
-            if (esAdmin) {
+              if (esAdmin) {
                 return "redirect:/admin/configuracion/sistema";
             } else {
                 // Para usuarios no administradores, redirigir al perfil
-                return "redirect:/perfil";
+                return REDIRECT_PERFIL;
             }
         } catch (Exception e) {
             // En caso de error, redirigir al perfil por defecto
-            return "redirect:/perfil";
+            return REDIRECT_PERFIL;
         }
+    }
+    
+    /**
+     * Método helper para determinar la URL de redirección basada en el origen
+     */
+    private String getRedirectUrl(String from) {
+        if ("dashboard".equals(from)) {
+            return "redirect:/admin/dashboard";
+        }
+        return REDIRECT_PERFIL;
     }
 }

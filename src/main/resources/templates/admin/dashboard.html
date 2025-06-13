@@ -37,13 +37,18 @@
                     <i class="fas fa-user-shield"></i>Roles
                 </a>
             </li>
-            <li>                <a th:href="@{/admin/reportes}" class="nav-link">
+            <li>
+                <a href="#reportes" class="nav-link" data-section="reportes">
                     <i class="fas fa-chart-bar"></i>Reportes
+                </a>
+            </li>            <li>
+                <a href="#configuracion" class="nav-link" data-section="configuracion">
+                    <i class="fas fa-cog"></i>Configuración
                 </a>
             </li>
             <li>
-                <a href="#configuracion" class="nav-link" data-section="configuracion">
-                    <i class="fas fa-cog"></i>Configuración
+                <a href="#perfil" class="nav-link" data-section="perfil">
+                    <i class="fas fa-user"></i>Mi Perfil
                 </a>
             </li>
             <li>
@@ -54,19 +59,12 @@
                 </a>
             </li>
             <li>
-                <a th:href="@{/perfil}">
-                    <i class="fas fa-user"></i>Mi Perfil
-                </a>
-            </li>
-            <li>
                 <a th:href="@{/auth/logout}">
                     <i class="fas fa-sign-out-alt"></i>Cerrar Sesión
                 </a>
             </li>
         </ul>
-    </div>
-    
-    <!-- Main Content -->
+    </div>    <!-- Main Content -->
     <div class="main-content" id="mainContent">
         <!-- Top Navbar -->
         <nav class="top-navbar">
@@ -333,28 +331,667 @@
                 </div>
             </div>
         </div>
-        
-        <!-- Other sections would go here... -->
+          <!-- Other sections would go here... -->
         <div id="reportes-section" class="content-section hidden">
-            <h2 class="section-title">Reportes y Estadísticas</h2>
-            <p>Sección de reportes en desarrollo...</p>
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <h2 class="section-title">
+                    <i class="fas fa-chart-line me-2"></i>
+                    Reportes y Estadísticas
+                </h2>
+                <div class="btn-toolbar mb-2 mb-md-0">
+                    <div class="btn-group me-2">
+                        <button type="button" class="btn btn-sm btn-outline-secondary" onclick="exportarReporte('pdf')">
+                            <i class="fas fa-file-pdf me-1"></i>Exportar PDF
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary" onclick="exportarReporte('excel')">
+                            <i class="fas fa-file-excel me-1"></i>Exportar Excel
+                        </button>
+                    </div>
+                    <button type="button" class="btn btn-sm btn-primary" onclick="actualizarReportes()">
+                        <i class="fas fa-sync-alt me-1"></i>Actualizar
+                    </button>
+                </div>
+            </div>
+
+            <!-- Métricas principales -->
+            <div class="row mb-4">
+                <div class="col-md-3 col-sm-6">
+                    <div class="dashboard-card stat-card">
+                        <div class="stat-icon stat-icon-usuarios">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-number" th:text="${totalUsuarios ?: '1'}">1</div>
+                        <div class="stat-label">Total Usuarios</div>
+                        <small class="text-muted">
+                            <i class="fas fa-arrow-up me-1"></i>
+                            12.5% este mes
+                        </small>
+                    </div>
+                </div>
+                
+                <div class="col-md-3 col-sm-6">
+                    <div class="dashboard-card stat-card">
+                        <div class="stat-icon stat-icon-cursos">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                        <div class="stat-number" th:text="${totalCursos ?: '0'}">0</div>
+                        <div class="stat-label">Total Cursos</div>
+                        <small class="text-muted">
+                            <i class="fas fa-arrow-up me-1"></i>
+                            8.3% este mes
+                        </small>
+                    </div>
+                </div>
+                
+                <div class="col-md-3 col-sm-6">
+                    <div class="dashboard-card stat-card">
+                        <div class="stat-icon stat-icon-inscripciones">
+                            <i class="fas fa-user-graduate"></i>
+                        </div>
+                        <div class="stat-number" th:text="${totalInscripciones ?: '0'}">0</div>
+                        <div class="stat-label">Total Inscripciones</div>
+                        <small class="text-muted">
+                            <i class="fas fa-arrow-up me-1"></i>
+                            78.5% tasa completación
+                        </small>
+                    </div>
+                </div>
+                
+                <div class="col-md-3 col-sm-6">
+                    <div class="dashboard-card stat-card">
+                        <div class="stat-icon stat-icon-ingresos">
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <div class="stat-number">4.2</div>
+                        <div class="stat-label">Promedio Calificaciones</div>
+                        <small class="text-muted">
+                            <i class="fas fa-clock me-1"></i>
+                            45.3 min/sesión
+                        </small>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Gráficos principales -->
+            <div class="row mb-4">
+                <div class="col-md-8">
+                    <div class="dashboard-card">
+                        <h5>
+                            <i class="fas fa-chart-line me-2"></i>
+                            Crecimiento por Mes
+                        </h5>
+                        <div class="chart-container">
+                            <canvas id="crecimientoChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-4">
+                    <div class="dashboard-card">
+                        <h5>
+                            <i class="fas fa-pie-chart me-2"></i>
+                            Usuarios por Rol
+                        </h5>
+                        <div class="chart-container">
+                            <canvas id="usuariosPorRolChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Estadísticas detalladas -->
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <div class="dashboard-card">
+                        <h5>
+                            <i class="fas fa-trophy me-2"></i>
+                            Cursos Más Populares
+                        </h5>
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Curso</th>
+                                        <th>Estudiantes</th>
+                                        <th>Rating</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Java Básico</td>
+                                        <td>45</td>
+                                        <td><i class="fas fa-star text-warning"></i> 4.8</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Python Avanzado</td>
+                                        <td>38</td>
+                                        <td><i class="fas fa-star text-warning"></i> 4.6</td>
+                                    </tr>
+                                    <tr>
+                                        <td>React.js</td>
+                                        <td>32</td>
+                                        <td><i class="fas fa-star text-warning"></i> 4.7</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="dashboard-card">
+                        <h5>
+                            <i class="fas fa-user-check me-2"></i>
+                            Instructores Activos
+                        </h5>
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Instructor</th>
+                                        <th>Cursos</th>
+                                        <th>Estudiantes</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Prof. García</td>
+                                        <td>3</td>
+                                        <td>85</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Dr. Martínez</td>
+                                        <td>2</td>
+                                        <td>67</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Ing. López</td>
+                                        <td>4</td>
+                                        <td>92</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actividad reciente -->
+            <div class="row mb-4">
+                <div class="col-md-12">
+                    <div class="dashboard-card">
+                        <h5>
+                            <i class="fas fa-clock me-2"></i>
+                            Actividad Reciente del Sistema
+                        </h5>
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Usuario</th>
+                                        <th>Actividad</th>
+                                        <th>Fecha</th>
+                                        <th>Estado</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Juan Pérez</td>
+                                        <td>Completó el curso "Java Básico"</td>
+                                        <td>Hace 2 horas</td>
+                                        <td><span class="badge-status badge-activo">Completado</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>María García</td>
+                                        <td>Se inscribió en "Python Avanzado"</td>
+                                        <td>Hace 4 horas</td>
+                                        <td><span class="badge-status badge-activo">Inscrito</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Carlos López</td>
+                                        <td>Inició sesión desde móvil</td>
+                                        <td>Hace 6 horas</td>
+                                        <td><span class="badge-status badge-activo">Activo</span></td>
+                                    </tr>
+                                    <tr>
+                                        <td>Admin Sistema</td>
+                                        <td>Actualizó configuración de email</td>
+                                        <td>Hace 1 día</td>
+                                        <td><span class="badge-status badge-activo">Exitoso</span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>          <div id="configuracion-section" class="content-section hidden">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <h2 class="section-title">
+                    <i class="fas fa-cog me-2"></i>
+                    Configuración del Sistema
+                </h2>
+                <div class="btn-toolbar mb-2 mb-md-0">
+                    <div class="btn-group me-2">
+                        <button type="button" class="btn btn-sm btn-outline-secondary" onclick="exportarConfiguracion()">
+                            <i class="fas fa-download me-1"></i>Exportar
+                        </button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary" onclick="importarConfiguracion()">
+                            <i class="fas fa-upload me-1"></i>Importar
+                        </button>
+                    </div>
+                    <button type="button" class="btn btn-sm btn-danger" onclick="reiniciarConfiguracion()">
+                        <i class="fas fa-redo me-1"></i>Reiniciar
+                    </button>
+                </div>
+            </div>
+
+            <div class="row">
+                <!-- Sidebar con categorías -->
+                <div class="col-lg-3">
+                    <div class="dashboard-card">
+                        <h5>
+                            <i class="fas fa-list me-2"></i>
+                            Categorías
+                        </h5>
+                        <div class="list-group list-group-flush">
+                            <a href="#" class="list-group-item list-group-item-action active" data-categoria="sistema">
+                                <i class="fas fa-cog me-2"></i>Sistema
+                            </a>
+                            <a href="#" class="list-group-item list-group-item-action" data-categoria="limites">
+                                <i class="fas fa-chart-line me-2"></i>Límites
+                            </a>
+                            <a href="#" class="list-group-item list-group-item-action" data-categoria="archivos">
+                                <i class="fas fa-file me-2"></i>Archivos
+                            </a>
+                            <a href="#" class="list-group-item list-group-item-action" data-categoria="apariencia">
+                                <i class="fas fa-palette me-2"></i>Apariencia
+                            </a>
+                            <a href="#" class="list-group-item list-group-item-action" data-categoria="notificaciones">
+                                <i class="fas fa-bell me-2"></i>Notificaciones
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Búsqueda -->
+                    <div class="dashboard-card mt-3">
+                        <h6>
+                            <i class="fas fa-search me-2"></i>
+                            Buscar
+                        </h6>
+                        <input type="text" class="form-control" id="busquedaConfig" placeholder="Buscar configuración...">
+                    </div>
+                </div>
+
+                <!-- Contenido principal -->
+                <div class="col-lg-9">
+                    <!-- Configuración del Sistema -->
+                    <div id="categoria-sistema" class="categoria-content">
+                        <div class="dashboard-card">
+                            <h5>
+                                <i class="fas fa-cog me-2"></i>
+                                Configuración General del Sistema
+                            </h5>
+                            <form id="form-sistema" onsubmit="guardarConfiguracionSistema(event)">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="nombreSitio" class="form-label">Nombre del Sitio *</label>
+                                            <input type="text" class="form-control" id="nombreSitio" value="Plataforma de Cursos" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="emailContacto" class="form-label">Email de Contacto *</label>
+                                            <input type="email" class="form-control" id="emailContacto" value="admin@plataforma.com" required>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="descripcionSitio" class="form-label">Descripción del Sitio *</label>
+                                    <textarea class="form-control" id="descripcionSitio" rows="3" required>Plataforma educativa online para cursos de programación y tecnología</textarea>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="telefonoContacto" class="form-label">Teléfono de Contacto</label>
+                                            <input type="tel" class="form-control" id="telefonoContacto" value="+1234567890">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="mb-3">
+                                            <label for="direccion" class="form-label">Dirección</label>
+                                            <input type="text" class="form-control" id="direccion" placeholder="Dirección física">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="mb-3">
+                                            <label for="limiteUsuarios" class="form-label">Límite de Usuarios *</label>
+                                            <input type="number" class="form-control" id="limiteUsuarios" value="1000" min="1" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="mb-3">
+                                            <label for="limiteCursos" class="form-label">Límite de Cursos *</label>
+                                            <input type="number" class="form-control" id="limiteCursos" value="100" min="1" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="mb-3">
+                                            <label for="tamañoMaximoArchivo" class="form-label">Tamaño Máximo Archivo (MB) *</label>
+                                            <input type="number" class="form-control" id="tamañoMaximoArchivo" value="50" min="1" required>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-check form-switch mb-3">
+                                            <input class="form-check-input" type="checkbox" id="permitirRegistroPublico" checked>
+                                            <label class="form-check-label" for="permitirRegistroPublico">
+                                                Permitir registro público
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-check form-switch mb-3">
+                                            <input class="form-check-input" type="checkbox" id="notificacionesEmail" checked>
+                                            <label class="form-check-label" for="notificacionesEmail">
+                                                Notificaciones por email
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-check form-switch mb-3">
+                                            <input class="form-check-input" type="checkbox" id="modoMantenimiento">
+                                            <label class="form-check-label" for="modoMantenimiento">
+                                                Modo mantenimiento
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-check form-switch mb-3">
+                                            <input class="form-check-input" type="checkbox" id="registrarActividades" checked>
+                                            <label class="form-check-label" for="registrarActividades">
+                                                Registrar actividades
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="text-end mt-4">
+                                    <button type="button" class="btn btn-outline-secondary me-2" onclick="resetearConfiguracion()">
+                                        <i class="fas fa-undo me-2"></i>Resetear
+                                    </button>
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-save me-2"></i>Guardar Configuración
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Otras categorías se mostrarán dinámicamente -->
+                    <div id="otras-categorias" class="categoria-content" style="display: none;">
+                        <div class="dashboard-card">
+                            <h5 id="titulo-categoria">
+                                <i class="fas fa-cog me-2"></i>
+                                Configuración
+                            </h5>
+                            <div id="contenido-categoria">
+                                <!-- Contenido dinámico -->
+                            </div>
+                        </div>
+                    </div>                </div>
+            </div>
         </div>
-          <div id="configuracion-section" class="content-section hidden">
-            <h2 class="section-title">Configuración del Sistema</h2>
-            <div class="card">
-                <div class="card-body">
-                    <p class="card-text">Gestiona las configuraciones generales del sistema.</p>
-                    <a th:href="@{/admin/configuracion/sistema}" class="btn btn-primary">
-                        <i class="fas fa-cog me-2"></i>Ir a Configuración
-                    </a>
+
+        <!-- Perfil Section -->
+        <div id="perfil-section" class="content-section hidden">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <h2 class="section-title">
+                    <i class="fas fa-user me-2"></i>
+                    Mi Perfil
+                </h2>
+                <div class="btn-toolbar mb-2 mb-md-0">
+                    <div class="btn-group me-2">
+                        <button type="button" class="btn btn-sm btn-outline-secondary" onclick="exportarPerfil()">
+                            <i class="fas fa-download me-1"></i>Exportar Datos
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Alertas -->
+            <div th:if="${successPerfil}" class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="fas fa-check-circle me-2"></i>
+                <span th:text="${successPerfil}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+
+            <div th:if="${errorPerfil}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="fas fa-exclamation-circle me-2"></i>
+                <span th:text="${errorPerfil}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+
+            <div th:if="${successPassword}" class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="fas fa-check-circle me-2"></i>
+                <span th:text="${successPassword}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+
+            <div th:if="${errorPassword}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="fas fa-exclamation-circle me-2"></i>
+                <span th:text="${errorPassword}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+
+            <div th:if="${successFoto}" class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="fas fa-check-circle me-2"></i>
+                <span th:text="${successFoto}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+
+            <div th:if="${errorFoto}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="fas fa-exclamation-circle me-2"></i>
+                <span th:text="${errorFoto}"></span>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+
+            <!-- Encabezado del perfil -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="dashboard-card profile-header">
+                        <div class="card-body text-center">
+                            <div class="profile-photo-container">
+                                <img th:src="${usuarioActual.fotoPerfil != null ? usuarioActual.fotoPerfil : '/img/default-avatar.svg'}" 
+                                     alt="Foto de perfil" class="profile-photo">
+                                <div class="photo-overlay">
+                                    <i class="fas fa-camera"></i>
+                                </div>
+                            </div>
+                            <h2 class="mb-1" th:text="${usuarioActual.nombre + ' ' + usuarioActual.apellido}">Nombre Usuario</h2>
+                            <p class="text-muted mb-0" th:text="${usuarioActual.email}">email@ejemplo.com</p>
+                            <small class="text-muted" th:text="'Rol: ' + ${usuarioActual.rol.nombre}">Rol</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-4">
+                <!-- Información Personal -->
+                <div class="col-lg-8">
+                    <div class="dashboard-card">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">
+                                <i class="fas fa-user me-2"></i>Información Personal
+                            </h5>
+                        </div>
+                        <div class="card-body">                            <form th:action="@{/perfil/actualizar}" th:object="${perfilDTO}" method="post">
+                                <input type="hidden" name="from" value="dashboard">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="nombre" class="form-label">Nombre *</label>
+                                        <input type="text" class="form-control" id="nombre" th:field="*{nombre}" required>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="apellido" class="form-label">Apellido *</label>
+                                        <input type="text" class="form-control" id="apellido" th:field="*{apellido}" required>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="email" class="form-label">Email *</label>
+                                        <input type="email" class="form-control" id="email" th:field="*{email}" required>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="usuario" class="form-label">Nombre de Usuario *</label>
+                                        <input type="text" class="form-control" id="usuario" th:field="*{usuario}" required>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="telefono" class="form-label">Teléfono</label>
+                                        <input type="tel" class="form-control" id="telefono" th:field="*{telefono}">
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="fechaNacimiento" class="form-label">Fecha de Nacimiento</label>
+                                        <input type="date" class="form-control" id="fechaNacimiento" th:field="*{fechaNacimiento}">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="genero" class="form-label">Género</label>
+                                        <select class="form-control" id="genero" th:field="*{genero}">
+                                            <option value="">Seleccionar...</option>
+                                            <option value="masculino">Masculino</option>
+                                            <option value="femenino">Femenino</option>
+                                            <option value="otro">Otro</option>
+                                            <option value="prefiero_no_decir">Prefiero no decir</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="text-end">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-save me-2"></i>Guardar Cambios
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Cambiar Contraseña -->
+                    <div class="dashboard-card mt-4">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">
+                                <i class="fas fa-lock me-2"></i>Cambiar Contraseña
+                            </h5>
+                        </div>
+                        <div class="card-body">                            <form th:action="@{/perfil/cambiar-password}" th:object="${passwordDTO}" method="post">
+                                <input type="hidden" name="from" value="dashboard">
+                                <div class="mb-3">
+                                    <label for="passwordActual" class="form-label">Contraseña Actual *</label>
+                                    <input type="password" class="form-control" id="passwordActual" th:field="*{passwordActual}" required>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="passwordNueva" class="form-label">Nueva Contraseña *</label>
+                                        <input type="password" class="form-control" id="passwordNueva" th:field="*{passwordNueva}" 
+                                               minlength="6" required>
+                                        <div class="form-text">Mínimo 6 caracteres</div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="confirmarPassword" class="form-label">Confirmar Nueva Contraseña *</label>
+                                        <input type="password" class="form-control" id="confirmarPassword" 
+                                               th:field="*{confirmarPassword}" minlength="6" required>
+                                    </div>
+                                </div>
+                                <div class="text-end">
+                                    <button type="submit" class="btn btn-warning">
+                                        <i class="fas fa-key me-2"></i>Cambiar Contraseña
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Panel Lateral -->
+                <div class="col-lg-4">
+                    <!-- Subir Foto -->
+                    <div class="dashboard-card">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">
+                                <i class="fas fa-camera me-2"></i>Foto de Perfil
+                            </h5>
+                        </div>
+                        <div class="card-body">                            <form th:action="@{/perfil/subir-foto}" method="post" enctype="multipart/form-data">
+                                <input type="hidden" name="from" value="dashboard">
+                                <div class="mb-3">
+                                    <label for="fotoPerfil" class="form-label">Seleccionar nueva foto</label>
+                                    <input type="file" class="form-control" id="fotoPerfil" name="fotoPerfil" 
+                                           accept="image/*" required>
+                                    <div class="form-text">Formatos: JPG, PNG, GIF. Máximo 5MB</div>
+                                </div>
+                                <button type="submit" class="btn btn-primary w-100">
+                                    <i class="fas fa-upload me-2"></i>Subir Foto
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Información de la cuenta -->
+                    <div class="dashboard-card mt-4">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">
+                                <i class="fas fa-info-circle me-2"></i>Información de la Cuenta
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row text-center">
+                                <div class="col-6">
+                                    <div class="stat-item">
+                                        <h5 class="text-primary" th:text="${usuarioActual.rol.nombre}">Rol</h5>
+                                        <small class="text-muted">Rol</small>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="stat-item">
+                                        <h5 class="text-success" th:text="${usuarioActual.estado}">Estado</h5>
+                                        <small class="text-muted">Estado</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="small text-muted">
+                                <div><strong>Fecha de registro:</strong> 
+                                    <span th:text="${#temporals.format(usuarioActual.fechaCreacion, 'dd/MM/yyyy')}">01/01/2025</span>
+                                </div>
+                                <div th:if="${usuarioActual.fechaActualizacion}">
+                                    <strong>Última actualización:</strong> 
+                                    <span th:text="${#temporals.format(usuarioActual.fechaActualizacion, 'dd/MM/yyyy HH:mm')}">01/01/2025 12:00</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-
-    <!-- Scripts -->
+    </div>    <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script th:src="@{/js/admin-dashboard.js}"></script>
+    <script th:src="@{/js/dashboard-reportes.js}"></script>
+    <script th:src="@{/js/dashboard-configuracion.js}"></script>
+    <script th:src="@{/js/dashboard-perfil.js}"></script>
 </body>
 </html>

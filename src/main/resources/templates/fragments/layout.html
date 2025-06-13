@@ -71,14 +71,27 @@
                            data-bs-toggle="dropdown" aria-expanded="false">
                             <i class="fas fa-user me-1"></i>
                             <span sec:authentication="principal.username">Usuario</span>
-                        </a>
-                        <ul class="dropdown-menu dropdown-menu-end">
-                            <li>
-                                <a class="dropdown-item" th:href="@{/perfil}">
+                        </a>                        <ul class="dropdown-menu dropdown-menu-end">                            <li>
+                                <a class="dropdown-item" 
+                                   sec:authorize="hasRole('ADMINISTRADOR')"
+                                   th:href="@{/admin/dashboard?section=perfil}">
                                     <i class="fas fa-user-edit me-2"></i>Mi Perfil
                                 </a>
-                            </li>                            <li>
-                                <a class="dropdown-item" th:href="@{/configuracion}">
+                                <a class="dropdown-item" 
+                                   sec:authorize="!hasRole('ADMINISTRADOR')"
+                                   th:href="@{/perfil}">
+                                    <i class="fas fa-user-edit me-2"></i>Mi Perfil
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" 
+                                   sec:authorize="hasRole('ADMINISTRADOR')"
+                                   th:href="@{/admin/dashboard?section=configuracion}">
+                                    <i class="fas fa-cog me-2"></i>Configuración
+                                </a>
+                                <a class="dropdown-item" 
+                                   sec:authorize="!hasRole('ADMINISTRADOR')"
+                                   th:href="@{/configuracion}">
                                     <i class="fas fa-cog me-2"></i>Configuración
                                 </a>
                             </li>

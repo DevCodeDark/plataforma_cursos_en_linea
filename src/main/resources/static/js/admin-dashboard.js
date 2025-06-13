@@ -1,11 +1,17 @@
 // JavaScript para el dashboard administrativo
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('Dashboard initialized'); // Debug log
+    
     // Referencias a elementos del DOM
     const sidebarToggle = document.getElementById('sidebarToggle');
     const sidebar = document.getElementById('sidebar');
     const mainContent = document.getElementById('mainContent');
     const navLinks = document.querySelectorAll('.nav-link[data-section]');
     const contentSections = document.querySelectorAll('.content-section');
+    
+    // Verificar que los elementos existen
+    console.log('Sidebar:', sidebar);
+    console.log('Main content:', mainContent);
     
     /**
      * Alternar la visibilidad del sidebar
@@ -63,13 +69,47 @@ document.addEventListener('DOMContentLoaded', function() {
         // Guardar sección actual en localStorage
         localStorage.setItem('currentSection', sectionName);
     }
-    
-    /**
+      /**
+     * Obtener parámetros de la URL
+     */
+    function getURLParams() {
+        const urlParams = new URLSearchParams(window.location.search);
+        return {
+            section: urlParams.get('section')
+        };
+    }    /**
      * Restaurar sección activa
      */
     function restoreActiveSection() {
-        const currentSection = localStorage.getItem('currentSection') || 'dashboard';
+        const params = getURLParams();
+        let currentSection = 'dashboard'; // Por defecto siempre dashboard
+        
+        // Verificar si viene del login (sin referrer o desde login page)
+        const referrer = document.referrer;
+        const comesFromLogin = !referrer || referrer.includes('/auth/login') || referrer.includes('/login');
+        
+        if (comesFromLogin) {
+            // Si viene del login, siempre ir a dashboard
+            currentSection = 'dashboard';
+            // Limpiar localStorage para empezar fresco
+            localStorage.removeItem('currentSection');
+        } else if (params.section && ['dashboard', 'usuarios', 'cursos', 'roles', 'reportes', 'configuracion', 'perfil'].includes(params.section)) {
+            // Solo usar el parámetro section si existe y es válido
+            currentSection = params.section;
+        } else {
+            // Si no hay parámetro válido, usar localStorage
+            const storedSection = localStorage.getItem('currentSection');
+            if (storedSection && ['dashboard', 'usuarios', 'cursos', 'roles', 'reportes', 'configuracion', 'perfil'].includes(storedSection)) {
+                currentSection = storedSection;
+            }
+        }
+        
         navigateToSection(currentSection);
+        
+        // Limpiar parámetros de URL después de navegar
+        if (params.section) {
+            window.history.replaceState({}, document.title, window.location.pathname);
+        }
     }
     
     /**
@@ -195,8 +235,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     /**
      * Manejar responsive behavior
-     */
-    function handleResponsive() {
+     */    function handleResponsive() {
         const mediaQuery = window.matchMedia('(max-width: 768px)');
         
         function handleMediaChange(e) {
@@ -252,7 +291,30 @@ document.addEventListener('DOMContentLoaded', function() {
         if (section === 'dashboard') {
             setTimeout(initCharts, 100); // Delay para asegurar que el DOM esté listo
         }
-    });
+    });    
+    /**
+     * Función para forzar el layout correcto
+     */
+    function enforceLayout() {
+        if (sidebar && mainContent) {
+            // Asegurar que el sidebar esté visible en desktop
+            if (window.innerWidth > 768) {
+                sidebar.style.display = 'block';
+                sidebar.style.transform = 'translateX(0)';
+                sidebar.classList.remove('collapsed');
+                
+                mainContent.style.marginLeft = '250px';
+                mainContent.style.width = 'calc(100% - 250px)';
+                mainContent.classList.remove('full-width');
+            }
+        }
+    }
+    
+    // Ejecutar inmediatamente para forzar el layout
+    enforceLayout();
+    
+    // También ejecutar en resize
+    window.addEventListener('resize', enforceLayout);
     
     // Inicialización
     restoreSidebarState();
