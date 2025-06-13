@@ -86,6 +86,19 @@ class AstroDevController {
     }
 
     /**
+     * Página "Cursos" - Catálogo completo de cursos disponibles
+     * 
+     * @param model modelo para pasar datos a la vista
+     * @return nombre de la plantilla Thymeleaf
+     */
+    @GetMapping("/cursos")
+    public String cursos(Model model) {
+        model.addAttribute("titulo", "Nuestros Cursos");
+        model.addAttribute("descripcion", "Explora todo nuestro catálogo de cursos y encuentra el camino perfecto para tu carrera en tecnología");
+        return "cursos";
+    }
+
+    /**
      * Página "Contacto" - Información de contacto y ubicación
      * 
      * @param model modelo para pasar datos a la vista

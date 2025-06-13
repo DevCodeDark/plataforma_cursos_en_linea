@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cursos - AstroDev Academy</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- CSS personalizado -->
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+    <!-- Navegación -->
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+        <div class="container">
+            <a class="navbar-brand fw-bold" href="#" th:href="@{/astrodev/inicio}">
+                <i class="fas fa-rocket me-2"></i>
+                AstroDev Academy
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" th:href="@{/astrodev/inicio}">Inicio</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#" th:href="@{/astrodev/cursos}">Cursos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" th:href="@{/astrodev/nosotros}">Nosotros</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" th:href="@{/astrodev/contacto}">Contacto</a>
+                    </li>                    <li class="nav-item ms-2">
+                        <a class="btn btn-outline-primary btn-nav" href="#" th:href="@{/auth/login}">
+                            <i class="fas fa-sign-in-alt me-1"></i>Iniciar Sesión
+                        </a>
+                    </li>
+                    <li class="nav-item ms-2">
+                        <a class="btn btn-primary btn-nav" href="#" th:href="@{/auth/registro}">
+                            <i class="fas fa-user-plus me-1"></i>Registrarse
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="hero-overlay"></div>
+        <div class="container">
+            <div class="row align-items-center min-vh-100">
+                <div class="col-lg-8 mx-auto text-center">
+                    <div class="hero-content">
+                        <h1 class="hero-title mb-4">
+                            <span class="text-primary">Nuestros</span> Cursos
+                        </h1>
+                        <p class="hero-subtitle mb-4" th:text="${descripcion}">
+                            Explora todo nuestro catálogo de cursos y encuentra el camino perfecto para tu carrera en tecnología
+                        </p>
+                        <div class="hero-cta">
+                            <a href="#catalogo-cursos" class="btn btn-primary btn-lg me-3 pulse-animation">
+                                <i class="fas fa-search me-2"></i>Explorar Catálogo
+                            </a>
+                            <a href="#filtros" class="btn btn-outline-light btn-lg">
+                                <i class="fas fa-filter me-2"></i>Filtrar Cursos
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Filtros y Búsqueda -->
+    <section id="filtros" class="py-5 bg-light">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card shadow-sm border-0">
+                        <div class="card-body p-4">
+                            <h4 class="card-title mb-4">
+                                <i class="fas fa-filter text-primary me-2"></i>
+                                Encuentra tu Curso Ideal
+                            </h4>
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <label for="busqueda" class="form-label">Buscar Curso</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">
+                                            <i class="fas fa-search"></i>
+                                        </span>
+                                        <input type="text" class="form-control" id="busqueda" placeholder="Nombre del curso...">
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="categoria" class="form-label">Categoría</label>
+                                    <select class="form-select" id="categoria">
+                                        <option value="">Todas las categorías</option>
+                                        <option value="frontend">Frontend</option>
+                                        <option value="backend">Backend</option>
+                                        <option value="fullstack">Full Stack</option>
+                                        <option value="movil">Desarrollo Móvil</option>
+                                        <option value="datos">Ciencia de Datos</option>
+                                        <option value="devops">DevOps</option>
+                                        <option value="ia">Inteligencia Artificial</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="nivel" class="form-label">Nivel</label>
+                                    <select class="form-select" id="nivel">
+                                        <option value="">Todos los niveles</option>
+                                        <option value="principiante">Principiante</option>
+                                        <option value="intermedio">Intermedio</option>
+                                        <option value="avanzado">Avanzado</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-2">
+                                    <label for="precio" class="form-label">Precio</label>
+                                    <select class="form-select" id="precio">
+                                        <option value="">Todos</option>
+                                        <option value="gratis">Gratuitos</option>
+                                        <option value="pago">De pago</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row mt-3">
+                                <div class="col-12">
+                                    <button class="btn btn-primary me-2" onclick="aplicarFiltros()">
+                                        <i class="fas fa-search me-1"></i>Buscar
+                                    </button>
+                                    <button class="btn btn-outline-secondary" onclick="limpiarFiltros()">
+                                        <i class="fas fa-undo me-1"></i>Limpiar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Catálogo de Cursos -->
+    <section id="catalogo-cursos" class="py-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12 mb-5">
+                    <div class="text-center">
+                        <h2 class="section-title">Catálogo <span class="text-primary">Completo</span></h2>
+                        <p class="section-subtitle">Todos nuestros cursos diseñados para impulsar tu carrera tecnológica</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Loading indicator -->
+            <div id="loading" class="text-center py-5">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Cargando cursos...</span>
+                </div>
+                <p class="mt-3 text-muted">Cargando cursos disponibles...</p>
+            </div>
+
+            <!-- Cursos Grid -->
+            <div id="cursos-grid" class="row g-4" style="display: none;">
+                <!-- Los cursos se cargarán dinámicamente aquí -->
+            </div>
+
+            <!-- No results message -->
+            <div id="no-results" class="text-center py-5" style="display: none;">
+                <div class="mb-4">
+                    <i class="fas fa-search fa-3x text-muted"></i>
+                </div>
+                <h4 class="text-muted">No se encontraron cursos</h4>
+                <p class="text-muted">Intenta ajustar los filtros de búsqueda</p>
+                <button class="btn btn-primary" onclick="limpiarFiltros()">
+                    <i class="fas fa-undo me-1"></i>Limpiar Filtros
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sección de Estadísticas -->
+    <section class="py-5 bg-primary text-white">
+        <div class="container">
+            <div class="row text-center">
+                <div class="col-md-3 mb-4">
+                    <div class="stat-card">
+                        <i class="fas fa-book-open fa-2x mb-3"></i>
+                        <h3 class="stat-number" id="total-cursos">50+</h3>
+                        <p class="stat-label">Cursos Disponibles</p>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-4">
+                    <div class="stat-card">
+                        <i class="fas fa-users fa-2x mb-3"></i>
+                        <h3 class="stat-number">15,000+</h3>
+                        <p class="stat-label">Estudiantes</p>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-4">
+                    <div class="stat-card">
+                        <i class="fas fa-certificate fa-2x mb-3"></i>
+                        <h3 class="stat-number">12,000+</h3>
+                        <p class="stat-label">Certificados</p>
+                    </div>
+                </div>
+                <div class="col-md-3 mb-4">
+                    <div class="stat-card">
+                        <i class="fas fa-star fa-2x mb-3"></i>
+                        <h3 class="stat-number">4.8</h3>
+                        <p class="stat-label">Calificación Promedio</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action -->
+    <section class="py-5 bg-light">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 mx-auto text-center">
+                    <h2 class="mb-4">¿No encuentras el curso que buscas?</h2>
+                    <p class="lead mb-4">
+                        Nuestro equipo está constantemente creando nuevos contenidos. 
+                        Contáctanos y cuéntanos qué te gustaría aprender.
+                    </p>
+                    <div class="d-flex justify-content-center gap-3 flex-wrap">
+                        <a href="#" th:href="@{/astrodev/contacto}" class="btn btn-primary btn-lg">
+                            <i class="fas fa-envelope me-2"></i>Sugerir Curso
+                        </a>
+                        <a href="#" th:href="@{/auth/registro}" class="btn btn-outline-primary btn-lg">
+                            <i class="fas fa-user-plus me-2"></i>Crear Cuenta
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 mb-4">
+                    <h5 class="text-light mb-3">
+                        <i class="fas fa-rocket me-2"></i>
+                        AstroDev Academy
+                    </h5>
+                    <p class="text-light-subtle">
+                        Tu plataforma de confianza para aprender tecnología espacial y desarrollo de software. 
+                        Conectamos el futuro con el presente a través de la educación.
+                    </p>
+                    <div class="social-links">
+                        <a href="#" class="me-3"><i class="fab fa-facebook"></i></a>
+                        <a href="#" class="me-3"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="me-3"><i class="fab fa-linkedin"></i></a>
+                        <a href="#" class="me-3"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-2 mb-4">
+                    <h6 class="text-light mb-3">Cursos</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-light-subtle">Frontend</a></li>
+                        <li><a href="#" class="text-light-subtle">Backend</a></li>
+                        <li><a href="#" class="text-light-subtle">Full Stack</a></li>
+                        <li><a href="#" class="text-light-subtle">DevOps</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-2 mb-4">
+                    <h6 class="text-light mb-3">Empresa</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="#" th:href="@{/astrodev/nosotros}" class="text-light-subtle">Sobre Nosotros</a></li>
+                        <li><a href="#" th:href="@{/astrodev/contacto}" class="text-light-subtle">Contacto</a></li>
+                        <li><a href="#" class="text-light-subtle">Carreras</a></li>
+                        <li><a href="#" class="text-light-subtle">Blog</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-2 mb-4">
+                    <h6 class="text-light mb-3">Soporte</h6>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-light-subtle">Centro de Ayuda</a></li>
+                        <li><a href="#" class="text-light-subtle">Términos</a></li>
+                        <li><a href="#" class="text-light-subtle">Privacidad</a></li>
+                        <li><a href="#" class="text-light-subtle">FAQ</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-2 mb-4">
+                    <h6 class="text-light mb-3">Contacto</h6>
+                    <div class="text-light-subtle">
+                        <p><i class="fas fa-map-marker-alt me-2"></i>Jr. Circunvalación Cumbaza 298, Tarapoto</p>
+                        <p><i class="fas fa-phone me-2"></i>+51 942 404 498</p>
+                        <p><i class="fas fa-envelope me-2"></i>info@astrodev.academy</p>
+                    </div>
+                </div>
+            </div>
+            <hr class="my-4">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <p class="text-light-subtle mb-0">
+                        &copy; 2024 AstroDev Academy. Todos los derechos reservados.
+                    </p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <p class="text-light-subtle mb-0">
+                        Desarrollado con <i class="fas fa-heart text-danger"></i> para el futuro
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- JavaScript personalizado -->
+    <script th:src="@{/js/script.js}"></script>
+    
+    <!-- JavaScript específico para la página de cursos -->
+    <script>
+        // Variables globales
+        let cursosData = [];
+        let cursosOriginales = [];
+
+        // Cargar cursos al cargar la página
+        document.addEventListener('DOMContentLoaded', function() {
+            cargarCursos();
+        });
+
+        // Función para cargar cursos desde la API
+        async function cargarCursos() {
+            try {
+                const response = await fetch('/api/cursos');
+                if (response.ok) {
+                    cursosData = await response.json();
+                    cursosOriginales = [...cursosData];
+                    mostrarCursos(cursosData);
+                    actualizarEstadisticas();
+                } else {
+                    mostrarError('Error al cargar los cursos');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                mostrarCursosEjemplo(); // Mostrar cursos de ejemplo si hay error
+            } finally {
+                document.getElementById('loading').style.display = 'none';
+            }
+        }
+
+        // Función para mostrar cursos en el grid
+        function mostrarCursos(cursos) {
+            const grid = document.getElementById('cursos-grid');
+            const noResults = document.getElementById('no-results');
+            
+            if (cursos.length === 0) {
+                grid.style.display = 'none';
+                noResults.style.display = 'block';
+                return;
+            }
+
+            noResults.style.display = 'none';
+            grid.style.display = 'flex';
+            
+            grid.innerHTML = cursos.map(curso => `
+                <div class="col-lg-4 col-md-6">
+                    <div class="card course-card h-100 shadow-sm">
+                        <div class="card-img-top bg-gradient-primary d-flex align-items-center justify-content-center" style="height: 200px;">
+                            <i class="fas ${getCursoIcon(curso.categoria)} fa-3x text-white"></i>
+                        </div>
+                        <div class="card-body d-flex flex-column">
+                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                <span class="badge bg-primary">${curso.categoria || 'General'}</span>
+                                <span class="badge bg-secondary">${curso.nivel || 'Intermedio'}</span>
+                            </div>
+                            <h5 class="card-title">${curso.nombre}</h5>
+                            <p class="card-text flex-grow-1">${curso.descripcion || 'Curso completo de desarrollo.'}</p>
+                            <div class="course-meta">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <span class="text-muted">
+                                        <i class="fas fa-clock me-1"></i>
+                                        ${curso.duracion || '40'} horas
+                                    </span>
+                                    <span class="text-warning">
+                                        <i class="fas fa-star me-1"></i>
+                                        ${curso.calificacion || '4.8'}
+                                    </span>
+                                </div>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="h5 mb-0 text-primary">
+                                        ${curso.precio ? `$${curso.precio}` : 'Gratuito'}
+                                    </span>
+                                    <button class="btn btn-primary btn-sm" onclick="verDetalleCurso(${curso.id})">
+                                        <i class="fas fa-arrow-right me-1"></i>Ver Curso
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Función para obtener el ícono según la categoría
+        function getCursoIcon(categoria) {
+            const iconos = {
+                'frontend': 'fa-code',
+                'backend': 'fa-server',
+                'fullstack': 'fa-layers',
+                'movil': 'fa-mobile-alt',
+                'datos': 'fa-chart-bar',
+                'devops': 'fa-cogs',
+                'ia': 'fa-brain',
+                'default': 'fa-graduation-cap'
+            };
+            return iconos[categoria] || iconos.default;
+        }
+
+        // Función para aplicar filtros
+        function aplicarFiltros() {
+            const busqueda = document.getElementById('busqueda').value.toLowerCase();
+            const categoria = document.getElementById('categoria').value;
+            const nivel = document.getElementById('nivel').value;
+            const precio = document.getElementById('precio').value;
+
+            let cursosFiltrados = cursosOriginales.filter(curso => {
+                const matchBusqueda = !busqueda || 
+                    curso.nombre.toLowerCase().includes(busqueda) ||
+                    (curso.descripcion && curso.descripcion.toLowerCase().includes(busqueda));
+                
+                const matchCategoria = !categoria || curso.categoria === categoria;
+                const matchNivel = !nivel || curso.nivel === nivel;
+                
+                const esGratis = !curso.precio || curso.precio === 0;
+                const matchPrecio = !precio || 
+                    (precio === 'gratis' && esGratis) ||
+                    (precio === 'pago' && !esGratis);
+
+                return matchBusqueda && matchCategoria && matchNivel && matchPrecio;
+            });
+
+            mostrarCursos(cursosFiltrados);
+        }
+
+        // Función para limpiar filtros
+        function limpiarFiltros() {
+            document.getElementById('busqueda').value = '';
+            document.getElementById('categoria').value = '';
+            document.getElementById('nivel').value = '';
+            document.getElementById('precio').value = '';
+            mostrarCursos(cursosOriginales);
+        }
+
+        // Función para ver detalle del curso
+        function verDetalleCurso(cursoId) {
+            // Por ahora solo mostrar alerta, luego se puede implementar modal o página detalle
+            alert(`Ver detalle del curso ID: ${cursoId}`);
+            // TODO: Implementar navegación al detalle del curso
+            // window.location.href = `/astrodev/cursos/${cursoId}`;
+        }
+
+        // Función para actualizar estadísticas
+        function actualizarEstadisticas() {
+            const totalCursos = cursosOriginales.length;
+            document.getElementById('total-cursos').textContent = totalCursos + '+';
+        }
+
+        // Función para mostrar error
+        function mostrarError(mensaje) {
+            const grid = document.getElementById('cursos-grid');
+            grid.innerHTML = `
+                <div class="col-12">
+                    <div class="alert alert-danger text-center">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        ${mensaje}
+                    </div>
+                </div>
+            `;
+            grid.style.display = 'flex';
+        }
+
+        // Función para mostrar cursos de ejemplo si no hay conexión a la API
+        function mostrarCursosEjemplo() {
+            const cursosEjemplo = [
+                {
+                    id: 1,
+                    nombre: "Desarrollo Frontend con React",
+                    descripcion: "Aprende a crear interfaces modernas con React, hooks y context.",
+                    categoria: "frontend",
+                    nivel: "intermedio",
+                    duracion: 45,
+                    precio: 299,
+                    calificacion: 4.9
+                },
+                {
+                    id: 2,
+                    nombre: "Backend con Spring Boot",
+                    descripcion: "Domina el desarrollo backend con Java y Spring Boot.",
+                    categoria: "backend",
+                    nivel: "intermedio",
+                    duracion: 60,
+                    precio: 399,
+                    calificacion: 4.8
+                },
+                {
+                    id: 3,
+                    nombre: "Introducción a Python",
+                    descripcion: "Aprende los fundamentos de la programación con Python.",
+                    categoria: "backend",
+                    nivel: "principiante",
+                    duracion: 30,
+                    precio: 0,
+                    calificacion: 4.7
+                }
+            ];
+            
+            cursosData = cursosEjemplo;
+            cursosOriginales = [...cursosEjemplo];
+            mostrarCursos(cursosEjemplo);
+            actualizarEstadisticas();
+        }
+
+        // Event listeners para filtros en tiempo real
+        document.getElementById('busqueda').addEventListener('input', aplicarFiltros);
+        document.getElementById('categoria').addEventListener('change', aplicarFiltros);
+        document.getElementById('nivel').addEventListener('change', aplicarFiltros);
+        document.getElementById('precio').addEventListener('change', aplicarFiltros);
+    </script>
+</body>
+</html>
