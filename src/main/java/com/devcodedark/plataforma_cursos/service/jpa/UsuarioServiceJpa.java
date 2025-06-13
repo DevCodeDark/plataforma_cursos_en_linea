@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.devcodedark.plataforma_cursos.dto.UsuarioDTO;
+import com.devcodedark.plataforma_cursos.dto.UsuarioRegistroDTO;
 import com.devcodedark.plataforma_cursos.model.Rol;
 import com.devcodedark.plataforma_cursos.model.Usuario;
 import com.devcodedark.plataforma_cursos.model.Usuario.EstadoUsuario;
@@ -320,5 +321,60 @@ public class UsuarioServiceJpa implements IUsuarioService {
         Optional<UsuarioDTO> usuario = buscarId(usuarioId);
         return usuario.map(u -> u.getEsDocente() || u.getEsAdministrador())
                 .orElse(false);
+    }
+
+    // Métodos adicionales para autenticación
+    @Override
+    @Transactional(readOnly = true)
+    public boolean existeEmail(String email) {
+        return usuarioRepository.existsByEmail(email);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean existeUsuario(String usuario) {
+        return usuarioRepository.existsByUsuario(usuario);
+    }
+
+    @Override
+    public void registrarUsuario(UsuarioRegistroDTO usuarioRegistroDTO) {
+        // Buscar rol de estudiante por defecto
+        Rol rolEstudiante = rolRepository.findByNombre("Estudiante")
+                .orElseThrow(() -> new RuntimeException("Rol Estudiante no encontrado"));
+
+        Usuario usuario = new Usuario();
+        usuario.setNombre(usuarioRegistroDTO.getNombre());
+        usuario.setApellido(usuarioRegistroDTO.getApellido());
+        usuario.setEmail(usuarioRegistroDTO.getEmail());
+        usuario.setUsuario(usuarioRegistroDTO.getUsuario());
+        usuario.setPasswordHash(passwordEncoder.encode(usuarioRegistroDTO.getPassword()));
+        usuario.setTelefono(usuarioRegistroDTO.getTelefono());
+        usuario.setFechaNacimiento(usuarioRegistroDTO.getFechaNacimiento());
+        
+        // Convertir género si está presente
+        if (usuarioRegistroDTO.getGenero() != null && !usuarioRegistroDTO.getGenero().isEmpty()) {
+            usuario.setGenero(Genero.valueOf(usuarioRegistroDTO.getGenero()));
+        }
+        
+        usuario.setRol(rolEstudiante);
+        usuario.setEstado(EstadoUsuario.activo);
+        usuario.setFechaCreacion(LocalDateTime.now());
+        usuario.setFechaActualizacion(LocalDateTime.now());
+
+        usuarioRepository.save(usuario);
+    }
+    
+    // Métodos de estadísticas
+    @Override
+    @Transactional(readOnly = true)
+    public long contarUsuarios() {
+        return usuarioRepository.count();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public long contarUsuariosPorRol(String rolNombre) {
+        Long count = usuarioRepository.countByRolNombre(rolNombre);
+        return count != null ? count : 0;
     }
 }

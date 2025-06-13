@@ -301,4 +301,10 @@ public class CursoServiceJpa implements ICursoService {
         }
         return false;
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public long contarCursos() {
+        return cursoRepository.count();
+    }
 }

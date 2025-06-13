@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.devcodedark.plataforma_cursos.dto.UsuarioDTO;
+import com.devcodedark.plataforma_cursos.dto.UsuarioRegistroDTO;
 
 public interface IUsuarioService {
     // Métodos CRUD básicos con DTO
@@ -26,11 +27,18 @@ public interface IUsuarioService {
     boolean existePorEmail(String email);
     boolean existePorUsuario(String usuario);
     
+    // Métodos específicos para autenticación
+    boolean existeEmail(String email);
+    boolean existeUsuario(String usuario);
+    void registrarUsuario(UsuarioRegistroDTO usuarioRegistroDTO);
+    
     // Operaciones de negocio
     void cambiarContrasena(Integer usuarioId, String nuevaContrasena);
     void cambiarEstado(Integer usuarioId, String estado);
     
     // Métodos adicionales para estadísticas
+    long contarUsuarios();
+    long contarUsuariosPorRol(String rolNombre);
     Integer contarCursosCreados(Integer usuarioId);
     Integer contarInscripciones(Integer usuarioId);
     Double calcularPromedioCalificaciones(Integer usuarioId);

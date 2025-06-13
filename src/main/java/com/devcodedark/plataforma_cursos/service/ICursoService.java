@@ -30,8 +30,8 @@ public interface ICursoService {
     void publicarCurso(Integer cursoId);
     void pausarCurso(Integer cursoId);
     void cambiarEstado(Integer cursoId, String estado);
-    
-    // Métodos adicionales para estadísticas
+      // Métodos adicionales para estadísticas
+    long contarCursos();
     BigDecimal calcularPromedioCalificaciones(Integer cursoId);
     Integer contarModulosPorCurso(Integer cursoId);
     Boolean puedeInscribirseCurso(Integer cursoId);

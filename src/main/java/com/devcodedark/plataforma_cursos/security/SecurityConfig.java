@@ -2,11 +2,13 @@ package com.devcodedark.plataforma_cursos.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -19,13 +21,17 @@ import java.util.Arrays;
  */
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity(prePostEnabled = true)
 public class SecurityConfig {
+
+    private final CustomUserDetailsService userDetailsService;
+
+    public SecurityConfig(CustomUserDetailsService userDetailsService) {
+        this.userDetailsService = userDetailsService;
+    }
 
     /**
      * Bean de PasswordEncoder para el cifrado de contraseñas.
-     * Utiliza BCrypt como algoritmo de cifrado recomendado.
-     * 
-     * @return PasswordEncoder instancia de BCryptPasswordEncoder
      */
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -33,63 +39,90 @@ public class SecurityConfig {
     }
 
     /**
-     * Configuración de la cadena de filtros de seguridad.
-     * Por ahora permite todas las peticiones para facilitar el desarrollo,
-     * pero se puede personalizar según las necesidades de seguridad.
-     * 
-     * @param http configuración HTTP de seguridad
-     * @return SecurityFilterChain cadena de filtros configurada
-     * @throws Exception si hay problemas en la configuración
+     * Configuración personalizada para redirección después del login exitoso
+     */
+    @Bean
+    public AuthenticationSuccessHandler customAuthenticationSuccessHandler() {
+        return new CustomAuthenticationSuccessHandler();
+    }
+
+    /**
+     * Configuración de la cadena de filtros de seguridad
      */
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-            // Deshabilitar CSRF para APIs REST
+            // Deshabilitar CSRF para desarrollo (en producción evaluar si habilitarlo)
             .csrf(csrf -> csrf.disable())
             
             // Configurar CORS
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             
-            // Configurar autorización - por ahora permite todo
+            // Configurar autorización por URLs
             .authorizeHttpRequests(authz -> authz
-                .anyRequest().permitAll()
+                // Permitir acceso público a páginas principales
+                .requestMatchers("/", "/astrodev/**", "/css/**", "/js/**", "/img/**", "/api/cursos/**").permitAll()
+                
+                // Páginas de autenticación
+                .requestMatchers("/auth/login", "/auth/registro", "/auth/recuperar-password").permitAll()
+                
+                // Dashboard administrativo - solo administradores
+                .requestMatchers("/admin/**").hasRole("ADMINISTRADOR")
+                
+                // Dashboard docente - docentes y administradores
+                .requestMatchers("/docente/**").hasAnyRole("DOCENTE", "ADMINISTRADOR")
+                
+                // Dashboard estudiante - estudiantes, docentes y administradores
+                .requestMatchers("/estudiante/**").hasAnyRole("ESTUDIANTE", "DOCENTE", "ADMINISTRADOR")
+                
+                // API endpoints con autenticación
+                .requestMatchers("/api/admin/**").hasRole("ADMINISTRADOR")
+                .requestMatchers("/api/docente/**").hasAnyRole("DOCENTE", "ADMINISTRADOR")
+                .requestMatchers("/api/estudiante/**").hasAnyRole("ESTUDIANTE", "DOCENTE", "ADMINISTRADOR")
+                
+                // Cualquier otra petición requiere autenticación
+                .anyRequest().authenticated()
             )
             
-            // Deshabilitar autenticación HTTP básica por defecto
-            .httpBasic(httpBasic -> httpBasic.disable())
+            // Configurar formulario de login
+            .formLogin(form -> form
+                .loginPage("/auth/login")
+                .loginProcessingUrl("/auth/login")
+                .usernameParameter("email")
+                .passwordParameter("password")
+                .successHandler(customAuthenticationSuccessHandler())
+                .failureUrl("/auth/login?error=true")
+                .permitAll()
+            )
             
-            // Deshabilitar formulario de login por defecto
-            .formLogin(form -> form.disable());
+            // Configurar logout
+            .logout(logout -> logout
+                .logoutUrl("/auth/logout")
+                .logoutSuccessUrl("/astrodev/inicio?logout=true")
+                .invalidateHttpSession(true)
+                .deleteCookies("JSESSIONID")
+                .permitAll()
+            )
+            
+            // Configurar UserDetailsService
+            .userDetailsService(userDetailsService);
 
         return http.build();
     }
 
     /**
-     * Configuración de CORS para permitir peticiones desde diferentes orígenes.
-     * Configurado para desarrollo, en producción se debe restringir los orígenes permitidos.
-     * 
-     * @return CorsConfigurationSource configuración de CORS
+     * Configuración de CORS
      */
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        
-        // Permitir todos los orígenes (solo para desarrollo)
         configuration.setAllowedOriginPatterns(Arrays.asList("*"));
-        
-        // Métodos HTTP permitidos
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
-        
-        // Headers permitidos
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("*"));
-        
-        // Permitir credenciales
         configuration.setAllowCredentials(true);
         
-        // Configurar para todas las rutas
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
-        
         return source;
     }
 }
