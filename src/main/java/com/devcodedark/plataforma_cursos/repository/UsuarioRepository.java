@@ -54,18 +54,26 @@ public interface UsuarioRepository extends JpaRepository<Usuario, Integer> {
     // Verificar si existe usuario
     boolean existsByUsuario(String usuario);
 
+    // Verificar si existe usuario por email o nombre de usuario
+    @Query("SELECT COUNT(u) > 0 FROM Usuario u WHERE u.email = :email OR u.usuario = :usuario")
+    boolean existsByEmailOrUsuario(@Param("email") String email, @Param("usuario") String usuario);
+
     // Buscar por token de recuperación
-    Optional<Usuario> findByTokenRecuperacion(String token);
-    
-    // Buscar usuarios recientes (últimos 30 días)
-    @Query("SELECT u FROM Usuario u WHERE u.fechaCreacion >= CURRENT_DATE - 30")
+    Optional<Usuario> findByTokenRecuperacion(String token);    // Buscar usuarios recientes (últimos 30 días)
+    @Query(value = "SELECT * FROM usuarios u WHERE u.fecha_creacion >= DATE_SUB(NOW(), INTERVAL 30 DAY)", nativeQuery = true)
     List<Usuario> findUsuariosRecientes();
     
     // Buscar usuarios con último acceso en los últimos N días
-    @Query("SELECT u FROM Usuario u WHERE u.ultimoAcceso >= CURRENT_DATE - :dias")
+    @Query(value = "SELECT * FROM usuarios u WHERE u.ultimo_acceso >= DATE_SUB(NOW(), INTERVAL :dias DAY)", nativeQuery = true)
     List<Usuario> findUsuariosConAccesoReciente(@Param("dias") int dias);
     
     // Buscar usuarios sin acceso por más de N días
-    @Query("SELECT u FROM Usuario u WHERE u.ultimoAcceso < CURRENT_DATE - :dias OR u.ultimoAcceso IS NULL")
-    List<Usuario> findUsuariosSinAcceso(@Param("dias") int dias);
+    @Query(value = "SELECT * FROM usuarios u WHERE u.ultimo_acceso < DATE_SUB(NOW(), INTERVAL :dias DAY) OR u.ultimo_acceso IS NULL", nativeQuery = true)
+    List<Usuario> findUsuariosSinAcceso(@Param("dias") int dias);    // Buscar usuario por email (sin filtro de estado para DataInitializer) - Consulta nativa
+    @Query(value = "SELECT * FROM usuarios WHERE email = :email", nativeQuery = true)
+    Optional<Usuario> findUserByEmail(@Param("email") String email);
+
+    // Buscar usuario por nombre de usuario (sin filtro de estado para DataInitializer) - Consulta nativa
+    @Query(value = "SELECT * FROM usuarios WHERE usuario = :usuario", nativeQuery = true)
+    Optional<Usuario> findUserByUsuario(@Param("usuario") String usuario);
 }

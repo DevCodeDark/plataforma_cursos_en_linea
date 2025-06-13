@@ -37,8 +37,7 @@
                     <i class="fas fa-user-shield"></i>Roles
                 </a>
             </li>
-            <li>
-                <a href="#reportes" class="nav-link" data-section="reportes">
+            <li>                <a th:href="@{/admin/reportes}" class="nav-link">
                     <i class="fas fa-chart-bar"></i>Reportes
                 </a>
             </li>
@@ -49,10 +48,14 @@
             </li>
             <li>
                 <hr class="sidebar-separator">
-            </li>
-            <li>
+            </li>            <li>
                 <a th:href="@{/astrodev/inicio}">
                     <i class="fas fa-home"></i>Volver al Sitio
+                </a>
+            </li>
+            <li>
+                <a th:href="@{/perfil}">
+                    <i class="fas fa-user"></i>Mi Perfil
                 </a>
             </li>
             <li>
@@ -216,7 +219,7 @@
                                           th:classappend="${usuario.estaActivo ? 'badge-activo' : 'badge-inactivo'}"
                                           th:text="${usuario.estado}">Activo</span>
                                 </td>
-                                <td th:text="${usuario.ultimoAcceso != null ? #temporals.format(usuario.ultimoAcceso, 'dd/MM/yyyy') : 'Nunca'}">01/01/2024</td>
+                                <td th:text="${usuario.ultimoAcceso != null ? #temporals.format(usuario.ultimoAcceso, 'dd/MM/yyyy') : 'Nunca'}">01/01/2025</td>
                                 <td>
                                     <button class="btn btn-sm btn-outline-primary btn-action" 
                                             th:onclick="'editarUsuario(' + ${usuario.id} + ')'">
@@ -336,10 +339,17 @@
             <h2 class="section-title">Reportes y Estadísticas</h2>
             <p>Sección de reportes en desarrollo...</p>
         </div>
-        
-        <div id="configuracion-section" class="content-section hidden">
+          <div id="configuracion-section" class="content-section hidden">
             <h2 class="section-title">Configuración del Sistema</h2>
-            <p>Sección de configuración en desarrollo...</p>        </div>
+            <div class="card">
+                <div class="card-body">
+                    <p class="card-text">Gestiona las configuraciones generales del sistema.</p>
+                    <a th:href="@{/admin/configuracion/sistema}" class="btn btn-primary">
+                        <i class="fas fa-cog me-2"></i>Ir a Configuración
+                    </a>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Scripts -->

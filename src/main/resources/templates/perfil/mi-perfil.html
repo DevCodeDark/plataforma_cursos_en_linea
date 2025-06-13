@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Perfil - Plataforma de Cursos</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/perfil.css}">
+</head>
+<body>
+    <!-- Navegación -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" th:href="@{/}">
+                <i class="fas fa-graduation-cap me-2"></i>
+                Plataforma de Cursos
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/admin/dashboard}">
+                            <i class="fas fa-tachometer-alt me-1"></i>Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/cursos}">
+                            <i class="fas fa-book me-1"></i>Cursos
+                        </a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user-circle me-1"></i>
+                            <span th:text="${usuario.nombre + ' ' + usuario.apellido}">Usuario</span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item active" th:href="@{/perfil}">
+                                <i class="fas fa-user me-2"></i>Mi Perfil
+                            </a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" th:href="@{/auth/logout}">
+                                <i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión
+                            </a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <!-- Alertas -->
+        <div th:if="${successPerfil}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle me-2"></i>
+            <span th:text="${successPerfil}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <div th:if="${errorPerfil}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-circle me-2"></i>
+            <span th:text="${errorPerfil}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <div th:if="${successPassword}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle me-2"></i>
+            <span th:text="${successPassword}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <div th:if="${errorPassword}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-circle me-2"></i>
+            <span th:text="${errorPassword}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <div th:if="${successFoto}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle me-2"></i>
+            <span th:text="${successFoto}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <div th:if="${errorFoto}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-circle me-2"></i>
+            <span th:text="${errorFoto}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <!-- Encabezado del perfil -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card profile-header">
+                    <div class="card-body text-center">
+                        <div class="profile-photo-container">                            <img th:src="${usuario.fotoPerfil != null ? usuario.fotoPerfil : '/img/default-avatar.svg'}" 
+                                 alt="Foto de perfil" class="profile-photo">
+                            <div class="photo-overlay">
+                                <i class="fas fa-camera"></i>
+                            </div>
+                        </div>
+                        <h2 class="mb-1" th:text="${usuario.nombre + ' ' + usuario.apellido}">Nombre Usuario</h2>
+                        <p class="text-muted mb-0" th:text="${usuario.email}">email@ejemplo.com</p>
+                        <small class="text-muted" th:text="'Rol: ' + ${usuario.rol.nombre}">Rol</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <!-- Información Personal -->
+            <div class="col-lg-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-user me-2"></i>Información Personal
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <form th:action="@{/perfil/actualizar}" th:object="${perfilDTO}" method="post">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="nombre" class="form-label">Nombre *</label>
+                                    <input type="text" class="form-control" id="nombre" th:field="*{nombre}" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="apellido" class="form-label">Apellido *</label>
+                                    <input type="text" class="form-control" id="apellido" th:field="*{apellido}" required>
+                                </div>
+                            </div>                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="email" class="form-label">Email *</label>
+                                    <input type="email" class="form-control" id="email" th:field="*{email}" required>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="usuario" class="form-label">Nombre de Usuario *</label>
+                                    <input type="text" class="form-control" id="usuario" th:field="*{usuario}" required>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="telefono" class="form-label">Teléfono</label>
+                                    <input type="tel" class="form-control" id="telefono" th:field="*{telefono}">
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="fechaNacimiento" class="form-label">Fecha de Nacimiento</label>
+                                    <input type="date" class="form-control" id="fechaNacimiento" th:field="*{fechaNacimiento}">
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="genero" class="form-label">Género</label>
+                                    <select class="form-control" id="genero" th:field="*{genero}">
+                                        <option value="">Seleccionar...</option>
+                                        <option value="masculino">Masculino</option>
+                                        <option value="femenino">Femenino</option>
+                                        <option value="otro">Otro</option>
+                                        <option value="prefiero_no_decir">Prefiero no decir</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="text-end">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save me-2"></i>Guardar Cambios
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Cambiar Contraseña -->
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-lock me-2"></i>Cambiar Contraseña
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <form th:action="@{/perfil/cambiar-password}" th:object="${passwordDTO}" method="post">
+                            <div class="mb-3">
+                                <label for="passwordActual" class="form-label">Contraseña Actual *</label>
+                                <input type="password" class="form-control" id="passwordActual" th:field="*{passwordActual}" required>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="passwordNueva" class="form-label">Nueva Contraseña *</label>
+                                    <input type="password" class="form-control" id="passwordNueva" th:field="*{passwordNueva}" 
+                                           minlength="6" required>
+                                    <div class="form-text">Mínimo 6 caracteres</div>
+                                </div>                                <div class="col-md-6 mb-3">
+                                    <label for="confirmarPassword" class="form-label">Confirmar Nueva Contraseña *</label>
+                                    <input type="password" class="form-control" id="confirmarPassword" 
+                                           th:field="*{confirmarPassword}" minlength="6" required>
+                                </div>
+                            </div>
+                            <div class="text-end">
+                                <button type="submit" class="btn btn-warning">
+                                    <i class="fas fa-key me-2"></i>Cambiar Contraseña
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Panel Lateral -->
+            <div class="col-lg-4">
+                <!-- Subir Foto -->
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-camera me-2"></i>Foto de Perfil
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <form th:action="@{/perfil/subir-foto}" method="post" enctype="multipart/form-data">
+                            <div class="mb-3">
+                                <label for="fotoPerfil" class="form-label">Seleccionar nueva foto</label>
+                                <input type="file" class="form-control" id="fotoPerfil" name="fotoPerfil" 
+                                       accept="image/*" required>
+                                <div class="form-text">Formatos: JPG, PNG, GIF. Máximo 5MB</div>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="fas fa-upload me-2"></i>Subir Foto
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Información de la cuenta -->
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-info-circle me-2"></i>Información de la Cuenta
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row text-center">
+                            <div class="col-6">
+                                <div class="stat-item">
+                                    <h5 class="text-primary" th:text="${usuario.rol.nombre}">Rol</h5>
+                                    <small class="text-muted">Rol</small>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="stat-item">
+                                    <h5 class="text-success" th:text="${usuario.estado}">Estado</h5>
+                                    <small class="text-muted">Estado</small>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="small text-muted">
+                            <div><strong>Fecha de registro:</strong> 
+                                <span th:text="${#temporals.format(usuario.fechaCreacion, 'dd/MM/yyyy')}">01/01/2025</span>
+                            </div>
+                            <div th:if="${usuario.fechaActualizacion}">
+                                <strong>Última actualización:</strong> 
+                                <span th:text="${#temporals.format(usuario.fechaActualizacion, 'dd/MM/yyyy HH:mm')}">01/01/2025 12:00</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-light py-4 mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <p>&copy; 2025 Plataforma de Cursos. Todos los derechos reservados.</p>
+                </div>
+                <div class="col-md-6 text-end">
+                    <p>Desarrollado con <i class="fas fa-heart text-danger"></i> por DevCodeDark</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:src="@{/js/perfil.js}"></script>
+</body>
+</html>

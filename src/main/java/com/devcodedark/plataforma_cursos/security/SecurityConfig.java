@@ -8,7 +8,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -25,25 +24,18 @@ import java.util.Arrays;
 public class SecurityConfig {
 
     private final CustomUserDetailsService userDetailsService;
+    private final CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
 
-    public SecurityConfig(CustomUserDetailsService userDetailsService) {
+    public SecurityConfig(CustomUserDetailsService userDetailsService, 
+                         CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler) {
         this.userDetailsService = userDetailsService;
-    }
-
-    /**
+        this.customAuthenticationSuccessHandler = customAuthenticationSuccessHandler;
+    }    /**
      * Bean de PasswordEncoder para el cifrado de contraseñas.
      */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
-    }
-
-    /**
-     * Configuración personalizada para redirección después del login exitoso
-     */
-    @Bean
-    public AuthenticationSuccessHandler customAuthenticationSuccessHandler() {
-        return new CustomAuthenticationSuccessHandler();
     }
 
     /**
@@ -83,14 +75,13 @@ public class SecurityConfig {
                 // Cualquier otra petición requiere autenticación
                 .anyRequest().authenticated()
             )
-            
-            // Configurar formulario de login
+              // Configurar formulario de login
             .formLogin(form -> form
                 .loginPage("/auth/login")
                 .loginProcessingUrl("/auth/login")
                 .usernameParameter("email")
                 .passwordParameter("password")
-                .successHandler(customAuthenticationSuccessHandler())
+                .successHandler(customAuthenticationSuccessHandler)
                 .failureUrl("/auth/login?error=true")
                 .permitAll()
             )

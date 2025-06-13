@@ -1,10 +1,12 @@
 package com.devcodedark.plataforma_cursos.controller;
 
+import com.devcodedark.plataforma_cursos.dto.EstadisticasDTO;
 import com.devcodedark.plataforma_cursos.model.Usuario;
 import com.devcodedark.plataforma_cursos.security.CustomUserDetailsService;
 import com.devcodedark.plataforma_cursos.service.ICursoService;
 import com.devcodedark.plataforma_cursos.service.IUsuarioService;
 import com.devcodedark.plataforma_cursos.service.IRolService;
+import com.devcodedark.plataforma_cursos.service.ReporteService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -23,22 +25,23 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @PreAuthorize("hasRole('ADMINISTRADOR')")
 public class AdminController {
 
-    private static final Logger logger = LoggerFactory.getLogger(AdminController.class);
-
-    private final IUsuarioService usuarioService;
+    private static final Logger logger = LoggerFactory.getLogger(AdminController.class);    private final IUsuarioService usuarioService;
     private final ICursoService cursoService;
     private final IRolService rolService;
     private final CustomUserDetailsService userDetailsService;
+    private final ReporteService reporteService;
 
     public AdminController(IUsuarioService usuarioService, 
                           ICursoService cursoService,
                           IRolService rolService,
-                          CustomUserDetailsService userDetailsService) {
+                          CustomUserDetailsService userDetailsService,
+                          ReporteService reporteService) {
         this.usuarioService = usuarioService;
         this.cursoService = cursoService;
         this.rolService = rolService;
         this.userDetailsService = userDetailsService;
-    }    /**
+        this.reporteService = reporteService;
+    }/**
      * Dashboard principal del administrador
      */
     @GetMapping("/dashboard")
@@ -127,33 +130,41 @@ public class AdminController {
             model.addAttribute("error", "Error al cargar roles");
             return "admin/dashboard";
         }
-    }
-
-    /**
+    }    /**
      * Reportes y estadísticas
      */
     @GetMapping("/reportes")
-    public String reportes(Model model) {
+    public String reportes(Model model, Authentication authentication) {
         try {
-            // TODO: Implementar lógica de reportes
+            // Obtener información del usuario actual
+            String email = authentication.getName();
+            Usuario usuarioActual = userDetailsService.getUsuarioByEmail(email);
+            
+            // Generar estadísticas completas
+            EstadisticasDTO estadisticas = reporteService.generarEstadisticasCompletas();
+            
+            // Agregar datos al modelo
+            model.addAttribute("usuarioActual", usuarioActual);
+            model.addAttribute("estadisticas", estadisticas);
+            
+            logger.info("Acceso a reportes administrativos por: {}", email);
+            
             return "admin/reportes";
         } catch (Exception e) {
             logger.error("Error al cargar reportes: {}", e.getMessage(), e);
             model.addAttribute("error", "Error al cargar reportes");
             return "admin/dashboard";
         }
-    }
-
-    /**
+    }/**
      * Configuración del sistema
      */
     @GetMapping("/configuracion")
     public String configuracion(Model model) {
         try {
-            // TODO: Implementar configuraciones del sistema
-            return "admin/configuracion";
+            // Redirigir al controlador específico de configuración
+            return "redirect:/admin/configuracion/sistema";
         } catch (Exception e) {
-            logger.error("Error al cargar configuración: {}", e.getMessage(), e);
+            logger.error("Error al acceder a configuración: {}", e.getMessage(), e);
             model.addAttribute("error", "Error al cargar configuración");
             return "admin/dashboard";
         }

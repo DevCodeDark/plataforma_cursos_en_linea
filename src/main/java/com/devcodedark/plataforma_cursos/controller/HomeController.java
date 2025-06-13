@@ -8,6 +8,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -28,6 +30,35 @@ public class HomeController {
     @GetMapping("/")
     public String root() {
         return "redirect:/astrodev/inicio";
+    }
+
+    /**
+     * Redirecciona a la configuración apropiada según el rol del usuario
+     */
+    @GetMapping("/configuracion")
+    public String configuracion(Authentication authentication) {
+        try {
+            if (authentication != null && authentication.isAuthenticated()) {
+                UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+                
+                // Verificar si el usuario es administrador
+                boolean esAdmin = userDetails.getAuthorities().stream()
+                    .anyMatch(authority -> authority.getAuthority().equals("ROLE_ADMINISTRADOR"));
+                
+                if (esAdmin) {
+                    return "redirect:/admin/configuracion/sistema";
+                } else {
+                    // Para usuarios no administradores, redirigir al perfil
+                    return "redirect:/perfil";
+                }
+            } else {
+                // Usuario no autenticado, redirigir al login
+                return "redirect:/auth/login";
+            }
+        } catch (Exception e) {
+            // En caso de error, redirigir al login
+            return "redirect:/auth/login";
+        }
     }
 }
 

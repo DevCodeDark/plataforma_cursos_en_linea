@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configuración del Sistema - Plataforma de Cursos</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/admin-dashboard.css}">
+    <link rel="stylesheet" th:href="@{/css/configuracion.css}">
+</head>
+<body>    <!-- Navegación -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container-fluid">
+            <a class="navbar-brand" th:href="@{/}">
+                <i class="fas fa-graduation-cap me-2"></i>
+                Plataforma de Cursos
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/admin/dashboard}">
+                            <i class="fas fa-tachometer-alt me-1"></i>Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" th:href="@{/admin/configuracion/sistema}">
+                            <i class="fas fa-cog me-1"></i>Configuración
+                        </a>
+                    </li>
+                </ul>
+                <ul class="navbar-nav">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-user-circle me-1"></i>
+                            Administrador
+                        </a>
+                        <ul class="dropdown-menu">                            <li><a class="dropdown-item" th:href="@{/perfil}">
+                                <i class="fas fa-user me-2"></i>Mi Perfil
+                            </a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item" th:href="@{/auth/logout}">
+                                <i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión
+                            </a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid mt-4">
+        <!-- Alertas -->
+        <div th:if="${successConfiguracion}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle me-2"></i>
+            <span th:text="${successConfiguracion}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <div th:if="${errorConfiguracion}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-circle me-2"></i>
+            <span th:text="${errorConfiguracion}"></span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <!-- Header -->
+        <div class="row">
+            <div class="col-12">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h1 class="h3 mb-0">
+                        <i class="fas fa-cog text-primary me-2"></i>
+                        Configuración del Sistema
+                    </h1>
+                    <div class="btn-group" role="group">
+                        <button type="button" class="btn btn-outline-secondary" onclick="exportarConfiguraciones()">
+                            <i class="fas fa-download me-2"></i>Exportar
+                        </button>
+                        <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#importarModal">
+                            <i class="fas fa-upload me-2"></i>Importar
+                        </button>
+                        <button type="button" class="btn btn-outline-danger" onclick="confirmarReinicio()">
+                            <i class="fas fa-undo me-2"></i>Reiniciar
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Sidebar con categorías -->
+            <div class="col-lg-3">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">
+                            <i class="fas fa-list me-2"></i>Categorías
+                        </h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="list-group list-group-flush">
+                            <a href="#sistema" class="list-group-item list-group-item-action active" onclick="mostrarCategoria('sistema', this)">
+                                <i class="fas fa-cogs me-2"></i>Sistema
+                            </a>
+                            <a href="#limites" class="list-group-item list-group-item-action" onclick="mostrarCategoria('limites', this)">
+                                <i class="fas fa-chart-line me-2"></i>Límites
+                            </a>
+                            <a href="#archivos" class="list-group-item list-group-item-action" onclick="mostrarCategoria('archivos', this)">
+                                <i class="fas fa-file me-2"></i>Archivos
+                            </a>
+                            <a href="#apariencia" class="list-group-item list-group-item-action" onclick="mostrarCategoria('apariencia', this)">
+                                <i class="fas fa-palette me-2"></i>Apariencia
+                            </a>
+                            <a href="#notificaciones" class="list-group-item list-group-item-action" onclick="mostrarCategoria('notificaciones', this)">
+                                <i class="fas fa-bell me-2"></i>Notificaciones
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Búsqueda -->
+                <div class="card mt-3">
+                    <div class="card-header">
+                        <h6 class="card-title mb-0">
+                            <i class="fas fa-search me-2"></i>Buscar
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <input type="text" class="form-control" id="busquedaConfig" placeholder="Buscar configuración...">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contenido principal -->
+            <div class="col-lg-9">
+                <!-- Configuración del Sistema -->
+                <div id="categoria-sistema" class="categoria-content">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">
+                                <i class="fas fa-cogs me-2"></i>Configuración General del Sistema
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <form th:action="@{/admin/configuracion/sistema}" th:object="${configuracionDTO}" method="post">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="nombreSitio" class="form-label">Nombre del Sitio *</label>
+                                        <input type="text" class="form-control" id="nombreSitio" th:field="*{nombreSitio}" required>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="emailContacto" class="form-label">Email de Contacto *</label>
+                                        <input type="email" class="form-control" id="emailContacto" th:field="*{emailContacto}" required>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label for="descripcionSitio" class="form-label">Descripción del Sitio *</label>
+                                    <textarea class="form-control" id="descripcionSitio" th:field="*{descripcionSitio}" rows="3" required></textarea>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="telefonoContacto" class="form-label">Teléfono de Contacto</label>
+                                        <input type="tel" class="form-control" id="telefonoContacto" th:field="*{telefonoContacto}">
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="direccion" class="form-label">Dirección</label>
+                                        <input type="text" class="form-control" id="direccion" th:field="*{direccion}">
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-4 mb-3">
+                                        <label for="limiteUsuarios" class="form-label">Límite de Usuarios *</label>
+                                        <input type="number" class="form-control" id="limiteUsuarios" th:field="*{limiteUsuarios}" min="1" required>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label for="limiteCursos" class="form-label">Límite de Cursos *</label>
+                                        <input type="number" class="form-control" id="limiteCursos" th:field="*{limiteCursos}" min="1" required>
+                                    </div>
+                                    <div class="col-md-4 mb-3">
+                                        <label for="tamajoMaximoArchivo" class="form-label">Tamaño Máximo Archivo (MB) *</label>
+                                        <input type="number" class="form-control" id="tamajoMaximoArchivo" th:field="*{tamajoMaximoArchivo}" min="1" required>
+                                    </div>
+                                </div>
+
+                                <!-- Opciones booleanas -->
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" id="registroPublico" th:field="*{registroPublico}">
+                                            <label class="form-check-label" for="registroPublico">
+                                                Permitir registro público
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" id="notificacionesEmail" th:field="*{notificacionesEmail}">
+                                            <label class="form-check-label" for="notificacionesEmail">
+                                                Notificaciones por email
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" id="modoMantenimiento" th:field="*{modoMantenimiento}">
+                                            <label class="form-check-label" for="modoMantenimiento">
+                                                Modo mantenimiento
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" id="logActividades" th:field="*{logActividades}">
+                                            <label class="form-check-label" for="logActividades">
+                                                Registrar actividades
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="text-end">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fas fa-save me-2"></i>Guardar Configuración
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Otras categorías se mostrarán dinámicamente -->
+                <div id="otras-categorias" class="categoria-content" style="display: none;">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0" id="titulo-categoria">
+                                <i class="fas fa-cog me-2"></i>Configuraciones
+                            </h5>
+                        </div>
+                        <div class="card-body" id="contenido-categoria">
+                            <!-- Se carga dinámicamente -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Importar -->
+    <div class="modal fade" id="importarModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">
+                        <i class="fas fa-upload me-2"></i>Importar Configuraciones
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <form th:action="@{/admin/configuracion/importar}" method="post">
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="configuracionesJson" class="form-label">JSON de Configuraciones</label>
+                            <textarea class="form-control" id="configuracionesJson" name="configuracionesJson" rows="10" 
+                                      placeholder="Pega aquí el JSON con las configuraciones..." required></textarea>
+                        </div>
+                        <div class="alert alert-warning">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            <strong>Advertencia:</strong> Esta acción sobrescribirá las configuraciones existentes.
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-upload me-2"></i>Importar
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-light py-4 mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <p>&copy; 2024 Plataforma de Cursos. Todos los derechos reservados.</p>
+                </div>
+                <div class="col-md-6 text-end">
+                    <p>Panel de Administración</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script th:src="@{/js/configuracion.js}"></script>
+</body>
+</html>
