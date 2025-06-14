@@ -1,6 +1,15 @@
-// JavaScript para el dashboard administrativo
+// JavaScript para el dashboard administrativo futurista
 document.addEventListener('DOMContentLoaded', function() {
     console.log('Dashboard initialized'); // Debug log
+    
+    // Prevenir scroll automático al cargar la página
+    if ('scrollRestoration' in history) {
+        history.scrollRestoration = 'manual';
+    }
+      // Forzar scroll al inicio
+    window.scrollTo(0, 0);
+    document.documentElement.scrollTop = 0;
+    document.body.scrollTop = 0;
     
     // Referencias a elementos del DOM
     const sidebarToggle = document.getElementById('sidebarToggle');
@@ -13,8 +22,17 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log('Sidebar:', sidebar);
     console.log('Main content:', mainContent);
     
+    // El sidebar ya está visible por defecto con el nuevo CSS
+    // Solo aplicamos animaciones suaves si es necesario
+    if (sidebar) {
+        sidebar.style.transition = 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
+    }
+    if (mainContent) {
+        mainContent.style.transition = 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)';
+    }
+    
     /**
-     * Alternar la visibilidad del sidebar
+     * Alternar la visibilidad del sidebar con animaciones
      */
     function toggleSidebar() {
         if (sidebar && mainContent) {
@@ -35,87 +53,161 @@ document.addEventListener('DOMContentLoaded', function() {
         if (isCollapsed && sidebar && mainContent) {
             sidebar.classList.add('collapsed');
             mainContent.classList.add('full-width');
+            sidebar.style.transform = 'translateX(-100%)';
+        } else if (sidebar) {
+            sidebar.style.transform = 'translateX(0)';
         }
-    }
-    
-    /**
+    }    /**
      * Navegar entre secciones
      */
     function navigateToSection(sectionName) {
-        // Remover clase activa de todos los links
-        navLinks.forEach(link => link.classList.remove('active'));
+        console.log('Navigating to section:', sectionName);
         
-        // Agregar clase activa al link clickeado
-        const activeLink = document.querySelector(`[data-section="${sectionName}"]`);
-        if (activeLink) {
-            activeLink.classList.add('active');
-        }
-          // Ocultar todas las secciones
+        // Marcar que es navegación interna (no refresh)
+        sessionStorage.setItem('internalNavigation', 'true');
+        
+        // Ejecutar todas las operaciones de manera síncrona para evitar delay visual
+        // 1. Remover clase activa de todos los links y ocultar todas las secciones
+        navLinks.forEach(link => link.classList.remove('active'));
         contentSections.forEach(section => {
             section.classList.add('hidden');
+            section.style.display = 'none'; // Forzar ocultación inmediata
         });
         
-        // Mostrar sección seleccionada
+        // 2. Activar el link correcto y mostrar la sección correspondiente
+        const activeLink = document.querySelector(`[data-section="${sectionName}"]`);
         const targetSection = document.getElementById(`${sectionName}-section`);
-        if (targetSection) {
+        
+        if (activeLink && targetSection) {
+            // Ejecutar cambios inmediatamente
+            activeLink.classList.add('active');
             targetSection.classList.remove('hidden');
+            targetSection.style.display = 'block'; // Forzar visualización inmediata
+            
+            // Limpiar el estilo inline después para permitir CSS normal
+            setTimeout(() => {
+                contentSections.forEach(section => {
+                    if (!section.classList.contains('hidden')) {
+                        section.style.display = '';
+                    }
+                });
+            }, 0);
+            
+            console.log('Section navigation completed:', sectionName);
             
             // Trigger custom event para cuando se cambia de sección
             window.dispatchEvent(new CustomEvent('sectionChanged', {
                 detail: { section: sectionName }
             }));
+        } else {
+            console.error('Navigation failed - Link or section not found:', {
+                sectionName,
+                linkFound: !!activeLink,
+                sectionFound: !!targetSection
+            });
         }
         
-        // Guardar sección actual en localStorage
+        // 3. Guardar sección actual en localStorage
         localStorage.setItem('currentSection', sectionName);
-    }
-      /**
+    }/**
      * Obtener parámetros de la URL
      */
     function getURLParams() {
         const urlParams = new URLSearchParams(window.location.search);
+        const section = urlParams.get('section');
+        console.log('URL params - section:', section, 'Full URL:', window.location.href);
         return {
-            section: urlParams.get('section')
+            section: section
         };
     }    /**
+     * Detectar si es un refresh de página
+     */
+    function isPageRefresh() {
+        // Método 1: Navigation API moderna
+        if (window.performance && window.performance.getEntriesByType) {
+            const perfEntries = window.performance.getEntriesByType('navigation');
+            if (perfEntries.length > 0) {
+                return perfEntries[0].type === 'reload';
+            }
+        }
+        
+        // Método 2: Performance.navigation (fallback para compatibilidad)
+        if (window.performance && window.performance.navigation) {
+            return window.performance.navigation.type === 1;
+        }
+        
+        // Método 3: Marcar en sessionStorage cuando se navega internamente
+        const wasInternalNavigation = sessionStorage.getItem('internalNavigation');
+        if (wasInternalNavigation) {
+            sessionStorage.removeItem('internalNavigation');
+            return false; // No es refresh, fue navegación interna
+        }
+        
+        // Por defecto, asumir que no es refresh
+        return false;
+    }
+
+    /**
      * Restaurar sección activa
      */
     function restoreActiveSection() {
         const params = getURLParams();
-        let currentSection = 'dashboard'; // Por defecto siempre dashboard
+        let currentSection = 'dashboard'; // Por defecto
         
-        // Verificar si viene del login (sin referrer o desde login page)
-        const referrer = document.referrer;
-        const comesFromLogin = !referrer || referrer.includes('/auth/login') || referrer.includes('/login');
+        console.log('URL Params:', params);
+        console.log('URL search params:', window.location.search);
         
-        if (comesFromLogin) {
-            // Si viene del login, siempre ir a dashboard
-            currentSection = 'dashboard';
-            // Limpiar localStorage para empezar fresco
-            localStorage.removeItem('currentSection');
-        } else if (params.section && ['dashboard', 'usuarios', 'cursos', 'roles', 'reportes', 'configuracion', 'perfil'].includes(params.section)) {
-            // Solo usar el parámetro section si existe y es válido
+        // 1. Prioridad: parámetro de URL (desde dropdown del navbar)
+        if (params.section && ['dashboard', 'usuarios', 'cursos', 'roles', 'reportes', 'configuracion', 'perfil'].includes(params.section)) {
             currentSection = params.section;
-        } else {
-            // Si no hay parámetro válido, usar localStorage
-            const storedSection = localStorage.getItem('currentSection');
-            if (storedSection && ['dashboard', 'usuarios', 'cursos', 'roles', 'reportes', 'configuracion', 'perfil'].includes(storedSection)) {
-                currentSection = storedSection;
+            console.log('Using URL section parameter:', currentSection);
+        } 
+        // 2. Si no hay parámetros URL, verificar si es refresh de página
+        else {
+            if (isPageRefresh()) {
+                // Es un refresh - usar localStorage
+                const savedSection = localStorage.getItem('currentSection');
+                if (savedSection && ['dashboard', 'usuarios', 'cursos', 'roles', 'reportes', 'configuracion', 'perfil'].includes(savedSection)) {
+                    currentSection = savedSection;
+                    console.log('Page refresh detected, using saved section from localStorage:', currentSection);
+                } else {
+                    currentSection = 'dashboard';
+                    console.log('Page refresh but no valid localStorage, defaulting to dashboard');
+                }
+            } else {
+                // No es refresh - viene de navegación normal (navbar, enlace directo, etc.)
+                // Ir a dashboard por defecto
+                currentSection = 'dashboard';
+                console.log('Navigation from external source, going to dashboard');
             }
         }
         
+        console.log('Final section to navigate to:', currentSection);
         navigateToSection(currentSection);
         
-        // Limpiar parámetros de URL después de navegar
+        // Limpiar parámetros de URL después de navegar si había parámetros
         if (params.section) {
             window.history.replaceState({}, document.title, window.location.pathname);
         }
-    }
+    }    // INMEDIATAMENTE restaurar la sección activa ANTES de cualquier otra lógica
+    restoreActiveSection();
     
-    /**
+    // Prevenir comportamiento del navegador que puede interferir
+    window.addEventListener('beforeunload', function() {
+        // Asegurar que se guarde la sección actual antes de salir
+        const activeSection = document.querySelector('.nav-link.active');
+        if (activeSection && activeSection.dataset.section) {
+            localStorage.setItem('currentSection', activeSection.dataset.section);
+        }
+    });/**
      * Inicializar gráficos con Chart.js
      */
     function initCharts() {
+        // Configuración global para Chart.js con colores blancos
+        Chart.defaults.color = '#ffffff';
+        Chart.defaults.borderColor = 'rgba(255, 255, 255, 0.2)';
+        Chart.defaults.backgroundColor = 'rgba(255, 255, 255, 0.1)';
+        
         // Gráfico de inscripciones por mes
         const inscripcionesCtx = document.getElementById('inscripcionesChart');
         if (inscripcionesCtx) {
@@ -126,8 +218,8 @@ document.addEventListener('DOMContentLoaded', function() {
                     datasets: [{
                         label: 'Inscripciones',
                         data: [12, 19, 3, 5, 2, 3],
-                        borderColor: '#667eea',
-                        backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                        borderColor: '#00d4ff',
+                        backgroundColor: 'rgba(0, 212, 255, 0.1)',
                         tension: 0.4
                     }]
                 },
@@ -136,19 +228,39 @@ document.addEventListener('DOMContentLoaded', function() {
                     maintainAspectRatio: false,
                     plugins: {
                         legend: {
-                            display: false
+                            display: true,
+                            labels: {
+                                color: '#ffffff',
+                                font: {
+                                    size: 12,
+                                    family: 'Exo 2'
+                                }
+                            }
                         }
                     },
                     scales: {
+                        x: {
+                            ticks: {
+                                color: '#ffffff'
+                            },
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            }
+                        },
                         y: {
-                            beginAtZero: true
+                            beginAtZero: true,
+                            ticks: {
+                                color: '#ffffff'
+                            },
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            }
                         }
                     }
                 }
             });
         }
-        
-        // Gráfico de roles de usuarios
+          // Gráfico de roles de usuarios
         const rolesCtx = document.getElementById('rolesChart');
         if (rolesCtx) {
             new Chart(rolesCtx, {
@@ -161,7 +273,13 @@ document.addEventListener('DOMContentLoaded', function() {
                             '#667eea',
                             '#28a745',
                             '#ffc107'
-                        ]
+                        ],
+                        borderColor: [
+                            '#5a6fd8',
+                            '#20c997',
+                            '#fd7e14'
+                        ],
+                        borderWidth: 2
                     }]
                 },
                 options: {
@@ -169,31 +287,29 @@ document.addEventListener('DOMContentLoaded', function() {
                     maintainAspectRatio: false,
                     plugins: {
                         legend: {
-                            position: 'bottom'
+                            position: 'bottom',
+                            labels: {
+                                color: '#ffffff',
+                                font: {
+                                    size: 12,
+                                    family: 'Exo 2'
+                                },
+                                padding: 20,
+                                usePointStyle: true
+                            }
                         }
                     }
                 }
             });
-        }
-    }
+        }}
     
     /**
      * Actualizar estadísticas en tiempo real
      */
     function updateStatistics() {
         // Aquí se podría hacer una llamada AJAX para obtener estadísticas actualizadas
-        // Por ahora es solo un ejemplo de cómo se haría
-        
-        /*
-        fetch('/api/admin/statistics')
-            .then(response => response.json())
-            .then(data => {
-                document.querySelector('[data-stat="usuarios"]').textContent = data.totalUsuarios;
-                document.querySelector('[data-stat="cursos"]').textContent = data.totalCursos;
-                // ... más actualizaciones
-            })
-            .catch(error => console.error('Error al actualizar estadísticas:', error));
-        */
+        // Implementación futura para actualizar estadísticas dinámicamente
+        console.log('Actualizando estadísticas...');
     }
     
     /**
@@ -230,12 +346,12 @@ document.addEventListener('DOMContentLoaded', function() {
         const popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
         popoverTriggerList.map(function (popoverTriggerEl) {
             return new bootstrap.Popover(popoverTriggerEl);
-        });
-    }
+        });    }
     
     /**
      * Manejar responsive behavior
-     */    function handleResponsive() {
+     */
+    function handleResponsive() {
         const mediaQuery = window.matchMedia('(max-width: 768px)');
         
         function handleMediaChange(e) {
@@ -252,12 +368,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 restoreSidebarState();
             }
         }
-        
-        // Ejecutar al cargar
+          // Ejecutar al cargar
         handleMediaChange(mediaQuery);
         
         // Escuchar cambios
-        mediaQuery.addListener(handleMediaChange);
+        mediaQuery.addEventListener('change', handleMediaChange);
     }
     
     // Event Listeners
@@ -265,14 +380,22 @@ document.addEventListener('DOMContentLoaded', function() {
         sidebarToggle.addEventListener('click', toggleSidebar);
     }
     
-    // Navegación
+    // Prevenir comportamiento por defecto de enlaces de navegación
     navLinks.forEach(link => {
         link.addEventListener('click', function(e) {
             e.preventDefault();
-            const sectionName = this.getAttribute('data-section');
-            if (sectionName) {
-                navigateToSection(sectionName);
+            e.stopPropagation();
+            
+            // Prevenir scroll automático
+            if (window.location.hash) {
+                history.replaceState(null, null, window.location.pathname + window.location.search);
             }
+            
+            const section = this.dataset.section;
+            if (section) {
+                navigateToSection(section);
+            }
+            return false;
         });
     });
     
@@ -284,14 +407,14 @@ document.addEventListener('DOMContentLoaded', function() {
         if (section === 'dashboard') {
             document.title = 'Dashboard - AstroDev Academy';
         } else {
-            document.title = `${section.charAt(0).toUpperCase() + section.slice(1)} - Dashboard - AstroDev Academy`;
-        }
+            document.title = `${section.charAt(0).toUpperCase() + section.slice(1)} - Dashboard - AstroDev Academy`;        }
         
         // Re-inicializar componentes si es necesario
         if (section === 'dashboard') {
             setTimeout(initCharts, 100); // Delay para asegurar que el DOM esté listo
         }
-    });    
+    });
+    
     /**
      * Función para forzar el layout correcto
      */
@@ -309,8 +432,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     }
-    
-    // Ejecutar inmediatamente para forzar el layout
+      // Ejecutar inmediatamente para forzar el layout
     enforceLayout();
     
     // También ejecutar en resize
@@ -318,7 +440,6 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Inicialización
     restoreSidebarState();
-    restoreActiveSection();
     handleResponsive();
     initBootstrapComponents();
     
