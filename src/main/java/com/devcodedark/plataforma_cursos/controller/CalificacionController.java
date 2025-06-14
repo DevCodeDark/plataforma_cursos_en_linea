@@ -19,8 +19,8 @@ import jakarta.validation.Valid;
 public class CalificacionController {
 
     @Autowired
-    private ICalificacionService calificacionService;    
-    
+    private ICalificacionService calificacionService;
+
     // Listar todas las calificaciones
     @GetMapping
     public ResponseEntity<List<CalificacionDTO>> listarTodos() {
@@ -55,7 +55,7 @@ public class CalificacionController {
             return ResponseEntity.status(HttpStatus.CREATED).body("Calificación creada exitosamente");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Error al crear la calificación: " + e.getMessage());
+                    .body("Error al crear la calificación: " + e.getMessage());
         }
     }
 
@@ -71,27 +71,29 @@ public class CalificacionController {
             return ResponseEntity.status(HttpStatus.CREATED).body("Curso calificado exitosamente");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("Error al calificar el curso: " + e.getMessage());
+                    .body("Error al calificar el curso: " + e.getMessage());
         }
-    }    
-    
+    }
+
     // Actualizar calificación
     @PutMapping("/{id}")
-    public ResponseEntity<String> actualizar(@PathVariable Integer id, @Valid @RequestBody CalificacionDTO calificacionDTO) {
+    public ResponseEntity<String> actualizar(@PathVariable Integer id,
+            @Valid @RequestBody CalificacionDTO calificacionDTO) {
         try {
             Optional<CalificacionDTO> calificacionExistente = calificacionService.buscarId(id);
             if (!calificacionExistente.isPresent()) {
                 return ResponseEntity.notFound().build();
             }
-            
+
             calificacionDTO.setId(id);
             calificacionService.modificar(calificacionDTO);
             return ResponseEntity.ok("Calificación actualizada exitosamente");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Error al actualizar la calificación: " + e.getMessage());
+                    .body("Error al actualizar la calificación: " + e.getMessage());
         }
-    }    // Eliminar calificación
+    } // Eliminar calificación
+
     @DeleteMapping("/{id}")
     public ResponseEntity<String> eliminar(@PathVariable Integer id) {
         try {
@@ -99,12 +101,12 @@ public class CalificacionController {
             if (!calificacion.isPresent()) {
                 return ResponseEntity.notFound().build();
             }
-            
+
             calificacionService.eliminar(id);
             return ResponseEntity.ok("Calificación eliminada exitosamente");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Error al eliminar la calificación: " + e.getMessage());
+                    .body("Error al eliminar la calificación: " + e.getMessage());
         }
     }
 
@@ -150,8 +152,8 @@ public class CalificacionController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
-    }    
-    
+    }
+
     // Buscar calificaciones por rango de puntuación
     @GetMapping("/rango")
     public ResponseEntity<List<CalificacionDTO>> buscarPorRango(@RequestParam Integer min, @RequestParam Integer max) {
@@ -165,7 +167,8 @@ public class CalificacionController {
 
     // Verificar si ya calificó
     @GetMapping("/verificar")
-    public ResponseEntity<Boolean> verificarCalificacion(@RequestParam Integer estudianteId, @RequestParam Integer cursoId) {
+    public ResponseEntity<Boolean> verificarCalificacion(@RequestParam Integer estudianteId,
+            @RequestParam Integer cursoId) {
         try {
             boolean yaCalifico = calificacionService.yaCalificoElCurso(estudianteId, cursoId);
             return ResponseEntity.ok(yaCalifico);

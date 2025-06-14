@@ -71,7 +71,8 @@ public class MaterialController {
                 return ResponseEntity.notFound().build();
             }
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error al actualizar material: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Error al actualizar material: " + e.getMessage());
         }
     }
 
@@ -87,7 +88,8 @@ public class MaterialController {
                 return ResponseEntity.notFound().build();
             }
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error al eliminar material: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error al eliminar material: " + e.getMessage());
         }
     }
 
@@ -159,12 +161,14 @@ public class MaterialController {
 
     // Reordenar materiales de un módulo
     @PutMapping("/modulo/{moduloId}/reordenar")
-    public ResponseEntity<?> reordenarMateriales(@PathVariable Integer moduloId, @RequestBody List<Integer> nuevoOrden) {
+    public ResponseEntity<?> reordenarMateriales(@PathVariable Integer moduloId,
+            @RequestBody List<Integer> nuevoOrden) {
         try {
             materialService.reordenarMateriales(moduloId, nuevoOrden);
             return ResponseEntity.ok("Materiales reordenados exitosamente");
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error al reordenar materiales: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Error al reordenar materiales: " + e.getMessage());
         }
     }
 
@@ -175,7 +179,8 @@ public class MaterialController {
             materialService.cambiarDisponibilidadGratuita(id, esGratuito);
             return ResponseEntity.ok("Disponibilidad actualizada exitosamente");
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error al cambiar disponibilidad: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body("Error al cambiar disponibilidad: " + e.getMessage());
         }
     }
 
@@ -194,7 +199,7 @@ public class MaterialController {
     @GetMapping("/modulo/{moduloId}/estadisticas")
     public ResponseEntity<Object> obtenerEstadisticasModulo(@PathVariable Integer moduloId) {
         try {
-            Object estadisticas = materialService.obtenerEstadisticasPorModulo(moduloId);            
+            Object estadisticas = materialService.obtenerEstadisticasPorModulo(moduloId);
             return ResponseEntity.ok(estadisticas);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
@@ -219,7 +224,7 @@ public class MaterialController {
             List<MaterialDTO> materiales = materialService.obtenerMaterialesRecientes(limite);
             return ResponseEntity.ok(materiales);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);        
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
     }
 

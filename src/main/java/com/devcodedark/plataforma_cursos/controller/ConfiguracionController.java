@@ -24,26 +24,29 @@ public class ConfiguracionController {
     private static final String ERROR_CONFIGURACION = "errorConfiguracion";
     private static final String SUCCESS_CONFIGURACION = "successConfiguracion";
     private static final String ERROR_INTERNO = "Error interno: ";
-    
+
     private final ConfiguracionService configuracionService;
 
     public ConfiguracionController(ConfiguracionService configuracionService) {
         this.configuracionService = configuracionService;
-    }    /**
+    }
+
+    /**
      * Muestra la página principal de configuración
      */
     @GetMapping("/sistema")
-    public String mostrarConfiguracion(Model model) {try {
+    public String mostrarConfiguracion(Model model) {
+        try {
             // Obtener todas las configuraciones del sistema
             Map<String, Map<String, Object>> configuraciones = configuracionService.obtenerTodasLasConfiguraciones();
-            
+
             // Crear DTO para la configuración del sistema
             ConfiguracionSistemaDTO configuracionDTO = configuracionService.obtenerConfiguracionSistema();
-            
+
             model.addAttribute("configuraciones", configuraciones);
             model.addAttribute("configuracionDTO", configuracionDTO);
             model.addAttribute("categorias", configuracionService.obtenerCategorias());
-            
+
             return "admin/configuracion";
         } catch (Exception e) {
             model.addAttribute("error", ERROR_INTERNO + e.getMessage());
@@ -56,20 +59,23 @@ public class ConfiguracionController {
      */
     @PostMapping("/sistema")
     public String actualizarConfiguracionSistema(@ModelAttribute ConfiguracionSistemaDTO configuracionDTO,
-                                                  BindingResult result,
-                                                  RedirectAttributes redirectAttributes) {
+            BindingResult result,
+            RedirectAttributes redirectAttributes) {
         try {
             if (result.hasErrors()) {
-                redirectAttributes.addFlashAttribute(ERROR_CONFIGURACION, "Por favor, corrige los errores en el formulario");
+                redirectAttributes.addFlashAttribute(ERROR_CONFIGURACION,
+                        "Por favor, corrige los errores en el formulario");
                 return REDIRECT_CONFIGURACION;
             }
 
             boolean actualizado = configuracionService.actualizarConfiguracionSistema(configuracionDTO);
 
             if (actualizado) {
-                redirectAttributes.addFlashAttribute(SUCCESS_CONFIGURACION, "Configuración del sistema actualizada correctamente");
+                redirectAttributes.addFlashAttribute(SUCCESS_CONFIGURACION,
+                        "Configuración del sistema actualizada correctamente");
             } else {
-                redirectAttributes.addFlashAttribute(ERROR_CONFIGURACION, "Error al actualizar la configuración del sistema");
+                redirectAttributes.addFlashAttribute(ERROR_CONFIGURACION,
+                        "Error al actualizar la configuración del sistema");
             }
 
             return REDIRECT_CONFIGURACION;
@@ -84,16 +90,17 @@ public class ConfiguracionController {
      */
     @PostMapping("/actualizar")
     public String actualizarConfiguracion(@RequestParam String clave,
-                                          @RequestParam String valor,
-                                          @RequestParam(required = false) String descripcion,
-                                          RedirectAttributes redirectAttributes) {
+            @RequestParam String valor,
+            @RequestParam(required = false) String descripcion,
+            RedirectAttributes redirectAttributes) {
         try {
             boolean actualizado = configuracionService.actualizarConfiguracion(clave, valor, descripcion);
 
             if (actualizado) {
                 redirectAttributes.addFlashAttribute(SUCCESS_CONFIGURACION, "Configuración actualizada: " + clave);
             } else {
-                redirectAttributes.addFlashAttribute(ERROR_CONFIGURACION, "Error al actualizar la configuración: " + clave);
+                redirectAttributes.addFlashAttribute(ERROR_CONFIGURACION,
+                        "Error al actualizar la configuración: " + clave);
             }
 
             return REDIRECT_CONFIGURACION;
@@ -108,11 +115,11 @@ public class ConfiguracionController {
      */
     @PostMapping("/crear")
     public String crearConfiguracion(@RequestParam String categoria,
-                                     @RequestParam String clave,
-                                     @RequestParam String valor,
-                                     @RequestParam String tipo,
-                                     @RequestParam(required = false) String descripcion,
-                                     RedirectAttributes redirectAttributes) {
+            @RequestParam String clave,
+            @RequestParam String valor,
+            @RequestParam String tipo,
+            @RequestParam(required = false) String descripcion,
+            RedirectAttributes redirectAttributes) {
         try {
             boolean creado = configuracionService.crearConfiguracion(categoria, clave, valor, tipo, descripcion);
 
@@ -134,14 +141,15 @@ public class ConfiguracionController {
      */
     @PostMapping("/eliminar")
     public String eliminarConfiguracion(@RequestParam String clave,
-                                        RedirectAttributes redirectAttributes) {
+            RedirectAttributes redirectAttributes) {
         try {
             boolean eliminado = configuracionService.eliminarConfiguracion(clave);
 
             if (eliminado) {
                 redirectAttributes.addFlashAttribute(SUCCESS_CONFIGURACION, "Configuración eliminada: " + clave);
             } else {
-                redirectAttributes.addFlashAttribute(ERROR_CONFIGURACION, "Error al eliminar la configuración: " + clave);
+                redirectAttributes.addFlashAttribute(ERROR_CONFIGURACION,
+                        "Error al eliminar la configuración: " + clave);
             }
 
             return REDIRECT_CONFIGURACION;
@@ -160,7 +168,8 @@ public class ConfiguracionController {
             boolean reiniciado = configuracionService.reiniciarConfiguraciones();
 
             if (reiniciado) {
-                redirectAttributes.addFlashAttribute(SUCCESS_CONFIGURACION, "Configuraciones reiniciadas a valores por defecto");
+                redirectAttributes.addFlashAttribute(SUCCESS_CONFIGURACION,
+                        "Configuraciones reiniciadas a valores por defecto");
             } else {
                 redirectAttributes.addFlashAttribute(ERROR_CONFIGURACION, "Error al reiniciar las configuraciones");
             }
@@ -190,7 +199,7 @@ public class ConfiguracionController {
      */
     @PostMapping("/importar")
     public String importarConfiguraciones(@RequestParam String configuracionesJson,
-                                          RedirectAttributes redirectAttributes) {
+            RedirectAttributes redirectAttributes) {
         try {
             boolean importado = configuracionService.importarConfiguraciones(configuracionesJson);
 
@@ -215,11 +224,10 @@ public class ConfiguracionController {
     public Map<String, Object> obtenerConfiguracionesCategoria(@PathVariable String categoria) {
         try {
             Map<String, Object> configuraciones = configuracionService.obtenerPorCategoria(categoria.toUpperCase())
-                .stream()
-                .collect(java.util.stream.Collectors.toMap(
-                    com.devcodedark.plataforma_cursos.model.Configuracion::getClave,
-                    com.devcodedark.plataforma_cursos.model.Configuracion::getValorTipado
-                ));
+                    .stream()
+                    .collect(java.util.stream.Collectors.toMap(
+                            com.devcodedark.plataforma_cursos.model.Configuracion::getClave,
+                            com.devcodedark.plataforma_cursos.model.Configuracion::getValorTipado));
             return configuraciones;
         } catch (Exception e) {
             return Map.of("error", ERROR_INTERNO + e.getMessage());
@@ -232,14 +240,15 @@ public class ConfiguracionController {
     @PostMapping("/categoria/{categoria}")
     @ResponseBody
     public Map<String, Object> guardarConfiguracionesCategoria(@PathVariable String categoria,
-                                                               @RequestBody Map<String, String> configuraciones) {
+            @RequestBody Map<String, String> configuraciones) {
         try {
             boolean todosActualizados = true;
             StringBuilder errores = new StringBuilder();
 
             for (Map.Entry<String, String> entry : configuraciones.entrySet()) {
                 try {
-                    boolean actualizado = configuracionService.actualizarConfiguracion(entry.getKey(), entry.getValue(), null);
+                    boolean actualizado = configuracionService.actualizarConfiguracion(entry.getKey(), entry.getValue(),
+                            null);
                     if (!actualizado) {
                         todosActualizados = false;
                         errores.append("Error al actualizar: ").append(entry.getKey()).append("; ");
@@ -268,7 +277,7 @@ public class ConfiguracionController {
     public Map<String, Object> resetearCategoria(@PathVariable String categoria) {
         try {
             boolean reseteado = configuracionService.resetearCategoria(categoria.toUpperCase());
-            
+
             if (reseteado) {
                 return Map.of("success", true, "message", "Categoría reseteada correctamente");
             } else {

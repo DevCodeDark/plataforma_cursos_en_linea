@@ -1516,395 +1516,477 @@ canvas {
     box-shadow: 0 0 50px rgba(0, 212, 255, 0.8);
 }
 
-/* Cards de información */
-.info-card {
-    background: var(--glass-bg);
-    backdrop-filter: blur(20px);
-    border: 1px solid var(--glass-border);
-    border-radius: 15px;
-    padding: 2rem;
+/* Tarjetas de cursos básicas */
+.course-card {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(0, 212, 255, 0.3);
+    border-radius: 12px;
+    padding: 1rem;
     transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
+    backdrop-filter: blur(10px);
 }
 
-.info-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
-    transition: left 0.5s ease;
-}
-
-.info-card:hover::before {
-    left: 100%;
-}
-
-.info-card:hover {
+.course-card:hover {
     transform: translateY(-5px);
-    border-color: rgba(0, 212, 255, 0.3);
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+    border-color: rgba(0, 212, 255, 0.6);
+    box-shadow: 0 10px 30px rgba(0, 212, 255, 0.2);
 }
 
-/* Configuración section */
-#configuracion-section .config-category {
-    background: var(--glass-bg);
-    backdrop-filter: blur(20px);
-    border: 1px solid var(--glass-border);
-    border-radius: 15px;
-    padding: 1.5rem;
+.course-header {
+    display: flex;
+    justify-content: between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.course-header h6 {
+    color: #ffffff;
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.badge-level {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 0.25rem 0.5rem;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.course-description {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.9rem;
     margin-bottom: 1rem;
-    transition: all 0.3s ease;
-    cursor: pointer;
+    line-height: 1.4;
 }
 
-#configuracion-section .config-category:hover {
-    background: rgba(255, 255, 255, 0.15);
-    transform: translateX(10px);
+.course-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
-#configuracion-section .config-category.active {
-    border-color: var(--neon-blue);
-    background: rgba(0, 212, 255, 0.1);
+.course-instructor {
+    color: rgba(0, 212, 255, 0.9);
+    font-size: 0.85rem;
+    font-weight: 500;
 }
 
-/* Reportes section */
-#reportes-section .metric-card {
-    background: var(--glass-bg);
-    backdrop-filter: blur(20px);
-    border: 1px solid var(--glass-border);
-    border-radius: 15px;
-    padding: 2rem;
-    text-align: center;
-    position: relative;
+/* Tarjetas de cursos detalladas */
+.course-card-detailed {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(0, 212, 255, 0.3);
+    border-radius: 16px;
     overflow: hidden;
     transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
 }
 
-#reportes-section .metric-card:hover {
-    transform: scale(1.05);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+.course-card-detailed:hover {
+    transform: translateY(-8px);
+    border-color: rgba(0, 212, 255, 0.6);
+    box-shadow: 0 15px 40px rgba(0, 212, 255, 0.2);
 }
 
-#reportes-section .metric-icon {
-    width: 70px;
-    height: 70px;
-    border-radius: 50%;
+.course-image {
+    height: 120px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: 0 auto 1rem;
-    font-size: 2rem;
-    color: white;
-    position: relative;
 }
 
-/* Floating particles effect */
-.floating-particles {
-    position: fixed;
+.course-image::before {
+    content: '';
+    position: absolute;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    z-index: -1;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="rgba(255,255,255,0.3)"/><circle cx="80" cy="30" r="1" fill="rgba(255,255,255,0.4)"/><circle cx="40" cy="70" r="1.5" fill="rgba(255,255,255,0.3)"/><circle cx="70" cy="70" r="1" fill="rgba(255,255,255,0.4)"/></svg>');
 }
 
-.particle {
+.course-level-badge {
     position: absolute;
-    width: 4px;
-    height: 4px;
-    background: var(--neon-blue);
-    border-radius: 50%;
-    animation: float-particle 15s infinite linear;
-    opacity: 0.3;
-}
-
-.particle:nth-child(odd) {
-    background: var(--neon-purple);
-    animation-duration: 20s;
-}
-
-.particle:nth-child(3n) {
-    background: var(--neon-green);
-    animation-duration: 25s;
-}
-
-@keyframes float-particle {
-    0% {
-        transform: translateY(100vh) translateX(0);
-        opacity: 0;
-    }
-    10% {
-        opacity: 0.3;
-    }
-    90% {
-        opacity: 0.3;
-    }
-    100% {
-        transform: translateY(-100px) translateX(100px);
-        opacity: 0;
-    }
-}
-
-/* Loading animation */
-.loading-spinner {
-    display: inline-block;
-    width: 40px;
-    height: 40px;
-    border: 4px solid rgba(255, 255, 255, 0.1);
-    border-radius: 50%;
-    border-top-color: var(--neon-blue);
-    animation: spin 1s ease-in-out infinite;
-}
-
-@keyframes spin {
-    to { transform: rotate(360deg); }
-}
-
-/* Scroll customizado */
-::-webkit-scrollbar {
-    width: 8px;
-}
-
-::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 10px;
-}
-
-::-webkit-scrollbar-thumb {
-    background: var(--primary-gradient);
-    border-radius: 10px;
-    transition: background 0.3s ease;
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: var(--secondary-gradient);
-}
-
-/* Modales futuristas */
-.modal-content {
-    background: var(--glass-bg);
-    backdrop-filter: blur(20px);
-    border: 1px solid var(--glass-border);
+    top: 10px;
+    right: 10px;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 0.25rem 0.75rem;
     border-radius: 20px;
-    color: var(--text-light);
-    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
-}
-
-.modal-header {
-    border-bottom: 1px solid var(--glass-border);
-    background: var(--primary-gradient);
-    border-radius: 20px 20px 0 0;
-}
-
-.modal-footer {
-    border-top: 1px solid var(--glass-border);
-}
-
-/* Badges futuristas */
-.badge {
-    padding: 0.5rem 1rem;
-    border-radius: 20px;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 1px;
     font-size: 0.75rem;
-    color: #000000 !important;
+    font-weight: 600;
+    text-transform: capitalize;
 }
 
-.badge-primary {
-    background: var(--primary-gradient);
-    color: #ffffff !important;
+.course-content {
+    padding: 1.25rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
 }
 
-.badge-success {
-    background: linear-gradient(135deg, var(--neon-green) 0%, #00cc70 100%);
-    color: #000000 !important;
+.course-content h6 {
+    color: #ffffff;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    line-height: 1.3;
 }
 
-.badge-warning {
-    background: linear-gradient(135deg, var(--neon-orange) 0%, #ff8c00 100%);
-    color: #000000 !important;
+.course-content .course-instructor {
+    color: rgba(0, 212, 255, 0.9);
+    font-size: 0.85rem;
+    margin-bottom: 0.75rem;
 }
 
-.badge-danger {
-    background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
-    color: #ffffff !important;
+.course-content .course-description {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.9rem;
+    line-height: 1.4;
+    margin-bottom: 1rem;
+    flex: 1;
 }
 
-/* Progress bars futuristas */
+.course-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    font-size: 0.85rem;
+}
+
+.course-category {
+    background: rgba(0, 255, 136, 0.2);
+    color: #00ff88;
+    padding: 0.25rem 0.5rem;
+    border-radius: 12px;
+    font-weight: 500;
+}
+
+.course-price {
+    color: #ffa726;
+    font-weight: 600;
+}
+
+.course-actions {
+    margin-top: auto;
+}
+
+/* Estadísticas de progreso */
+.progress-stat {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(0, 212, 255, 0.2);
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+.progress-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.progress-header span:first-child {
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 500;
+}
+
+.progress-percentage {
+    color: #00d4ff;
+    font-weight: 600;
+}
+
 .progress {
     height: 8px;
     background: rgba(255, 255, 255, 0.1);
-    border-radius: 10px;
+    border-radius: 4px;
     overflow: hidden;
 }
 
 .progress-bar {
-    background: var(--primary-gradient);
-    background-size: 20px 20px;
-    animation: progress-animation 2s linear infinite;
+    background: linear-gradient(90deg, #00d4ff, #00ff88);
+    transition: width 0.3s ease;
 }
 
-@keyframes progress-animation {
-    0% { background-position: 0 0; }
-    100% { background-position: 20px 0; }
+/* Avatar grande para perfil */
+.avatar-large {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    font-weight: bold;
+    color: white;
+    margin: 0 auto;
+    border: 3px solid rgba(0, 212, 255, 0.5);
 }
 
-/* Tooltip customizado */
-.tooltip-inner {
-    background: var(--glass-bg);
-    backdrop-filter: blur(10px);
-    border: 1px solid var(--glass-border);
-    color: var(--text-light);
-    border-radius: 8px;
-    padding: 0.5rem 1rem;
+/* Filtros de búsqueda */
+.search-filters .form-control {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(0, 212, 255, 0.3);
+    color: #ffffff;
+    border-radius: 25px;
+    padding: 0.75rem 1.25rem;
 }
 
-.tooltip.show {
-    opacity: 0.95;
+.search-filters .form-control:focus {
+    background: rgba(255, 255, 255, 0.08);
+    border-color: rgba(0, 212, 255, 0.6);
+    box-shadow: 0 0 0 0.2rem rgba(0, 212, 255, 0.25);
+    color: #ffffff;
 }
 
-/* Dropdown menus futuristas */
-.dropdown-menu {
-    background: var(--glass-bg);
+.search-filters .form-control::placeholder {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .course-card-detailed {
+        margin-bottom: 1rem;
+    }
+    
+    .course-meta {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+    
+    .search-filters .form-control {
+        width: 100% !important;
+        margin-bottom: 1rem;
+    }
+}
+
+/* Animaciones adicionales */
+@keyframes courseCardSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.course-card, .course-card-detailed {
+    animation: courseCardSlideIn 0.6s ease-out;
+}
+
+.course-card:nth-child(2) { animation-delay: 0.1s; }
+.course-card:nth-child(3) { animation-delay: 0.2s; }
+.course-card:nth-child(4) { animation-delay: 0.3s; }
+
+/* ===== ESTILOS PARA MODAL DE NUEVO USUARIO ===== */
+.modal-content {
+    background: rgba(26, 26, 46, 0.95);
     backdrop-filter: blur(20px);
-    border: 1px solid var(--glass-border);
+    border: 1px solid rgba(0, 212, 255, 0.3);
     border-radius: 15px;
-    padding: 1rem;
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+    box-shadow: 
+        0 25px 50px rgba(0, 0, 0, 0.5),
+        0 0 50px rgba(0, 212, 255, 0.1);
 }
 
-.dropdown-item {
+.modal-header {
+    background: linear-gradient(135deg, rgba(0, 212, 255, 0.1), rgba(72, 52, 212, 0.1));
+    border-bottom: 1px solid rgba(0, 212, 255, 0.2);
+    border-radius: 15px 15px 0 0;
+}
+
+.modal-title {
+    color: var(--neon-blue);
+    font-family: 'Orbitron', monospace;
+    font-weight: 700;
+    text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+}
+
+.modal-body {
     color: var(--text-light);
+}
+
+.modal-body .form-label {
+    color: var(--text-muted);
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+}
+
+.modal-body .form-label i {
+    color: var(--neon-blue);
+    margin-right: 0.5rem;
+}
+
+.modal-body .form-control,
+.modal-body .form-select {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(0, 212, 255, 0.3);
     border-radius: 8px;
-    padding: 0.75rem 1rem;
-    margin-bottom: 0.25rem;
+    color: var(--text-light);
     transition: all 0.3s ease;
 }
 
-.dropdown-item:hover {
-    background: var(--primary-gradient);
+.modal-body .form-control:focus,
+.modal-body .form-select:focus {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: var(--neon-blue);
+    box-shadow: 0 0 0 0.25rem rgba(0, 212, 255, 0.25);
+    color: var(--text-light);
+}
+
+.modal-body .form-control::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.modal-body .form-select option {
+    background: var(--space-purple);
+    color: var(--text-light);
+}
+
+.modal-body .alert-info {
+    background: rgba(0, 212, 255, 0.1);
+    border: 1px solid rgba(0, 212, 255, 0.3);
+    color: var(--neon-blue);
+    border-radius: 8px;
+}
+
+.modal-footer {
+    border-top: 1px solid rgba(0, 212, 255, 0.2);
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 0 0 15px 15px;
+}
+
+.modal-footer .btn-secondary {
+    background: rgba(108, 117, 125, 0.2);
+    border: 1px solid rgba(108, 117, 125, 0.5);
+    color: var(--text-muted);
+    transition: all 0.3s ease;
+}
+
+.modal-footer .btn-secondary:hover {
+    background: rgba(108, 117, 125, 0.3);
+    border-color: rgba(108, 117, 125, 0.7);
+    color: var(--text-light);
+}
+
+.modal-footer .btn-primary {
+    background: linear-gradient(135deg, var(--neon-blue), #0984e3);
+    border: none;
     color: white;
-    transform: translateX(5px);
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 212, 255, 0.3);
 }
 
-/* Switch toggles futuristas */
-.form-switch .form-check-input {
-    background-color: rgba(0, 0, 0, 0.5) !important;
-    border: 2px solid var(--neon-blue) !important;
-    width: 3rem !important;
-    height: 1.5rem !important;
-    border-radius: 2rem !important;
-    transition: all 0.3s ease !important;
-    cursor: pointer !important;
-    background-image: none !important;
-    margin-top: 0 !important;
-    opacity: 1 !important;
-    position: relative !important;
-    box-shadow: 0 0 10px rgba(0, 212, 255, 0.3) !important;
+.modal-footer .btn-primary:hover {
+    background: linear-gradient(135deg, #0984e3, var(--neon-blue));
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 212, 255, 0.4);
 }
 
-.form-switch .form-check-input:checked {
-    background-color: #00d4ff !important;
-    background-image: none !important;
-    border-color: #00d4ff !important;
-    box-shadow: 0 0 20px rgba(0, 212, 255, 0.8) !important;
+/* Validación de formularios */
+.is-invalid {
+    border-color: #dc3545 !important;
+    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25) !important;
 }
 
-/* Forzar visibilidad de switches - Override completo */
-input[type="checkbox"].form-check-input,
-.form-switch input[type="checkbox"] {
-    appearance: none !important;
-    -webkit-appearance: none !important;
-    -moz-appearance: none !important;
-    background-color: rgba(0, 0, 0, 0.6) !important;
-    border: 2px solid var(--neon-blue) !important;
-    width: 3rem !important;
-    height: 1.5rem !important;
-    border-radius: 2rem !important;
-    position: relative !important;
-    cursor: pointer !important;
-    transition: all 0.3s ease !important;
-    box-shadow: 0 0 10px rgba(0, 212, 255, 0.3) !important;
-    opacity: 1 !important;
-    visibility: visible !important;
-    display: inline-block !important;
+.is-valid {
+    border-color: #28a745 !important;
+    box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25) !important;
 }
 
-input[type="checkbox"].form-check-input:checked,
-.form-switch input[type="checkbox"]:checked {
-    background-color: #00d4ff !important;
-    background-image: none !important;
-    border-color: #00d4ff !important;
-    box-shadow: 0 0 20px rgba(0, 212, 255, 0.8) !important;
+.invalid-feedback {
+    color: #ff6b6b;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
 }
 
-/* Pseudo-elemento para el círculo del switch */
-input[type="checkbox"].form-check-input::before,
-.form-switch input[type="checkbox"]::before {
-    content: '' !important;
-    position: absolute !important;
-    top: 2px !important;
-    left: 2px !important;
-    width: calc(1.5rem - 8px) !important;
-    height: calc(1.5rem - 8px) !important;
-    border-radius: 50% !important;
-    background: white !important;
-    transition: all 0.3s ease !important;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3) !important;
+/* Animación del modal */
+.modal.fade .modal-dialog {
+    transform: scale(0.8) translateY(-50px);
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
-input[type="checkbox"].form-check-input:checked::before,
-.form-switch input[type="checkbox"]:checked::before {
-    transform: translateX(calc(3rem - 1.5rem)) !important;
-    background: white !important;
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.5) !important;
+.modal.show .modal-dialog {
+    transform: scale(1) translateY(0);
 }
 
-/* Asegurar que todos los switches tengan relleno celeste cuando están activos */
-.form-check-input:checked,
-.form-switch .form-check-input:checked,
-#configuracion-section .form-check-input:checked,
-#configuracion-section .form-switch .form-check-input:checked,
-input[type="checkbox"]:checked {
-    background-color: #00d4ff !important;
-    background-image: none !important;
-    border-color: #00d4ff !important;
-    box-shadow: 0 0 20px rgba(0, 212, 255, 0.8) !important;
+/* ===== ESTILOS ESPECÍFICOS PARA MODAL DE ROLES ===== */
+.form-check-container {
+    background: rgba(0, 212, 255, 0.05);
+    border: 1px solid rgba(0, 212, 255, 0.2);
+    border-radius: 10px;
+    padding: 1rem;
+    margin-top: 0.5rem;
 }
 
-/* Asegurar que el círculo también se vea correctamente en estado activo */
-.form-check-input:checked::before,
-.form-switch .form-check-input:checked::before,
-#configuracion-section .form-check-input:checked::before,
-input[type="checkbox"]:checked::before {
-    background: white !important;
-    box-shadow: 0 0 10px rgba(255, 255, 255, 0.8) !important;
+.form-check {
+    margin-bottom: 0.75rem;
+    padding: 0.5rem;
+    border-radius: 6px;
+    transition: all 0.3s ease;
 }
 
-/* Media queries responsive mejoradas */
+.form-check:hover {
+    background: rgba(0, 212, 255, 0.1);
+}
+
+.form-check-input {
+    margin-top: 0.25rem;
+    margin-right: 0.5rem;
+    border: 2px solid rgba(0, 212, 255, 0.3);
+    background-color: transparent;
+}
+
+.form-check-input:checked {
+    background-color: var(--neon-blue);
+    border-color: var(--neon-blue);
+    box-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+}
+
+.form-check-input:focus {
+    box-shadow: 0 0 0 0.25rem rgba(0, 212, 255, 0.25);
+    border-color: var(--neon-blue);
+}
+
+.form-check-label {
+    color: var(--text-light);
+    font-weight: 500;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.form-check-label:hover {
+    color: var(--neon-blue);
+}
+
+.form-check-label i {
+    color: var(--neon-cyan);
+    margin-right: 0.25rem;
+}
+
+/* Responsive para checkboxes */
 @media (max-width: 768px) {
-    .floating-elements {
-        display: none; /* Ocultar elementos flotantes en móviles para mejor rendimiento */
-    }
-    
-    .cosmic-rays {
-        opacity: 0.3; /* Reducir opacidad de rayos cósmicos en móviles */
-    }
-    
-    .section-title {
-        font-size: 2rem;
-        letter-spacing: 1px;
-    }
-    
-    .dashboard-card {
+    .form-check-container .col-md-6 {
         margin-bottom: 1rem;
-        padding: 1.5rem;
+    }
+    
+    .form-check {
+        margin-bottom: 0.5rem;
+        padding: 0.4rem;
     }
 }
 
@@ -2056,7 +2138,7 @@ table, th, td, thead, tbody, tfoot {
 
 #configuracion-section select option,
 #configuracion-section .form-select option {
-    background: var(--dark-bg) !important;
+    background: var(--space-purple) !important;
     color: var(--text-light) !important;
     padding: 0.5rem !important;
 }
@@ -2138,6 +2220,8 @@ table, th, td, thead, tbody, tfoot {
     backdrop-filter: blur(15px) !important;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3) !important;
 }
+
+
 
 #configuracion-section .dropdown-item {
     color: var(--text-light) !important;

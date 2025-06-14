@@ -1,163 +1,22 @@
-/* CSS para la página de registro */
-.registro-container {
-    min-height: 100vh;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-}
+/* ===== DISEÑO FUTURISTA PARA PÁGINA DE REGISTRO ===== */
 
-.registro-card {
-    background: white;
-    border-radius: 15px;
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-    padding: 40px;
-    max-width: 600px;
-    width: 100%;
-    animation: slideInUp 0.5s ease-out;
-}
-
-.logo-section {
-    text-align: center;
-    margin-bottom: 30px;
-}
-
-.logo-section i {
-    font-size: 3rem;
-    color: #667eea;
-    margin-bottom: 10px;
-}
-
-.logo-section h2 {
-    color: #333;
-    margin-bottom: 5px;
-}
-
-.logo-section p {
-    color: #666;
-    margin-bottom: 0;
-}
-
-.form-floating label {
-    color: #666;
-}
-
-.form-control:focus,
-.form-select:focus {
-    border-color: #667eea;
-    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
-}
-
-.btn-registro {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border: none;
-    border-radius: 10px;
-    color: white;
-    font-weight: 600;
-    padding: 12px 30px;
-    transition: transform 0.2s ease;
-}
-
-.btn-registro:hover {
-    transform: translateY(-2px);
-    color: white;
-    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
-}
-
-.alert {
-    border: none;
-    border-radius: 10px;
-}
-
-.login-link {
-    text-align: center;
-    margin-top: 20px;
-}
-
-.login-link a {
-    color: #667eea;
-    text-decoration: none;
-    font-weight: 500;
-}
-
-.login-link a:hover {
-    text-decoration: underline;
-}
-
-.form-row {
-    display: flex;
-    gap: 15px;
-}
-
-.form-row .form-floating {
-    flex: 1;
-}
-
-.form-check-input:checked {
-    background-color: #667eea;
-    border-color: #667eea;
-}
-
-.form-check-input:focus {
-    border-color: #667eea;
-    box-shadow: 0 0 0 0.25rem rgba(102, 126, 234, 0.25);
-}
-
-.text-danger small {
-    font-size: 0.875rem;
-}
-
-/* Animación de entrada */
-@keyframes slideInUp {
-    from {
-        opacity: 0;
-        transform: translateY(30px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-    .form-row {
-        flex-direction: column;
-        gap: 20px;
-    }
-    
-    .registro-card {
-        padding: 30px 20px;
-    }
-    
-    .logo-section i {
-        font-size: 2.5rem;
-    }
-}
-
-@media (max-width: 480px) {
-    .registro-container {
-        padding: 10px;
-    }
-    
-    .registro-card {
-        padding: 25px 15px;
-    }
-}
-
-/* ===== CURSOR FUTURISTA PERSONALIZADO PARA REGISTRO ===== */
-/* Ocultar cursor nativo en página de registro */
-body, html, .registro-container {
+/* Reset y fuentes */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
     cursor: none !important;
 }
 
-/* Aplicar cursor none a todos los elementos */
-*, *::before, *::after {
+body {
+    font-family: 'Exo 2', sans-serif;
+    height: 100vh;
+    overflow-x: hidden;
+    background: #0a0a0f;
     cursor: none !important;
 }
 
-/* Cursor personalizado mejorado */
+/* Cursor personalizado */
 .custom-cursor {
     position: fixed;
     width: 8px;
@@ -213,23 +72,769 @@ body, html, .registro-container {
 
 /* Efectos especiales para hover */
 .custom-cursor.hover {
-    background: radial-gradient(circle, #667eea, #764ba2);
+    background: radial-gradient(circle, #00d4ff, #0097e6);
     box-shadow: 
-        0 0 15px #667eea,
-        0 0 25px #667eea,
-        0 0 35px #667eea;
+        0 0 15px #00d4ff,
+        0 0 25px #00d4ff,
+        0 0 35px #00d4ff;
     transform: translate(-50%, -50%) scale(1.5);
 }
 
 .custom-cursor-ring.hover {
-    border-color: rgba(102, 126, 234, 0.8);
+    border-color: rgba(0, 212, 255, 0.8);
     transform: translate(-50%, -50%) scale(1.2);
 }
 
-/* Asegurar que todos los elementos de registro tengan cursor none */
-.registro-card, .registro-card *,
-.form-floating, .form-floating *,
-.form-control, .form-select, .btn,
-a, button, input, label, .logo-section {
-    cursor: none !important;
+/* ===== FONDO ESPACIAL ANIMADO MEJORADO ===== */
+.space-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 25%, #16213e 50%, #0f3460 75%, #533483 100%);
+    z-index: -2;
+    overflow: hidden;
+    animation: cosmic-drift 30s ease-in-out infinite alternate;
+}
+
+@keyframes cosmic-drift {
+    0% { 
+        background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 25%, #16213e 50%, #0f3460 75%, #533483 100%);
+        transform: scale(1);
+    }
+    50% {
+        background: linear-gradient(135deg, #0f0f23 0%, #1a1a3e 25%, #16215e 50%, #0f3480 75%, #5334a3 100%);
+        transform: scale(1.02);
+    }
+    100% { 
+        background: linear-gradient(135deg, #0a0a1f 0%, #2a1a3e 25%, #26214e 50%, #1f3470 75%, #6334b3 100%);
+        transform: scale(1.01);
+    }
+}
+
+.stars {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+}
+
+.star {
+    position: absolute;
+    background: white;
+    border-radius: 50%;
+    animation: enhanced-twinkle 4s infinite ease-in-out;
+}
+
+.star:nth-child(odd) {
+    width: 1px;
+    height: 1px;
+    box-shadow: 0 0 6px #fff, 0 0 12px #fff;
+    animation-delay: 0s;
+}
+
+.star:nth-child(even) {
+    width: 2px;
+    height: 2px;
+    box-shadow: 0 0 8px #00d4ff, 0 0 16px #00d4ff;
+    animation-delay: 1s;
+}
+
+.star:nth-child(3n) {
+    width: 1.5px;
+    height: 1.5px;
+    box-shadow: 0 0 7px #c471ed, 0 0 14px #c471ed;
+    animation-delay: 2s;
+}
+
+@keyframes enhanced-twinkle {
+    0%, 100% { 
+        opacity: 0.2; 
+        transform: scale(0.8);
+    }
+    25% { 
+        opacity: 0.8; 
+        transform: scale(1.1);
+    }
+    50% { 
+        opacity: 1; 
+        transform: scale(1.3);
+    }
+    75% { 
+        opacity: 0.6; 
+        transform: scale(1);
+    }
+}
+
+/* Elementos flotantes del espacio mejorados */
+.floating-elements {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+}
+
+.floating-element {
+    position: absolute;
+    border-radius: 50%;
+    animation: enhanced-float 20s infinite ease-in-out;
+}
+
+.planet-1 {
+    width: 80px;
+    height: 80px;
+    background: radial-gradient(circle at 30% 30%, #ff6b6b, #ee5a24, #c44569);
+    top: 15%;
+    left: 5%;
+    box-shadow: 
+        0 0 40px rgba(255, 107, 107, 0.4),
+        0 0 80px rgba(255, 107, 107, 0.2);
+    animation-duration: 25s;
+    animation-delay: 0s;
+}
+
+.planet-2 {
+    width: 60px;
+    height: 60px;
+    background: radial-gradient(circle at 30% 30%, #4834d4, #686de0, #3742fa);
+    top: 70%;
+    right: 10%;
+    box-shadow: 
+        0 0 35px rgba(72, 52, 212, 0.4),
+        0 0 70px rgba(72, 52, 212, 0.2);
+    animation-duration: 30s;
+    animation-direction: reverse;
+    animation-delay: 5s;
+}
+
+.satellite {
+    width: 25px;
+    height: 25px;
+    background: radial-gradient(circle at 30% 30%, #00d4ff, #0097e6, #0984e3);
+    top: 25%;
+    right: 20%;
+    box-shadow: 
+        0 0 25px rgba(0, 212, 255, 0.5),
+        0 0 50px rgba(0, 212, 255, 0.3);
+    animation-duration: 22s;
+    animation-delay: 3s;
+}
+
+/* Añadir más elementos flotantes */
+.asteroid-1 {
+    width: 15px;
+    height: 15px;
+    background: radial-gradient(circle at 30% 30%, #95a5a6, #7f8c8d);
+    top: 40%;
+    left: 80%;
+    box-shadow: 0 0 15px rgba(149, 165, 166, 0.3);
+    animation-duration: 35s;
+    animation-delay: 8s;
+}
+
+.asteroid-2 {
+    width: 12px;
+    height: 12px;
+    background: radial-gradient(circle at 30% 30%, #f39c12, #e67e22);
+    top: 80%;
+    left: 20%;
+    box-shadow: 0 0 12px rgba(243, 156, 18, 0.3);
+    animation-duration: 28s;
+    animation-delay: 12s;
+}
+
+@keyframes enhanced-float {
+    0% { 
+        transform: translateY(0px) translateX(0px) rotate(0deg) scale(1);
+        opacity: 0.8;
+    }
+    25% { 
+        transform: translateY(-30px) translateX(15px) rotate(90deg) scale(1.1);
+        opacity: 1;
+    }
+    50% { 
+        transform: translateY(-10px) translateX(30px) rotate(180deg) scale(0.9);
+        opacity: 0.9;
+    }
+    75% { 
+        transform: translateY(-40px) translateX(10px) rotate(270deg) scale(1.05);
+        opacity: 0.85;
+    }
+    100% { 
+        transform: translateY(0px) translateX(0px) rotate(360deg) scale(1);
+        opacity: 0.8;
+    }
+}
+
+/* ===== CONTENEDOR PRINCIPAL ===== */
+.registro-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    position: relative;
+    z-index: 1;
+}
+
+/* ===== SECCIÓN DE INFORMACIÓN (LADO IZQUIERDO) ===== */
+.info-section {
+    padding: 60px 40px;
+    color: white;
+    animation: slideInLeft 1s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.brand-logo {
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.brand-logo i {
+    font-size: 4rem;
+    background: linear-gradient(135deg, #00d4ff, #0097e6, #4834d4);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    display: block;
+    margin-bottom: 20px;
+    animation: rocket-float 3s infinite ease-in-out;
+    filter: drop-shadow(0 0 30px rgba(0, 212, 255, 0.4));
+}
+
+.brand-name {
+    font-family: 'Orbitron', monospace;
+    font-size: 2.5rem;
+    font-weight: 700;
+    text-shadow: 0 0 30px rgba(0, 212, 255, 0.5);
+    margin: 0;
+    letter-spacing: 2px;
+}
+
+@keyframes rocket-float {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-10px) rotate(5deg); }
+}
+
+.welcome-title {
+    font-size: 2.5rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+    background: linear-gradient(135deg, #ffffff, #00d4ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1.2;
+}
+
+.welcome-subtitle {
+    font-size: 1.2rem;
+    color: rgba(255, 255, 255, 0.8);
+    margin-bottom: 40px;
+    line-height: 1.6;
+}
+
+/* Estadísticas */
+.stats-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 25px;
+    margin-top: 40px;
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(0, 212, 255, 0.2);
+    border-radius: 15px;
+    padding: 20px;
+    transition: all 0.3s ease;
+}
+
+.stat-item:hover {
+    transform: translateX(10px);
+    border-color: rgba(0, 212, 255, 0.5);
+    box-shadow: 0 10px 30px rgba(0, 212, 255, 0.2);
+}
+
+.stat-icon {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #00d4ff, #4834d4);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 20px;
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+}
+
+.stat-icon i {
+    font-size: 1.5rem;
+    color: white;
+}
+
+.stat-info h3 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #00d4ff;
+    margin: 0;
+    text-shadow: 0 0 15px rgba(0, 212, 255, 0.5);
+}
+
+.stat-info p {
+    color: rgba(255, 255, 255, 0.8);
+    margin: 0;
+    font-size: 0.95rem;
+}
+
+@keyframes slideInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* ===== CONTENEDOR DEL FORMULARIO ===== */
+.registro-form-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+/* ===== TARJETA DE REGISTRO ===== */
+.registro-card {
+    background: rgba(26, 26, 46, 0.95);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(0, 212, 255, 0.2);
+    border-radius: 20px;
+    box-shadow: 
+        0 25px 50px rgba(0, 0, 0, 0.3),
+        0 0 50px rgba(0, 212, 255, 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.1);
+    padding: 40px;
+    max-width: 500px;
+    width: 100%;
+    animation: slideInRight 1s cubic-bezier(0.16, 1, 0.3, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+.registro-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #00d4ff, transparent);
+    animation: glow-line 2s infinite;
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Header móvil */
+.mobile-header {
+    text-align: center;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(0, 212, 255, 0.2);
+}
+
+.mobile-brand {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    color: white;
+    font-family: 'Orbitron', monospace;
+    font-weight: 700;
+    font-size: 1.5rem;
+}
+
+.mobile-brand i {
+    color: #00d4ff;
+    font-size: 2rem;
+}
+
+/* Header del formulario */
+.form-header {
+    text-align: center;
+    margin-bottom: 35px;
+}
+
+.form-title {
+    color: #ffffff;
+    margin-bottom: 8px;
+    font-family: 'Orbitron', monospace;
+    font-weight: 700;
+    font-size: 2rem;
+    text-shadow: 0 0 20px rgba(0, 212, 255, 0.5);
+}
+
+.form-subtitle {
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: 0;
+    font-size: 1rem;
+}
+
+/* ===== FORMULARIO ===== */
+.form-floating {
+    position: relative;
+    margin-bottom: 25px;
+    animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.form-floating:nth-child(1) { animation-delay: 0.3s; }
+.form-floating:nth-child(2) { animation-delay: 0.4s; }
+.form-floating:nth-child(3) { animation-delay: 0.5s; }
+.form-floating:nth-child(4) { animation-delay: 0.6s; }
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ===== INPUTS Y SELECTS ===== */
+.form-control,
+.form-select {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(0, 212, 255, 0.3);
+    border-radius: 12px;
+    color: #ffffff;
+    font-size: 1rem;
+    padding: 1rem 1.2rem;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    backdrop-filter: blur(10px);
+    height: auto;
+    min-height: 60px;
+}
+
+.form-control::placeholder,
+.form-select option {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.form-control:focus,
+.form-select:focus {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: #00d4ff;
+    box-shadow: 
+        0 0 0 0.2rem rgba(0, 212, 255, 0.25),
+        0 0 20px rgba(0, 212, 255, 0.3);
+    color: #ffffff;
+    outline: none;
+    transform: translateY(-2px);
+}
+
+/* ===== LABELS ===== */
+.form-floating label {
+    color: rgba(255, 255, 255, 0.7);
+    font-weight: 500;
+    left: 1.2rem;
+    font-size: 0.95rem;
+    transition: all 0.3s ease;
+}
+
+.form-floating > .form-control:focus ~ label,
+.form-floating > .form-control:not(:placeholder-shown) ~ label,
+.form-floating > .form-select:focus ~ label,
+.form-floating > .form-select:not([value=""]) ~ label {
+    color: #00d4ff;
+    transform: scale(0.85) translateY(-0.5rem) translateX(0.15rem);
+    text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+}
+
+/* ===== ICONOS EN LABELS ===== */
+.form-floating label i {
+    margin-right: 8px;
+    color: #00d4ff;
+    text-shadow: 0 0 10px rgba(0, 212, 255, 0.5);
+}
+
+/* ===== CHECKBOX ===== */
+.form-check {
+    margin-bottom: 25px;
+    animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.7s both;
+}
+
+.form-check-input {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(0, 212, 255, 0.3);
+    border-radius: 6px;
+    width: 1.2em;
+    height: 1.2em;
+    transition: all 0.3s ease;
+}
+
+.form-check-input:checked {
+    background: linear-gradient(135deg, #00d4ff, #0097e6);
+    border-color: #00d4ff;
+    box-shadow: 0 0 15px rgba(0, 212, 255, 0.5);
+}
+
+.form-check-input:focus {
+    border-color: #00d4ff;
+    box-shadow: 0 0 0 0.25rem rgba(0, 212, 255, 0.25);
+}
+
+.form-check-label {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.95rem;
+    margin-left: 0.5rem;
+}
+
+.form-check-label a {
+    color: #00d4ff;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.form-check-label a:hover {
+    color: #4834d4;
+    text-shadow: 0 0 10px rgba(72, 52, 212, 0.5);
+}
+
+/* ===== BOTÓN DE REGISTRO ===== */
+.btn-registro {
+    background: linear-gradient(135deg, #00d4ff 0%, #0097e6 50%, #4834d4 100%);
+    border: none;
+    border-radius: 12px;
+    color: white;
+    font-weight: 600;
+    font-size: 1.1rem;
+    padding: 15px 35px;
+    width: 100%;
+    min-height: 60px;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 
+        0 10px 30px rgba(0, 212, 255, 0.3),
+        0 0 20px rgba(0, 212, 255, 0.2);
+    animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.8s both;
+}
+
+.btn-registro::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transition: left 0.5s ease;
+}
+
+.btn-registro:hover {
+    transform: translateY(-3px);
+    color: white;
+    box-shadow: 
+        0 15px 40px rgba(0, 212, 255, 0.4),
+        0 0 30px rgba(0, 212, 255, 0.3);
+    background: linear-gradient(135deg, #4834d4 0%, #0097e6 50%, #00d4ff 100%);
+}
+
+.btn-registro:hover::before {
+    left: 100%;
+}
+
+.btn-registro:active {
+    transform: translateY(-1px);
+}
+
+/* ===== ALERTAS ===== */
+.alert {
+    border: none;
+    border-radius: 12px;
+    backdrop-filter: blur(10px);
+    margin-bottom: 25px;
+    animation: slideInDown 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.alert-success {
+    background: rgba(0, 212, 137, 0.15);
+    border: 1px solid rgba(0, 212, 137, 0.3);
+    color: #00d489;
+}
+
+.alert-danger {
+    background: rgba(255, 107, 107, 0.15);
+    border: 1px solid rgba(255, 107, 107, 0.3);
+    color: #ff6b6b;
+}
+
+@keyframes slideInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ===== ENLACE DE LOGIN ===== */
+.login-link {
+    text-align: center;
+    margin-top: 25px;
+    animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.9s both;
+}
+
+.login-link p {
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: 0;
+}
+
+.login-link a {
+    color: #00d4ff;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    padding: 5px 10px;
+    border-radius: 6px;
+}
+
+.login-link a:hover {
+    color: #4834d4;
+    background: rgba(72, 52, 212, 0.1);
+    text-shadow: 0 0 10px rgba(72, 52, 212, 0.5);
+}
+
+/* ===== MENSAJES DE ERROR ===== */
+.text-danger small {
+    font-size: 0.85rem;
+    color: #ff6b6b !important;
+    margin-top: 5px;
+    display: block;
+    text-shadow: 0 0 5px rgba(255, 107, 107, 0.3);
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 991.98px) {
+    .info-section {
+        display: none;
+    }
+    
+    .registro-form-container {
+        min-height: auto;
+        padding: 15px;
+    }
+    
+    .mobile-header {
+        display: block !important;
+    }
+}
+
+@media (max-width: 768px) {
+    .registro-card {
+        padding: 30px 25px;
+        margin: 10px;
+    }
+    
+    .form-title {
+        font-size: 1.7rem;
+    }
+    
+    .form-control,
+    .form-select {
+        min-height: 55px;
+        padding: 0.9rem 1rem;
+    }
+    
+    .btn-registro {
+        min-height: 55px;
+        font-size: 1rem;
+        padding: 12px 25px;
+    }
+    
+    .mobile-brand {
+        font-size: 1.3rem;
+    }
+    
+    .mobile-brand i {
+        font-size: 1.8rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .registro-container {
+        padding: 10px;
+    }
+    
+    .registro-card {
+        padding: 25px 20px;
+    }
+    
+    .form-title {
+        font-size: 1.5rem;
+    }
+    
+    .form-control,
+    .form-select {
+        min-height: 50px;
+        font-size: 0.95rem;
+    }
+    
+    .btn-registro {
+        min-height: 50px;
+        font-size: 0.95rem;
+    }
+    
+    .mobile-brand {
+        font-size: 1.2rem;
+    }
+    
+    .mobile-brand i {
+        font-size: 1.6rem;
+    }
+}
+
+/* ===== DISEÑO PARA PANTALLAS GRANDES ===== */
+@media (min-width: 1200px) {
+    .info-section {
+        padding: 80px 60px;
+    }
+    
+    .welcome-title {
+        font-size: 2.8rem;
+    }
+    
+    .brand-name {
+        font-size: 2.8rem;
+    }
+    
+    .brand-logo i {
+        font-size: 4.5rem;
+    }
+    
+    .registro-card {
+        max-width: 550px;
+        padding: 50px;
+    }
 }

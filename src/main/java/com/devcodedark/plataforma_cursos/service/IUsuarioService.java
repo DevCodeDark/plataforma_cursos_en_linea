@@ -25,12 +25,11 @@ public interface IUsuarioService {
     
     // Validaciones
     boolean existePorEmail(String email);
-    boolean existePorUsuario(String usuario);
-    
-    // Métodos específicos para autenticación
+    boolean existePorUsuario(String usuario);    // Métodos específicos para autenticación
     boolean existeEmail(String email);
     boolean existeUsuario(String usuario);
     void registrarUsuario(UsuarioRegistroDTO usuarioRegistroDTO);
+    boolean registrarUsuarioConRol(UsuarioRegistroDTO usuarioRegistroDTO, Integer rolId);
     
     // Operaciones de negocio
     void cambiarContrasena(Integer usuarioId, String nuevaContrasena);

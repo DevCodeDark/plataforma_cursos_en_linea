@@ -49,8 +49,7 @@ public class SecurityConfig {
             
             // Configurar CORS
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-            
-            // Configurar autorización por URLs
+              // Configurar autorización por URLs
             .authorizeHttpRequests(authz -> authz
                 // Permitir acceso público a páginas principales
                 .requestMatchers("/", "/astrodev/**", "/css/**", "/js/**", "/img/**", "/api/cursos/**").permitAll()
@@ -59,18 +58,17 @@ public class SecurityConfig {
                 .requestMatchers("/auth/login", "/auth/registro", "/auth/recuperar-password").permitAll()
                 
                 // Dashboard administrativo - solo administradores
-                .requestMatchers("/admin/**").hasRole("ADMINISTRADOR")
+                .requestMatchers("/admin/**").hasAnyRole("ADMINISTRADOR", "ADMIN")
                 
                 // Dashboard docente - docentes y administradores
-                .requestMatchers("/docente/**").hasAnyRole("DOCENTE", "ADMINISTRADOR")
-                
-                // Dashboard estudiante - estudiantes, docentes y administradores
-                .requestMatchers("/estudiante/**").hasAnyRole("ESTUDIANTE", "DOCENTE", "ADMINISTRADOR")
+                .requestMatchers("/docente/**").hasAnyRole("DOCENTE", "ADMINISTRADOR", "ADMIN")
+                  // Dashboard estudiante - estudiantes, docentes y administradores
+                .requestMatchers("/estudiante/**").hasAnyRole("ESTUDIANTE", "DOCENTE", "ADMINISTRADOR", "ADMIN")
                 
                 // API endpoints con autenticación
-                .requestMatchers("/api/admin/**").hasRole("ADMINISTRADOR")
-                .requestMatchers("/api/docente/**").hasAnyRole("DOCENTE", "ADMINISTRADOR")
-                .requestMatchers("/api/estudiante/**").hasAnyRole("ESTUDIANTE", "DOCENTE", "ADMINISTRADOR")
+                .requestMatchers("/api/admin/**").hasAnyRole("ADMINISTRADOR", "ADMIN")
+                .requestMatchers("/api/docente/**").hasAnyRole("DOCENTE", "ADMINISTRADOR", "ADMIN")
+                .requestMatchers("/api/estudiante/**").hasAnyRole("ESTUDIANTE", "DOCENTE", "ADMINISTRADOR", "ADMIN")
                 
                 // Cualquier otra petición requiere autenticación
                 .anyRequest().authenticated()

@@ -23,7 +23,7 @@ public class LogActividadController {
 
     @Autowired
     private ILogActividadService logActividadService;
-    
+
     // Listar todos los logs
     @GetMapping
     public ResponseEntity<List<LogActividadDTO>> listarTodos() {
@@ -48,8 +48,8 @@ public class LogActividadController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
-    }    
-    
+    }
+
     // Crear nuevo log
     @PostMapping
     public ResponseEntity<String> crear(@Valid @RequestBody LogActividadDTO logActividadDTO) {
@@ -58,7 +58,7 @@ public class LogActividadController {
             return ResponseEntity.status(HttpStatus.CREATED).body("Log creado exitosamente");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Error al crear el log: " + e.getMessage());
+                    .body("Error al crear el log: " + e.getMessage());
         }
     }
 
@@ -74,33 +74,35 @@ public class LogActividadController {
         try {
             String ipAddress = request.getRemoteAddr();
             String userAgent = request.getHeader("User-Agent");
-            
-            logActividadService.registrarActividadCompleta(usuarioId, accion, entidad, entidadId, detalles, ipAddress, userAgent);
+
+            logActividadService.registrarActividadCompleta(usuarioId, accion, entidad, entidadId, detalles, ipAddress,
+                    userAgent);
             return ResponseEntity.status(HttpStatus.CREATED).body("Actividad registrada exitosamente");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("Error al registrar la actividad: " + e.getMessage());
+                    .body("Error al registrar la actividad: " + e.getMessage());
         }
-    }    
-    
+    }
+
     // Actualizar log
     @PutMapping("/{id}")
-    public ResponseEntity<String> actualizar(@PathVariable Integer id, @Valid @RequestBody LogActividadDTO logActividadDTO) {
+    public ResponseEntity<String> actualizar(@PathVariable Integer id,
+            @Valid @RequestBody LogActividadDTO logActividadDTO) {
         try {
             Optional<LogActividadDTO> logExistente = logActividadService.buscarId(id);
             if (!logExistente.isPresent()) {
                 return ResponseEntity.notFound().build();
             }
-            
+
             logActividadDTO.setId(id);
             logActividadService.modificar(logActividadDTO);
             return ResponseEntity.ok("Log actualizado exitosamente");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Error al actualizar el log: " + e.getMessage());
+                    .body("Error al actualizar el log: " + e.getMessage());
         }
-    }    
-    
+    }
+
     // Eliminar log
     @DeleteMapping("/{id}")
     public ResponseEntity<String> eliminar(@PathVariable Integer id) {
@@ -109,12 +111,12 @@ public class LogActividadController {
             if (!log.isPresent()) {
                 return ResponseEntity.notFound().build();
             }
-            
+
             logActividadService.eliminar(id);
             return ResponseEntity.ok("Log eliminado exitosamente");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Error al eliminar el log: " + e.getMessage());
+                    .body("Error al eliminar el log: " + e.getMessage());
         }
     }
 
@@ -149,8 +151,8 @@ public class LogActividadController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
-    }    
-    
+    }
+
     // Buscar logs por rango de fechas
     @GetMapping("/rango-fechas")
     public ResponseEntity<List<LogActividadDTO>> buscarPorRangoFechas(
@@ -160,7 +162,7 @@ public class LogActividadController {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
             LocalDateTime inicio = LocalDateTime.parse(fechaInicio + " 00:00:00", formatter);
             LocalDateTime fin = LocalDateTime.parse(fechaFin + " 23:59:59", formatter);
-            
+
             List<LogActividadDTO> logs = logActividadService.buscarPorRangoFechas(inicio, fin);
             return ResponseEntity.ok(logs);
         } catch (Exception e) {
@@ -177,11 +179,12 @@ public class LogActividadController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
-    }    
-    
+    }
+
     // Obtener actividad reciente por usuario
     @GetMapping("/usuario/{usuarioId}/reciente")
-    public ResponseEntity<List<LogActividadDTO>> obtenerActividadReciente(@PathVariable Integer usuarioId, @RequestParam(defaultValue = "10") int limite) {
+    public ResponseEntity<List<LogActividadDTO>> obtenerActividadReciente(@PathVariable Integer usuarioId,
+            @RequestParam(defaultValue = "10") int limite) {
         try {
             List<LogActividadDTO> logs = logActividadService.obtenerActividadRecientePorUsuario(usuarioId, limite);
             return ResponseEntity.ok(logs);
@@ -220,7 +223,7 @@ public class LogActividadController {
             return ResponseEntity.ok("Logs antiguos limpiados exitosamente");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Error al limpiar logs antiguos: " + e.getMessage());
+                    .body("Error al limpiar logs antiguos: " + e.getMessage());
         }
     }
 

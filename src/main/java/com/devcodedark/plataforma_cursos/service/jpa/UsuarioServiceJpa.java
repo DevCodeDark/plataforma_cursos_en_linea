@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +26,8 @@ import com.devcodedark.plataforma_cursos.service.IUsuarioService;
 @Transactional
 public class UsuarioServiceJpa implements IUsuarioService {
 
+    private static final Logger logger = LoggerFactory.getLogger(UsuarioServiceJpa.class);
+    
     private final UsuarioRepository usuarioRepository;
     private final RolRepository rolRepository;
     private final PasswordEncoder passwordEncoder;
@@ -334,9 +338,7 @@ public class UsuarioServiceJpa implements IUsuarioService {
     @Transactional(readOnly = true)
     public boolean existeUsuario(String usuario) {
         return usuarioRepository.existsByUsuario(usuario);
-    }
-
-    @Override
+    }    @Override
     public void registrarUsuario(UsuarioRegistroDTO usuarioRegistroDTO) {
         // Buscar rol de estudiante por defecto
         Rol rolEstudiante = rolRepository.findByNombre("Estudiante")
@@ -362,6 +364,42 @@ public class UsuarioServiceJpa implements IUsuarioService {
         usuario.setFechaActualizacion(LocalDateTime.now());
 
         usuarioRepository.save(usuario);
+    }
+      @Override
+    @Transactional
+    public boolean registrarUsuarioConRol(UsuarioRegistroDTO usuarioRegistroDTO, Integer rolId) {
+        try {
+            // Buscar el rol específico
+            Rol rol = rolRepository.findById(rolId)
+                    .orElseThrow(() -> new RuntimeException("Rol no encontrado con ID: " + rolId));
+
+            Usuario usuario = new Usuario();
+            usuario.setNombre(usuarioRegistroDTO.getNombre());
+            usuario.setApellido(usuarioRegistroDTO.getApellido());
+            usuario.setEmail(usuarioRegistroDTO.getEmail());
+            usuario.setUsuario(usuarioRegistroDTO.getUsuario());
+            usuario.setPasswordHash(passwordEncoder.encode(usuarioRegistroDTO.getPassword()));
+            usuario.setTelefono(usuarioRegistroDTO.getTelefono());
+            usuario.setFechaNacimiento(usuarioRegistroDTO.getFechaNacimiento());
+            
+            // Convertir género si está presente
+            if (usuarioRegistroDTO.getGenero() != null && !usuarioRegistroDTO.getGenero().isEmpty()) {
+                usuario.setGenero(Genero.valueOf(usuarioRegistroDTO.getGenero()));
+            }
+            
+            usuario.setRol(rol);
+            usuario.setEstado(EstadoUsuario.activo);
+            usuario.setFechaCreacion(LocalDateTime.now());
+            usuario.setFechaActualizacion(LocalDateTime.now());
+
+            usuarioRepository.save(usuario);
+            return true;
+            
+        } catch (Exception e) {
+            // Log del error
+            logger.error("Error al registrar usuario con rol: {}", e.getMessage(), e);
+            return false;
+        }
     }
     
     // Métodos de estadísticas

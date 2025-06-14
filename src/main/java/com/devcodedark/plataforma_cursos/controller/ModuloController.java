@@ -55,10 +55,10 @@ public class ModuloController {
             return ResponseEntity.status(HttpStatus.CREATED).body("Módulo creado exitosamente");
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("Error de validación: " + e.getMessage());
+                    .body("Error de validación: " + e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Error al crear el módulo: " + e.getMessage());
+                    .body("Error al crear el módulo: " + e.getMessage());
         }
     }
 
@@ -70,16 +70,16 @@ public class ModuloController {
             if (!moduloExistente.isPresent()) {
                 return ResponseEntity.notFound().build();
             }
-            
+
             moduloDTO.setId(id);
             moduloService.modificar(moduloDTO);
             return ResponseEntity.ok("Módulo actualizado exitosamente");
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("Error de validación: " + e.getMessage());
+                    .body("Error de validación: " + e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Error al actualizar el módulo: " + e.getMessage());
+                    .body("Error al actualizar el módulo: " + e.getMessage());
         }
     }
 
@@ -91,12 +91,12 @@ public class ModuloController {
             if (!modulo.isPresent()) {
                 return ResponseEntity.notFound().build();
             }
-            
+
             moduloService.eliminar(id);
             return ResponseEntity.ok("Módulo eliminado exitosamente");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Error al eliminar el módulo: " + e.getMessage());
+                    .body("Error al eliminar el módulo: " + e.getMessage());
         }
     }
 
@@ -157,16 +157,17 @@ public class ModuloController {
 
     // Reordenar módulos
     @PutMapping("/curso/{cursoId}/reordenar")
-    public ResponseEntity<String> reordenarModulos(@PathVariable Integer cursoId, @RequestBody List<Integer> nuevoOrden) {
+    public ResponseEntity<String> reordenarModulos(@PathVariable Integer cursoId,
+            @RequestBody List<Integer> nuevoOrden) {
         try {
             moduloService.reordenarModulos(cursoId, nuevoOrden);
             return ResponseEntity.ok("Módulos reordenados exitosamente");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Error al reordenar los módulos: " + e.getMessage());
+                    .body("Error al reordenar los módulos: " + e.getMessage());
         }
-    }    
-    
+    }
+
     // Cambiar si es obligatorio
     @PutMapping("/{id}/obligatorio")
     public ResponseEntity<String> cambiarObligatorio(@PathVariable Integer id, @RequestBody Boolean esObligatorio) {
@@ -175,12 +176,12 @@ public class ModuloController {
             if (!modulo.isPresent()) {
                 return ResponseEntity.notFound().build();
             }
-            
+
             moduloService.cambiarObligatorio(id, esObligatorio);
             return ResponseEntity.ok("Configuración de obligatorio cambiada exitosamente");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Error al cambiar la configuración: " + e.getMessage());
+                    .body("Error al cambiar la configuración: " + e.getMessage());
         }
     }
 

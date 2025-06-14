@@ -56,7 +56,7 @@ public class CursoController {
             return ResponseEntity.status(HttpStatus.CREATED).body("Curso creado exitosamente");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Error al crear el curso: " + e.getMessage());
+                    .body("Error al crear el curso: " + e.getMessage());
         }
     }
 
@@ -68,13 +68,13 @@ public class CursoController {
             if (!cursoExistente.isPresent()) {
                 return ResponseEntity.notFound().build();
             }
-            
+
             cursoDTO.setId(id);
             cursoService.modificar(cursoDTO);
             return ResponseEntity.ok("Curso actualizado exitosamente");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Error al actualizar el curso: " + e.getMessage());
+                    .body("Error al actualizar el curso: " + e.getMessage());
         }
     }
 
@@ -86,15 +86,15 @@ public class CursoController {
             if (!curso.isPresent()) {
                 return ResponseEntity.notFound().build();
             }
-            
+
             cursoService.eliminar(id);
             return ResponseEntity.ok("Curso eliminado exitosamente");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Error al eliminar el curso: " + e.getMessage());
+                    .body("Error al eliminar el curso: " + e.getMessage());
         }
-    }    
-    
+    }
+
     // Buscar cursos por categoría
     @GetMapping("/categoria/{categoriaId}")
     public ResponseEntity<List<CursoDTO>> buscarPorCategoria(@PathVariable Integer categoriaId) {
@@ -192,7 +192,7 @@ public class CursoController {
             if (!curso.isPresent()) {
                 return ResponseEntity.notFound().build();
             }
-            
+
             Long count = cursoService.contarInscripcionesPorCurso(id);
             return ResponseEntity.ok(count);
         } catch (Exception e) {
@@ -208,12 +208,12 @@ public class CursoController {
             if (!curso.isPresent()) {
                 return ResponseEntity.notFound().build();
             }
-            
+
             cursoService.publicarCurso(id);
             return ResponseEntity.ok("Curso publicado exitosamente");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Error al publicar el curso: " + e.getMessage());
+                    .body("Error al publicar el curso: " + e.getMessage());
         }
     }
 
@@ -225,12 +225,12 @@ public class CursoController {
             if (!curso.isPresent()) {
                 return ResponseEntity.notFound().build();
             }
-            
+
             cursoService.pausarCurso(id);
             return ResponseEntity.ok("Curso pausado exitosamente");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Error al pausar el curso: " + e.getMessage());
+                    .body("Error al pausar el curso: " + e.getMessage());
         }
     }
 
@@ -242,12 +242,12 @@ public class CursoController {
             if (!curso.isPresent()) {
                 return ResponseEntity.notFound().build();
             }
-            
+
             cursoService.cambiarEstado(id, estado);
             return ResponseEntity.ok("Estado del curso cambiado exitosamente");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Error al cambiar el estado: " + e.getMessage());
+                    .body("Error al cambiar el estado: " + e.getMessage());
         }
     }
 

@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">    <title>Dashboard Docente | AstroDev Academy</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome para iconos -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Chart.js -->
+    <link href="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js" rel="stylesheet">
+    
+    <!-- CSS personalizado -->
+    <link th:href="@{/css/admin-dashboard.css}" rel="stylesheet">
+</head>
+<body class="dashboard-body">
+    <!-- Fondo espacial animado -->
+    <div class="space-background">
+        <div class="stars"></div>
+        <div class="floating-elements">
+            <div class="floating-element planet-1"></div>
+            <div class="floating-element planet-2"></div>
+            <div class="floating-element satellite"></div>
+            <div class="floating-element asteroid-1"></div>
+            <div class="floating-element asteroid-2"></div>
+            <div class="floating-element asteroid-3"></div>
+        </div>
+        <div class="cosmic-rays"></div>
+    </div>
+
+    <div class="dashboard-container"><!-- Sidebar futurista -->
+        <div class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="brand-logo">
+                    <i class="fas fa-rocket me-2"></i>
+                    <h4 class="brand-name">AstroDev</h4>
+                </div>
+                <small class="admin-label">Panel Docente</small>
+            </div>
+            
+            <ul class="sidebar-nav">
+                <li>
+                    <a href="javascript:void(0)" class="nav-link active" data-section="dashboard">
+                        <i class="fas fa-tachometer-alt"></i>Dashboard
+                    </a>
+                </li>
+                <li>
+                    <a href="javascript:void(0)" class="nav-link" data-section="mis-cursos">
+                        <i class="fas fa-graduation-cap"></i>Mis Cursos
+                    </a>
+                </li>
+                <li>
+                    <a href="javascript:void(0)" class="nav-link" data-section="estudiantes">
+                        <i class="fas fa-user-graduate"></i>Estudiantes
+                    </a>
+                </li>
+                <li>
+                    <a href="javascript:void(0)" class="nav-link" data-section="calificaciones">
+                        <i class="fas fa-star"></i>Calificaciones
+                    </a>
+                </li>
+                <li>
+                    <a href="javascript:void(0)" class="nav-link" data-section="reportes">
+                        <i class="fas fa-chart-line"></i>Reportes
+                    </a>
+                </li>
+                <li>
+                    <a href="javascript:void(0)" class="nav-link" data-section="perfil">
+                        <i class="fas fa-user"></i>Mi Perfil
+                    </a>
+                </li>
+                <li>
+                    <hr class="sidebar-separator">
+                </li>
+                <li>
+                    <a th:href="@{/astrodev/inicio}">
+                        <i class="fas fa-home"></i>Volver al Sitio
+                    </a>
+                </li>
+                <li>
+                    <a th:href="@{/auth/logout}">
+                        <i class="fas fa-sign-out-alt"></i>Cerrar Sesión
+                    </a>
+                </li>
+            </ul>
+        </div>        <!-- Main Content -->
+        <div class="main-content" id="mainContent">
+            <!-- Top Navbar -->
+            <nav class="top-navbar">
+                <div class="d-flex align-items-center">
+                    <button class="sidebar-toggle me-3" id="sidebarToggle">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <span class="navbar-brand h5 mb-0">Dashboard Docente</span>
+                </div>
+                
+                <div class="user-menu">
+                    <span class="me-2" th:text="${usuarioActual.nombre + ' ' + usuarioActual.apellido}">Docente</span>
+                    <div class="user-avatar">
+                        <span th:text="${#strings.substring(usuarioActual.nombre, 0, 1)}">D</span>
+                    </div>
+                </div>
+            </nav>
+            
+            <!-- Dashboard Section -->
+            <div id="dashboard-section" class="content-section"
+                 th:data-cursos-publicados="${cursosPublicados ?: 0}"
+                 th:data-cursos-borrador="${cursosBorrador ?: 0}">
+                <h2 class="section-title">Panel de Control Docente</h2>
+                
+                <!-- Alertas -->
+                <div th:if="${mensaje}" class="alert alert-success alert-dismissible fade show" role="alert">
+                    <i class="fas fa-check-circle me-2"></i>
+                    <span th:text="${mensaje}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+                
+                <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <i class="fas fa-exclamation-circle me-2"></i>
+                    <span th:text="${error}"></span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+                
+                <!-- Stats Cards -->
+                <div class="row mb-4">
+                    <div class="col-md-3 col-sm-6">
+                        <div class="dashboard-card stat-card">
+                            <div class="stat-icon stat-icon-cursos">
+                                <i class="fas fa-graduation-cap"></i>
+                            </div>
+                            <div class="stat-number" th:text="${totalMisCursos ?: '0'}">0</div>
+                            <div class="stat-label">Mis Cursos</div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-3 col-sm-6">
+                        <div class="dashboard-card stat-card">
+                            <div class="stat-icon stat-icon-usuarios">
+                                <i class="fas fa-user-graduate"></i>
+                            </div>
+                            <div class="stat-number" th:text="${totalEstudiantes ?: '0'}">0</div>
+                            <div class="stat-label">Estudiantes</div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-3 col-sm-6">
+                        <div class="dashboard-card stat-card">
+                            <div class="stat-icon stat-icon-activo">
+                                <i class="fas fa-eye"></i>
+                            </div>
+                            <div class="stat-number" th:text="${cursosPublicados ?: '0'}">0</div>
+                            <div id="cursosPublicados" th:data-value="${cursosPublicados ?: 0}" style="display: none;"></div>
+                            <div class="stat-label">Publicados</div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-3 col-sm-6">
+                        <div class="dashboard-card stat-card">
+                            <div class="stat-icon stat-icon-inactivo">
+                                <i class="fas fa-edit"></i>
+                            </div>
+                            <div class="stat-number" th:text="${cursosBorrador ?: '0'}">0</div>
+                            <div id="cursosBorrador" th:data-value="${cursosBorrador ?: 0}" style="display: none;"></div>
+                            <div class="stat-label">Borradores</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Charts -->
+                <div class="row mb-4">
+                    <div class="col-md-8">
+                        <div class="dashboard-card">
+                            <h5>Progreso de Estudiantes por Curso</h5>
+                            <div class="chart-container">
+                                <canvas id="progresoChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-4">
+                        <div class="dashboard-card">
+                            <h5>Estado de Mis Cursos</h5>
+                            <div class="chart-container">
+                                <canvas id="estadoCursosChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Acciones Rápidas -->
+                <div class="dashboard-card">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5>Acciones Rápidas</h5>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <button class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#nuevoCursoModal">
+                                <i class="fas fa-plus me-2"></i>Crear Nuevo Curso
+                            </button>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <button class="btn btn-outline-primary w-100">
+                                <i class="fas fa-upload me-2"></i>Subir Material
+                            </button>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <button class="btn btn-outline-primary w-100">
+                                <i class="fas fa-chart-bar me-2"></i>Ver Reportes
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Mis Cursos Section -->
+            <div id="mis-cursos-section" class="content-section hidden">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h2 class="section-title mb-0">Mis Cursos</h2>
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#nuevoCursoModal">
+                        <i class="fas fa-plus me-2"></i>Nuevo Curso
+                    </button>
+                </div>
+                
+                <div class="table-container">
+                    <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Título</th>
+                                    <th>Categoría</th>
+                                    <th>Estudiantes</th>
+                                    <th>Estado</th>
+                                    <th>Última Act.</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="curso : ${misCursos}">
+                                    <td th:text="${curso.id}">1</td>
+                                    <td th:text="${curso.titulo}">Java Básico</td>
+                                    <td th:text="${curso.categoriaNombre}">Programación</td>
+                                    <td th:text="${curso.totalInscripciones ?: '0'}">25</td>
+                                    <td>
+                                        <span class="badge-status" 
+                                              th:classappend="${curso.estado == 'publicado' ? 'badge-activo' : 'badge-inactivo'}"
+                                              th:text="${curso.estado}">Publicado</span>
+                                    </td>
+                                    <td th:text="${curso.fechaActualizacion != null ? #temporals.format(curso.fechaActualizacion, 'dd/MM/yyyy') : 'N/A'}">01/01/2025</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-primary btn-action" title="Editar">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-info btn-action" title="Ver Estudiantes">
+                                            <i class="fas fa-users"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-success btn-action" title="Estadísticas">
+                                            <i class="fas fa-chart-bar"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr th:if="${#lists.isEmpty(misCursos)}">
+                                    <td colspan="7" class="text-center text-muted">No tienes cursos creados aún</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Estudiantes Section -->
+            <div id="estudiantes-section" class="content-section hidden">
+                <h2 class="section-title">Mis Estudiantes</h2>
+                
+                <div class="dashboard-card">
+                    <h5>Estudiantes Inscritos en Mis Cursos</h5>
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Estudiante</th>
+                                    <th>Curso</th>
+                                    <th>Progreso</th>
+                                    <th>Última Actividad</th>
+                                    <th>Calificación</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td colspan="6" class="text-center text-muted">No hay estudiantes inscritos aún</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Calificaciones Section -->
+            <div id="calificaciones-section" class="content-section hidden">
+                <h2 class="section-title">Calificaciones y Evaluaciones</h2>
+                
+                <div class="dashboard-card">
+                    <h5>Tareas y Exámenes Pendientes</h5>
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Curso</th>
+                                    <th>Evaluación</th>
+                                    <th>Estudiantes</th>
+                                    <th>Pendientes</th>
+                                    <th>Fecha Límite</th>
+                                    <th>Acciones</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td colspan="6" class="text-center text-muted">No hay evaluaciones pendientes</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Reportes Section -->
+            <div id="reportes-section" class="content-section hidden">
+                <h2 class="section-title">Reportes y Estadísticas</h2>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="dashboard-card">
+                            <h5>Rendimiento por Curso</h5>
+                            <div class="chart-container">
+                                <canvas id="rendimientoChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="dashboard-card">
+                            <h5>Actividad de Estudiantes</h5>
+                            <div class="chart-container">
+                                <canvas id="actividadChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Perfil Section -->
+            <div id="perfil-section" class="content-section hidden">
+                <h2 class="section-title">Mi Perfil</h2>
+                
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="dashboard-card text-center">
+                            <div class="profile-avatar mb-3">
+                                <div class="avatar-large">
+                                    <span th:text="${#strings.substring(usuarioActual.nombre, 0, 1)}">D</span>
+                                </div>
+                            </div>
+                            <h5 th:text="${usuarioActual.nombre + ' ' + usuarioActual.apellido}">Nombre del Docente</h5>
+                            <p class="text-muted" th:text="${usuarioActual.email}">docente@email.com</p>
+                            <div class="badge-status badge-activo">Docente Activo</div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-8">
+                        <div class="dashboard-card">
+                            <h5>Información Personal</h5>
+                            <form th:action="@{/perfil/actualizar}" method="post" th:object="${perfilDTO}">
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="nombre" class="form-label">Nombre</label>
+                                        <input type="text" class="form-control" id="nombre" th:field="*{nombre}">
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="apellido" class="form-label">Apellido</label>
+                                        <input type="text" class="form-control" id="apellido" th:field="*{apellido}">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6 mb-3">
+                                        <label for="email" class="form-label">Email</label>
+                                        <input type="email" class="form-control" id="email" th:field="*{email}">
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="telefono" class="form-label">Teléfono</label>
+                                        <input type="tel" class="form-control" id="telefono" th:field="*{telefono}">
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save me-2"></i>Actualizar Perfil
+                                </button>
+                            </form>
+                        </div>
+                        
+                        <div class="dashboard-card mt-4">
+                            <h5>Cambiar Contraseña</h5>
+                            <form th:action="@{/perfil/cambiar-password}" method="post" th:object="${passwordDTO}">
+                                <div class="mb-3">
+                                    <label for="passwordActual" class="form-label">Contraseña Actual</label>
+                                    <input type="password" class="form-control" id="passwordActual" th:field="*{passwordActual}">
+                                </div>                                <div class="mb-3">
+                                    <label for="passwordNueva" class="form-label">Nueva Contraseña</label>
+                                    <input type="password" class="form-control" id="passwordNueva" th:field="*{passwordNueva}">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="confirmarPassword" class="form-label">Confirmar Contraseña</label>
+                                    <input type="password" class="form-control" id="confirmarPassword" th:field="*{confirmarPassword}">
+                                </div>
+                                <button type="submit" class="btn btn-warning">
+                                    <i class="fas fa-key me-2"></i>Cambiar Contraseña
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Modal Nuevo Curso -->
+    <div class="modal fade" id="nuevoCursoModal" tabindex="-1" aria-labelledby="nuevoCursoModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="nuevoCursoModalLabel">
+                        <i class="fas fa-graduation-cap me-2"></i>Crear Nuevo Curso
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="nuevoCursoForm" th:action="@{/docente/crear-curso}" method="post" th:object="${cursoDTO}">
+                        <div class="row">
+                            <div class="col-12 mb-3">
+                                <label for="titulo" class="form-label">
+                                    <i class="fas fa-book me-1"></i>Título del Curso *
+                                </label>
+                                <input type="text" class="form-control" id="titulo" th:field="*{titulo}" 
+                                       placeholder="Ej: Introducción a Java" required maxlength="255">
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="categoriaId" class="form-label">
+                                    <i class="fas fa-tags me-1"></i>Categoría *
+                                </label>
+                                <select class="form-select" id="categoriaId" th:field="*{categoriaId}" required>
+                                    <option value="">Seleccionar categoría...</option>
+                                    <option th:each="categoria : ${categorias}" 
+                                            th:value="${categoria.id}" 
+                                            th:text="${categoria.nombre}">
+                                    </option>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="nivel" class="form-label">
+                                    <i class="fas fa-layer-group me-1"></i>Nivel *
+                                </label>
+                                <select class="form-select" id="nivel" th:field="*{nivel}" required>
+                                    <option value="">Seleccionar nivel...</option>
+                                    <option value="basico">Básico</option>
+                                    <option value="intermedio">Intermedio</option>
+                                    <option value="avanzado">Avanzado</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="precio" class="form-label">
+                                    <i class="fas fa-dollar-sign me-1"></i>Precio (USD)
+                                </label>
+                                <input type="number" class="form-control" id="precio" th:field="*{precio}" 
+                                       step="0.01" min="0" placeholder="0.00">
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="duracionEstimada" class="form-label">
+                                    <i class="fas fa-clock me-1"></i>Duración (horas)
+                                </label>
+                                <input type="number" class="form-control" id="duracionEstimada" th:field="*{duracionEstimada}" 
+                                       min="1" placeholder="40">
+                            </div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="descripcionCorta" class="form-label">
+                                <i class="fas fa-align-left me-1"></i>Descripción Corta *
+                            </label>
+                            <textarea class="form-control" id="descripcionCorta" th:field="*{descripcionCorta}" 
+                                      rows="3" placeholder="Descripción breve del curso..." required maxlength="500"></textarea>
+                            <div class="form-text">Máximo 500 caracteres</div>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label for="descripcionCompleta" class="form-label">
+                                <i class="fas fa-file-alt me-1"></i>Descripción Completa
+                            </label>
+                            <textarea class="form-control" id="descripcionCompleta" th:field="*{descripcionCompleta}" 
+                                      rows="5" placeholder="Descripción detallada del curso, objetivos, contenido..."></textarea>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" id="esGratuito" th:field="*{esGratuito}" checked>
+                                    <label class="form-check-label" for="esGratuito">
+                                        <i class="fas fa-gift me-1"></i>Curso Gratuito
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label for="estado" class="form-label">
+                                    <i class="fas fa-toggle-on me-1"></i>Estado Inicial
+                                </label>
+                                <select class="form-select" id="estado" th:field="*{estado}">
+                                    <option value="borrador" selected>Borrador</option>
+                                    <option value="publicado">Publicado</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle me-2"></i>
+                            <small>Los campos marcados con (*) son obligatorios. El curso se creará en estado "Borrador" por defecto.</small>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-1"></i>Cancelar
+                    </button>
+                    <button type="submit" form="nuevoCursoForm" class="btn btn-primary">
+                        <i class="fas fa-save me-1"></i>Crear Curso
+                    </button>
+                </div>
+            </div>            </div>
+        </div>
+    </div>
+    
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+      <!-- Script para efectos visuales y funcionalidad -->
+    <script>
+        // Prevenir desplazamiento automático al cargar la página
+        window.addEventListener('beforeunload', function() {
+            window.scrollTo(0, 0);
+        });
+        
+        // Asegurar que la página se cargue en la parte superior
+        window.addEventListener('load', function() {
+            setTimeout(() => {
+                window.scrollTo(0, 0);
+                document.documentElement.scrollTop = 0;
+                document.body.scrollTop = 0;
+            }, 0);
+        });
+        
+        // Restaurar posición al inicio al cargar el DOM
+        document.addEventListener('DOMContentLoaded', function() {
+            // Forzar scroll al inicio
+            if ('scrollRestoration' in history) {
+                history.scrollRestoration = 'manual';
+            }
+            window.scrollTo(0, 0);
+            
+            // Crear estrellas dinámicamente
+            function createStars() {
+                const starsContainer = document.querySelector('.stars');
+                const numStars = 300;
+                
+                for (let i = 0; i < numStars; i++) {
+                    const star = document.createElement('div');
+                    star.className = 'star';
+                    star.style.left = Math.random() * 100 + '%';
+                    star.style.top = Math.random() * 100 + '%';
+                    star.style.animationDelay = Math.random() * 3 + 's';
+                    star.style.animationDuration = (Math.random() * 3 + 2) + 's';
+                    starsContainer.appendChild(star);
+                }
+            }
+
+            // Crear rayos cósmicos
+            function createCosmicRays() {
+                const cosmicRaysContainer = document.querySelector('.cosmic-rays');
+                const numRays = 10;
+                
+                for (let i = 0; i < numRays; i++) {
+                    const ray = document.createElement('div');
+                    ray.className = 'cosmic-ray';
+                    ray.style.left = Math.random() * 100 + '%';
+                    ray.style.animationDelay = Math.random() * 10 + 's';
+                    ray.style.animationDuration = (Math.random() * 5 + 3) + 's';
+                    cosmicRaysContainer.appendChild(ray);
+                }
+            }
+
+            // Animaciones de entrada
+            function initializeAnimations() {
+                const sidebar = document.querySelector('.sidebar');
+                const mainContent = document.querySelector('.main-content');
+                
+                setTimeout(() => {
+                    if (sidebar) sidebar.classList.add('animate-in');
+                    if (mainContent) mainContent.classList.add('animate-in');
+                }, 100);
+            }
+
+            // Inicializar efectos
+            createStars();
+            createCosmicRays();
+            initializeAnimations();
+            
+            // Navegación del sidebar
+            const navLinks = document.querySelectorAll('.nav-link[data-section]');
+            const sections = document.querySelectorAll('.content-section');
+            
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetSection = this.getAttribute('data-section');
+                    
+                    // Remover active de todos los links
+                    navLinks.forEach(l => l.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Ocultar todas las secciones
+                    sections.forEach(section => {
+                        section.classList.add('hidden');
+                    });
+                    
+                    // Mostrar la sección seleccionada
+                    const target = document.getElementById(targetSection + '-section');
+                    if (target) {
+                        target.classList.remove('hidden');
+                    }
+                });
+            });
+
+            // Toggle sidebar
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            const sidebar = document.getElementById('sidebar');
+            
+            if (sidebarToggle && sidebar) {
+                sidebarToggle.addEventListener('click', function() {
+                    sidebar.classList.toggle('collapsed');                });
+            }
+            
+            // Funcionalidad del modal de nuevo curso
+            const nuevoCursoModal = document.getElementById('nuevoCursoModal');
+            if (nuevoCursoModal) {
+                nuevoCursoModal.addEventListener('hidden.bs.modal', function () {
+                    const form = document.getElementById('nuevoCursoForm');
+                    if (form) {
+                        form.reset();
+                        const inputs = form.querySelectorAll('.form-control, .form-select');
+                        inputs.forEach(input => {
+                            input.classList.remove('is-invalid', 'is-valid');
+                        });
+                    }
+                });
+            }
+            
+            // Validación del checkbox de curso gratuito
+            const esGratuitoCheckbox = document.getElementById('esGratuito');
+            const precioInput = document.getElementById('precio');
+            
+            if (esGratuitoCheckbox && precioInput) {
+                function actualizarPrecio() {
+                    if (esGratuitoCheckbox.checked) {
+                        precioInput.value = '0.00';
+                        precioInput.disabled = true;
+                    } else {
+                        precioInput.disabled = false;
+                        if (precioInput.value === '0.00') {
+                            precioInput.value = '';
+                        }
+                    }
+            }                
+            esGratuitoCheckbox.addEventListener('change', actualizarPrecio);
+            actualizarPrecio();
+        }
+    });
+    </script>
+    <!-- Dashboard JavaScript -->
+    <script th:src="@{/js/docente-dashboard.js}"></script>
+    <script th:src="@{/js/custom-cursor.js}"></script>
+</body>
+</html>

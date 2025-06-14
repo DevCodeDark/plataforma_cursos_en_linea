@@ -61,13 +61,14 @@ public class ProgresoMaterialController {
             return ResponseEntity.badRequest().body(ERROR_VALIDACION + e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Error al crear el progreso: " + e.getMessage());
+                    .body("Error al crear el progreso: " + e.getMessage());
         }
     }
 
     // Marcar material como visualizado
     @PostMapping("/visualizar")
-    public ResponseEntity<String> marcarComoVisualizado(@RequestParam Integer inscripcionId, @RequestParam Integer materialId) {
+    public ResponseEntity<String> marcarComoVisualizado(@RequestParam Integer inscripcionId,
+            @RequestParam Integer materialId) {
         try {
             progresoMaterialService.marcarComoVisualizado(inscripcionId, materialId);
             return ResponseEntity.status(HttpStatus.CREATED).body("Material marcado como visualizado");
@@ -75,19 +76,20 @@ public class ProgresoMaterialController {
             return ResponseEntity.badRequest().body(ERROR_VALIDACION + e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("Error al marcar como visualizado: " + e.getMessage());
+                    .body("Error al marcar como visualizado: " + e.getMessage());
         }
     }
 
     // Actualizar progreso
     @PutMapping("/{id}")
-    public ResponseEntity<String> actualizar(@PathVariable Integer id, @Valid @RequestBody ProgresoMaterialDTO progresoMaterialDTO) {
+    public ResponseEntity<String> actualizar(@PathVariable Integer id,
+            @Valid @RequestBody ProgresoMaterialDTO progresoMaterialDTO) {
         try {
             Optional<ProgresoMaterialDTO> progresoExistente = progresoMaterialService.buscarId(id);
             if (!progresoExistente.isPresent()) {
                 return ResponseEntity.notFound().build();
             }
-            
+
             progresoMaterialDTO.setId(id);
             progresoMaterialService.modificar(progresoMaterialDTO);
             return ResponseEntity.ok("Progreso actualizado exitosamente");
@@ -95,7 +97,7 @@ public class ProgresoMaterialController {
             return ResponseEntity.badRequest().body(ERROR_VALIDACION + e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Error al actualizar el progreso: " + e.getMessage());
+                    .body("Error al actualizar el progreso: " + e.getMessage());
         }
     }
 
@@ -107,14 +109,14 @@ public class ProgresoMaterialController {
             if (!progreso.isPresent()) {
                 return ResponseEntity.notFound().build();
             }
-            
+
             progresoMaterialService.eliminar(id);
             return ResponseEntity.ok("Progreso eliminado exitosamente");
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(ERROR_VALIDACION + e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Error al eliminar el progreso: " + e.getMessage());
+                    .body("Error al eliminar el progreso: " + e.getMessage());
         }
     }
 
@@ -135,7 +137,8 @@ public class ProgresoMaterialController {
     @GetMapping("/inscripcion/{inscripcionId}/visualizados")
     public ResponseEntity<List<ProgresoMaterialDTO>> buscarVisualizados(@PathVariable Integer inscripcionId) {
         try {
-            List<ProgresoMaterialDTO> progresos = progresoMaterialService.buscarMaterialesVisualizadosPorInscripcion(inscripcionId);
+            List<ProgresoMaterialDTO> progresos = progresoMaterialService
+                    .buscarMaterialesVisualizadosPorInscripcion(inscripcionId);
             return ResponseEntity.ok(progresos);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(null);
@@ -148,7 +151,8 @@ public class ProgresoMaterialController {
     @GetMapping("/inscripcion/{inscripcionId}/completados")
     public ResponseEntity<List<ProgresoMaterialDTO>> buscarCompletados(@PathVariable Integer inscripcionId) {
         try {
-            List<ProgresoMaterialDTO> progresos = progresoMaterialService.buscarMaterialesCompletadosPorInscripcion(inscripcionId);
+            List<ProgresoMaterialDTO> progresos = progresoMaterialService
+                    .buscarMaterialesCompletadosPorInscripcion(inscripcionId);
             return ResponseEntity.ok(progresos);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(null);
@@ -159,9 +163,11 @@ public class ProgresoMaterialController {
 
     // Buscar progreso por inscripción y módulo
     @GetMapping("/inscripcion/{inscripcionId}/modulo/{moduloId}")
-    public ResponseEntity<List<ProgresoMaterialDTO>> buscarPorInscripcionYModulo(@PathVariable Integer inscripcionId, @PathVariable Integer moduloId) {
+    public ResponseEntity<List<ProgresoMaterialDTO>> buscarPorInscripcionYModulo(@PathVariable Integer inscripcionId,
+            @PathVariable Integer moduloId) {
         try {
-            List<ProgresoMaterialDTO> progresos = progresoMaterialService.buscarPorInscripcionYModulo(inscripcionId, moduloId);
+            List<ProgresoMaterialDTO> progresos = progresoMaterialService.buscarPorInscripcionYModulo(inscripcionId,
+                    moduloId);
             return ResponseEntity.ok(progresos);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(null);
@@ -198,7 +204,8 @@ public class ProgresoMaterialController {
 
     // Marcar material como completado
     @PutMapping("/completar")
-    public ResponseEntity<String> marcarComoCompletado(@RequestParam Integer inscripcionId, @RequestParam Integer materialId) {
+    public ResponseEntity<String> marcarComoCompletado(@RequestParam Integer inscripcionId,
+            @RequestParam Integer materialId) {
         try {
             progresoMaterialService.marcarComoCompletado(inscripcionId, materialId);
             return ResponseEntity.ok("Material marcado como completado exitosamente");
@@ -206,13 +213,14 @@ public class ProgresoMaterialController {
             return ResponseEntity.badRequest().body(ERROR_VALIDACION + e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Error al marcar como completado: " + e.getMessage());
+                    .body("Error al marcar como completado: " + e.getMessage());
         }
     }
 
     // Actualizar tiempo reproducido
     @PutMapping("/tiempo")
-    public ResponseEntity<String> actualizarTiempo(@RequestParam Integer inscripcionId, @RequestParam Integer materialId, @RequestParam Integer tiempoReproducido) {
+    public ResponseEntity<String> actualizarTiempo(@RequestParam Integer inscripcionId,
+            @RequestParam Integer materialId, @RequestParam Integer tiempoReproducido) {
         try {
             progresoMaterialService.actualizarTiempoReproducido(inscripcionId, materialId, tiempoReproducido);
             return ResponseEntity.ok("Tiempo de reproducción actualizado exitosamente");
@@ -220,7 +228,7 @@ public class ProgresoMaterialController {
             return ResponseEntity.badRequest().body(ERROR_VALIDACION + e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Error al actualizar el tiempo: " + e.getMessage());
+                    .body("Error al actualizar el tiempo: " + e.getMessage());
         }
     }
 
@@ -228,7 +236,8 @@ public class ProgresoMaterialController {
     @GetMapping("/inscripcion/{inscripcionId}/ultimo-accedido")
     public ResponseEntity<ProgresoMaterialDTO> buscarUltimoAccedido(@PathVariable Integer inscripcionId) {
         try {
-            Optional<ProgresoMaterialDTO> progreso = progresoMaterialService.buscarUltimoMaterialAccedido(inscripcionId);
+            Optional<ProgresoMaterialDTO> progreso = progresoMaterialService
+                    .buscarUltimoMaterialAccedido(inscripcionId);
             if (progreso.isPresent()) {
                 return ResponseEntity.ok(progreso.get());
             } else {
@@ -243,7 +252,8 @@ public class ProgresoMaterialController {
 
     // Crear progreso si no existe
     @PostMapping("/crear-si-no-existe")
-    public ResponseEntity<ProgresoMaterialDTO> crearProgresoSiNoExiste(@RequestParam Integer inscripcionId, @RequestParam Integer materialId) {
+    public ResponseEntity<ProgresoMaterialDTO> crearProgresoSiNoExiste(@RequestParam Integer inscripcionId,
+            @RequestParam Integer materialId) {
         try {
             ProgresoMaterialDTO progreso = progresoMaterialService.crearProgresoSiNoExiste(inscripcionId, materialId);
             return ResponseEntity.status(HttpStatus.CREATED).body(progreso);
@@ -256,7 +266,8 @@ public class ProgresoMaterialController {
 
     // Verificar si existe progreso
     @GetMapping("/existe")
-    public ResponseEntity<Boolean> existeProgreso(@RequestParam Integer inscripcionId, @RequestParam Integer materialId) {
+    public ResponseEntity<Boolean> existeProgreso(@RequestParam Integer inscripcionId,
+            @RequestParam Integer materialId) {
         try {
             boolean existe = progresoMaterialService.existeProgreso(inscripcionId, materialId);
             return ResponseEntity.ok(existe);

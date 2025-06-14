@@ -61,19 +61,20 @@ public class ProgresoModuloController {
             return ResponseEntity.badRequest().body(ERROR_VALIDACION + e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Error al crear el progreso: " + e.getMessage());
+                    .body("Error al crear el progreso: " + e.getMessage());
         }
     }
 
     // Actualizar progreso
     @PutMapping("/{id}")
-    public ResponseEntity<String> actualizar(@PathVariable Integer id, @Valid @RequestBody ProgresoModuloDTO progresoModuloDTO) {
+    public ResponseEntity<String> actualizar(@PathVariable Integer id,
+            @Valid @RequestBody ProgresoModuloDTO progresoModuloDTO) {
         try {
             Optional<ProgresoModuloDTO> progresoExistente = progresoModuloService.buscarId(id);
             if (!progresoExistente.isPresent()) {
                 return ResponseEntity.notFound().build();
             }
-            
+
             progresoModuloDTO.setId(id);
             progresoModuloService.modificar(progresoModuloDTO);
             return ResponseEntity.ok("Progreso actualizado exitosamente");
@@ -81,7 +82,7 @@ public class ProgresoModuloController {
             return ResponseEntity.badRequest().body(ERROR_VALIDACION + e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Error al actualizar el progreso: " + e.getMessage());
+                    .body("Error al actualizar el progreso: " + e.getMessage());
         }
     }
 
@@ -93,14 +94,14 @@ public class ProgresoModuloController {
             if (!progreso.isPresent()) {
                 return ResponseEntity.notFound().build();
             }
-            
+
             progresoModuloService.eliminar(id);
             return ResponseEntity.ok("Progreso eliminado exitosamente");
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(ERROR_VALIDACION + e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Error al eliminar el progreso: " + e.getMessage());
+                    .body("Error al eliminar el progreso: " + e.getMessage());
         }
     }
 
@@ -121,7 +122,8 @@ public class ProgresoModuloController {
     @GetMapping("/inscripcion/{inscripcionId}/completados")
     public ResponseEntity<List<ProgresoModuloDTO>> buscarCompletados(@PathVariable Integer inscripcionId) {
         try {
-            List<ProgresoModuloDTO> progresos = progresoModuloService.buscarModulosCompletadosPorInscripcion(inscripcionId);
+            List<ProgresoModuloDTO> progresos = progresoModuloService
+                    .buscarModulosCompletadosPorInscripcion(inscripcionId);
             return ResponseEntity.ok(progresos);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(null);
@@ -166,13 +168,14 @@ public class ProgresoModuloController {
             return ResponseEntity.badRequest().body(ERROR_VALIDACION + e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Error al completar el módulo: " + e.getMessage());
+                    .body("Error al completar el módulo: " + e.getMessage());
         }
     }
 
     // Actualizar tiempo invertido
     @PutMapping("/tiempo")
-    public ResponseEntity<String> actualizarTiempo(@RequestParam Integer inscripcionId, @RequestParam Integer moduloId, @RequestParam Integer tiempoAdicional) {
+    public ResponseEntity<String> actualizarTiempo(@RequestParam Integer inscripcionId, @RequestParam Integer moduloId,
+            @RequestParam Integer tiempoAdicional) {
         try {
             progresoModuloService.actualizarTiempoInvertido(inscripcionId, moduloId, tiempoAdicional);
             return ResponseEntity.ok("Tiempo invertido actualizado exitosamente");
@@ -180,7 +183,7 @@ public class ProgresoModuloController {
             return ResponseEntity.badRequest().body(ERROR_VALIDACION + e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Error al actualizar el tiempo invertido: " + e.getMessage());
+                    .body("Error al actualizar el tiempo invertido: " + e.getMessage());
         }
     }
 
@@ -203,7 +206,8 @@ public class ProgresoModuloController {
 
     // Iniciar módulo
     @PostMapping("/iniciar")
-    public ResponseEntity<ProgresoModuloDTO> iniciarModulo(@RequestParam Integer inscripcionId, @RequestParam Integer moduloId) {
+    public ResponseEntity<ProgresoModuloDTO> iniciarModulo(@RequestParam Integer inscripcionId,
+            @RequestParam Integer moduloId) {
         try {
             ProgresoModuloDTO progreso = progresoModuloService.iniciarModulo(inscripcionId, moduloId);
             return ResponseEntity.status(HttpStatus.CREATED).body(progreso);
@@ -216,7 +220,8 @@ public class ProgresoModuloController {
 
     // Crear progreso si no existe
     @PostMapping("/crear-si-no-existe")
-    public ResponseEntity<ProgresoModuloDTO> crearProgresoSiNoExiste(@RequestParam Integer inscripcionId, @RequestParam Integer moduloId) {
+    public ResponseEntity<ProgresoModuloDTO> crearProgresoSiNoExiste(@RequestParam Integer inscripcionId,
+            @RequestParam Integer moduloId) {
         try {
             ProgresoModuloDTO progreso = progresoModuloService.crearProgresoSiNoExiste(inscripcionId, moduloId);
             return ResponseEntity.status(HttpStatus.CREATED).body(progreso);
@@ -253,9 +258,11 @@ public class ProgresoModuloController {
 
     // Buscar progreso específico por inscripción y módulo
     @GetMapping("/inscripcion/{inscripcionId}/modulo/{moduloId}")
-    public ResponseEntity<ProgresoModuloDTO> buscarPorInscripcionYModulo(@PathVariable Integer inscripcionId, @PathVariable Integer moduloId) {
+    public ResponseEntity<ProgresoModuloDTO> buscarPorInscripcionYModulo(@PathVariable Integer inscripcionId,
+            @PathVariable Integer moduloId) {
         try {
-            Optional<ProgresoModuloDTO> progreso = progresoModuloService.buscarPorInscripcionYModulo(inscripcionId, moduloId);
+            Optional<ProgresoModuloDTO> progreso = progresoModuloService.buscarPorInscripcionYModulo(inscripcionId,
+                    moduloId);
             if (progreso.isPresent()) {
                 return ResponseEntity.ok(progreso.get());
             } else {
@@ -270,7 +277,8 @@ public class ProgresoModuloController {
 
     // Buscar progreso por estudiante y curso
     @GetMapping("/estudiante/{estudianteId}/curso/{cursoId}")
-    public ResponseEntity<List<ProgresoModuloDTO>> buscarPorEstudianteYCurso(@PathVariable Integer estudianteId, @PathVariable Integer cursoId) {
+    public ResponseEntity<List<ProgresoModuloDTO>> buscarPorEstudianteYCurso(@PathVariable Integer estudianteId,
+            @PathVariable Integer cursoId) {
         try {
             List<ProgresoModuloDTO> progresos = progresoModuloService.buscarPorEstudianteYCurso(estudianteId, cursoId);
             return ResponseEntity.ok(progresos);

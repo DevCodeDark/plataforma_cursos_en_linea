@@ -25,6 +25,7 @@ public class PagoController {
 
     @Autowired
     private IPagoService pagoService;// Listar todos los pagos
+
     @GetMapping
     public ResponseEntity<List<PagoDTO>> listarTodos() {
         try {
@@ -57,14 +58,15 @@ public class PagoController {
     public ResponseEntity<String> crear(@Valid @RequestBody PagoDTO pagoDTO) {
         try {
             pagoService.guardar(pagoDTO);
-            return ResponseEntity.status(HttpStatus.CREATED).body("Pago creado exitosamente");        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.CREATED).body("Pago creado exitosamente");
+        } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(ERROR_VALIDACION + e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Error al crear el pago: " + e.getMessage());
+                    .body("Error al crear el pago: " + e.getMessage());
         }
-    }    
-    
+    }
+
     // Procesar pago
     @PostMapping("/procesar")
     public ResponseEntity<String> procesarPago(
@@ -75,11 +77,12 @@ public class PagoController {
         try {
             PagoDTO pagoDTO = pagoService.procesarPago(inscripcionId, monto, metodoPago, transaccionExternaId);
             return ResponseEntity.status(HttpStatus.CREATED)
-                .body("Pago procesado exitosamente. ID: " + pagoDTO.getId());
-        } catch (IllegalArgumentException e) {            return ResponseEntity.badRequest().body(ERROR_VALIDACION + e.getMessage());
+                    .body("Pago procesado exitosamente. ID: " + pagoDTO.getId());
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(ERROR_VALIDACION + e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("Error al procesar el pago: " + e.getMessage());
+                    .body("Error al procesar el pago: " + e.getMessage());
         }
     }
 
@@ -91,17 +94,18 @@ public class PagoController {
             if (!pagoExistente.isPresent()) {
                 return ResponseEntity.notFound().build();
             }
-            
+
             pagoDTO.setId(id);
             pagoService.modificar(pagoDTO);
-            return ResponseEntity.ok("Pago actualizado exitosamente");        } catch (IllegalArgumentException e) {
+            return ResponseEntity.ok("Pago actualizado exitosamente");
+        } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(ERROR_VALIDACION + e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Error al actualizar el pago: " + e.getMessage());
+                    .body("Error al actualizar el pago: " + e.getMessage());
         }
-    }    
-    
+    }
+
     // Eliminar pago
     @DeleteMapping("/{id}")
     public ResponseEntity<String> eliminar(@PathVariable Integer id) {
@@ -110,13 +114,14 @@ public class PagoController {
             if (!pago.isPresent()) {
                 return ResponseEntity.notFound().build();
             }
-            
+
             pagoService.eliminar(id);
-            return ResponseEntity.ok("Pago eliminado exitosamente");        } catch (IllegalArgumentException e) {
+            return ResponseEntity.ok("Pago eliminado exitosamente");
+        } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(ERROR_VALIDACION + e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Error al eliminar el pago: " + e.getMessage());
+                    .body("Error al eliminar el pago: " + e.getMessage());
         }
     }
 
@@ -168,8 +173,8 @@ public class PagoController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
-    }    
-    
+    }
+
     // Confirmar pago
     @PutMapping("/{id}/confirmar")
     public ResponseEntity<String> confirmarPago(@PathVariable Integer id, @RequestParam String transaccionExternaId) {
@@ -178,13 +183,14 @@ public class PagoController {
             if (!pago.isPresent()) {
                 return ResponseEntity.notFound().build();
             }
-            
+
             pagoService.confirmarPago(id, transaccionExternaId);
             return ResponseEntity.ok("Pago confirmado exitosamente");
-        } catch (IllegalArgumentException e) {            return ResponseEntity.badRequest().body(ERROR_VALIDACION + e.getMessage());
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(ERROR_VALIDACION + e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Error al confirmar el pago: " + e.getMessage());
+                    .body("Error al confirmar el pago: " + e.getMessage());
         }
     }
 
@@ -196,13 +202,14 @@ public class PagoController {
             if (!pago.isPresent()) {
                 return ResponseEntity.notFound().build();
             }
-            
+
             pagoService.marcarComoFallido(id, razon);
-            return ResponseEntity.ok("Pago marcado como fallido");        } catch (IllegalArgumentException e) {
+            return ResponseEntity.ok("Pago marcado como fallido");
+        } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(ERROR_VALIDACION + e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Error al marcar el pago como fallido: " + e.getMessage());
+                    .body("Error al marcar el pago como fallido: " + e.getMessage());
         }
     }
 
@@ -214,13 +221,14 @@ public class PagoController {
             if (!pago.isPresent()) {
                 return ResponseEntity.notFound().build();
             }
-            
+
             pagoService.procesarReembolso(id, razon);
             return ResponseEntity.ok("Reembolso procesado exitosamente");
-        } catch (IllegalArgumentException e) {            return ResponseEntity.badRequest().body(ERROR_VALIDACION + e.getMessage());
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(ERROR_VALIDACION + e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Error al procesar el reembolso: " + e.getMessage());
+                    .body("Error al procesar el reembolso: " + e.getMessage());
         }
     }
 
@@ -259,7 +267,8 @@ public class PagoController {
 
     // Calcular ingresos en período
     @GetMapping("/ingresos-periodo")
-    public ResponseEntity<BigDecimal> calcularIngresosEnPeriodo(@RequestParam String fechaInicio, @RequestParam String fechaFin) {
+    public ResponseEntity<BigDecimal> calcularIngresosEnPeriodo(@RequestParam String fechaInicio,
+            @RequestParam String fechaFin) {
         try {
             BigDecimal ingresos = pagoService.calcularIngresosEnPeriodo(fechaInicio, fechaFin);
             return ResponseEntity.ok(ingresos);

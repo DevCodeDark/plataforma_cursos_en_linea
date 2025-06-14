@@ -37,11 +37,12 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
             
             switch (role) {
                 case "ROLE_ADMINISTRADOR":
-                    return "/astrodev/inicio";
+                case "ROLE_ADMIN":
+                    return "/admin/dashboard";
                 case "ROLE_DOCENTE":
-                    return "/astrodev/inicio";
+                    return "/docente/dashboard";
                 case "ROLE_ESTUDIANTE":
-                    return "/astrodev/inicio";
+                    return "/estudiante/dashboard";
                 default:
                     // Continuar con el siguiente rol
                     break;

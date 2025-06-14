@@ -19,8 +19,8 @@ import jakarta.validation.Valid;
 public class CertificadoController {
 
     @Autowired
-    private ICertificadoService certificadoService;    
-    
+    private ICertificadoService certificadoService;
+
     // Listar todos los certificados
     @GetMapping
     public ResponseEntity<List<CertificadoDTO>> listarTodos() {
@@ -55,7 +55,7 @@ public class CertificadoController {
             return ResponseEntity.status(HttpStatus.CREATED).body("Certificado creado exitosamente");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Error al crear el certificado: " + e.getMessage());
+                    .body("Error al crear el certificado: " + e.getMessage());
         }
     }
 
@@ -67,25 +67,26 @@ public class CertificadoController {
             return ResponseEntity.status(HttpStatus.CREATED).body("Certificado generado exitosamente");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body("Error al generar el certificado: " + e.getMessage());
+                    .body("Error al generar el certificado: " + e.getMessage());
         }
-    }    
-    
+    }
+
     // Actualizar certificado
     @PutMapping("/{id}")
-    public ResponseEntity<String> actualizar(@PathVariable Integer id, @Valid @RequestBody CertificadoDTO certificadoDTO) {
+    public ResponseEntity<String> actualizar(@PathVariable Integer id,
+            @Valid @RequestBody CertificadoDTO certificadoDTO) {
         try {
             Optional<CertificadoDTO> certificadoExistente = certificadoService.buscarId(id);
             if (!certificadoExistente.isPresent()) {
                 return ResponseEntity.notFound().build();
             }
-            
+
             certificadoDTO.setId(id);
             certificadoService.modificar(certificadoDTO);
             return ResponseEntity.ok("Certificado actualizado exitosamente");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Error al actualizar el certificado: " + e.getMessage());
+                    .body("Error al actualizar el certificado: " + e.getMessage());
         }
     }
 
@@ -97,15 +98,15 @@ public class CertificadoController {
             if (!certificado.isPresent()) {
                 return ResponseEntity.notFound().build();
             }
-            
+
             certificadoService.eliminar(id);
             return ResponseEntity.ok("Certificado eliminado exitosamente");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Error al eliminar el certificado: " + e.getMessage());
+                    .body("Error al eliminar el certificado: " + e.getMessage());
         }
-    }    
-    
+    }
+
     // Buscar certificado por código de verificación
     @GetMapping("/codigo/{codigoVerificacion}")
     public ResponseEntity<CertificadoDTO> buscarPorCodigo(@PathVariable String codigoVerificacion) {
@@ -163,8 +164,8 @@ public class CertificadoController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
-    }    
-    
+    }
+
     // Invalidar certificado
     @PutMapping("/{id}/invalidar")
     public ResponseEntity<String> invalidarCertificado(@PathVariable Integer id) {
@@ -173,12 +174,12 @@ public class CertificadoController {
             if (!certificado.isPresent()) {
                 return ResponseEntity.notFound().build();
             }
-            
+
             certificadoService.invalidarCertificado(id);
             return ResponseEntity.ok("Certificado invalidado exitosamente");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Error al invalidar el certificado: " + e.getMessage());
+                    .body("Error al invalidar el certificado: " + e.getMessage());
         }
     }
 
@@ -191,8 +192,8 @@ public class CertificadoController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
-    }    
-    
+    }
+
     // Generar PDF del certificado
     @GetMapping("/{id}/pdf")
     public ResponseEntity<String> generarPdf(@PathVariable Integer id) {
@@ -201,12 +202,12 @@ public class CertificadoController {
             if (!certificado.isPresent()) {
                 return ResponseEntity.notFound().build();
             }
-            
+
             String rutaPdf = certificadoService.generarPdfCertificado(id);
             return ResponseEntity.ok(rutaPdf);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Error al generar el PDF: " + e.getMessage());
+                    .body("Error al generar el PDF: " + e.getMessage());
         }
     }
 

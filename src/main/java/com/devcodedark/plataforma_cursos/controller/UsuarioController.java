@@ -45,8 +45,8 @@ public class UsuarioController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
-    }    
-    
+    }
+
     // Crear nuevo usuario
     @PostMapping
     public ResponseEntity<String> crear(@Valid @RequestBody UsuarioDTO usuarioDTO) {
@@ -55,17 +55,17 @@ public class UsuarioController {
             if (usuarioService.existePorEmail(usuarioDTO.getEmail())) {
                 return ResponseEntity.badRequest().body("Ya existe un usuario con este email");
             }
-            
+
             // Verificar que no exista un usuario con el mismo nombre de usuario
             if (usuarioService.existePorUsuario(usuarioDTO.getUsuario())) {
                 return ResponseEntity.badRequest().body("Ya existe un usuario con este nombre de usuario");
             }
-            
+
             usuarioService.guardar(usuarioDTO);
             return ResponseEntity.status(HttpStatus.CREATED).body("Usuario creado exitosamente");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Error al crear el usuario: " + e.getMessage());
+                    .body("Error al crear el usuario: " + e.getMessage());
         }
     }
 
@@ -77,25 +77,25 @@ public class UsuarioController {
             if (!usuarioExistente.isPresent()) {
                 return ResponseEntity.notFound().build();
             }
-            
+
             // Verificar email único
             Optional<UsuarioDTO> usuarioConMismoEmail = usuarioService.buscarPorEmail(usuarioDTO.getEmail());
             if (usuarioConMismoEmail.isPresent() && !usuarioConMismoEmail.get().getId().equals(id)) {
                 return ResponseEntity.badRequest().body("Ya existe otro usuario con este email");
             }
-            
+
             // Verificar nombre de usuario único
             Optional<UsuarioDTO> usuarioConMismoNombre = usuarioService.buscarPorUsuario(usuarioDTO.getUsuario());
             if (usuarioConMismoNombre.isPresent() && !usuarioConMismoNombre.get().getId().equals(id)) {
                 return ResponseEntity.badRequest().body("Ya existe otro usuario con este nombre de usuario");
             }
-            
+
             usuarioDTO.setId(id);
             usuarioService.modificar(usuarioDTO);
             return ResponseEntity.ok("Usuario actualizado exitosamente");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Error al actualizar el usuario: " + e.getMessage());
+                    .body("Error al actualizar el usuario: " + e.getMessage());
         }
     }
 
@@ -107,12 +107,12 @@ public class UsuarioController {
             if (!usuario.isPresent()) {
                 return ResponseEntity.notFound().build();
             }
-            
+
             usuarioService.eliminar(id);
             return ResponseEntity.ok("Usuario eliminado exitosamente");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Error al eliminar el usuario: " + e.getMessage());
+                    .body("Error al eliminar el usuario: " + e.getMessage());
         }
     }
 
@@ -172,12 +172,12 @@ public class UsuarioController {
             if (!usuario.isPresent()) {
                 return ResponseEntity.notFound().build();
             }
-            
+
             usuarioService.cambiarContrasena(id, nuevaContrasena);
             return ResponseEntity.ok("Contraseña cambiada exitosamente");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Error al cambiar la contraseña: " + e.getMessage());
+                    .body("Error al cambiar la contraseña: " + e.getMessage());
         }
     }
 
@@ -189,12 +189,12 @@ public class UsuarioController {
             if (!usuario.isPresent()) {
                 return ResponseEntity.notFound().build();
             }
-            
+
             usuarioService.cambiarEstado(id, estado);
             return ResponseEntity.ok("Estado del usuario cambiado exitosamente");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body("Error al cambiar el estado: " + e.getMessage());
+                    .body("Error al cambiar el estado: " + e.getMessage());
         }
     }
 
@@ -217,7 +217,7 @@ public class UsuarioController {
             if (!usuario.isPresent()) {
                 return ResponseEntity.notFound().build();
             }
-            
+
             // Crear objeto con estadísticas adicionales
             var estadisticas = new Object() {
                 public final UsuarioDTO usuario = usuarioService.buscarId(id).get();
@@ -227,7 +227,7 @@ public class UsuarioController {
                 public final Integer diasSinAcceso = usuarioService.calcularDiasSinAcceso(id);
                 public final Boolean puedeCrearCursos = usuarioService.puedeCrearCursos(id);
             };
-            
+
             return ResponseEntity.ok(estadisticas);
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
